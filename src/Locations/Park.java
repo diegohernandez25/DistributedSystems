@@ -9,32 +9,36 @@ import java.util.HashMap;
 
 public class Park {
 
-    private static HashMap<String, Car> Cars;
-    //private static ArrayList<ReplacementCar> replacementCars; //FIXME Am I allowed to do this??
+    /**
+     * @brief Storage of all type of cars
+     * @key String Key ID.
+     * @value Car or Replacement Car.
+     * */
+    private static HashMap<String, Car> cars;
 
-    public Park(ReplacementCar[] cars)
+    public Park()
     {
-        Cars = new HashMap<>();
-        //replacementCars = new ArrayList<ReplacementCar>(Arrays.asList(cars));
+        cars = new HashMap<>();
     }
 
     public boolean parkCar(String id, Car car)
     {
-        if(Cars.containsKey(id)){ return false; }
-        Cars.put(id,car);
+        //TODO: mutex
+        if(cars.containsKey(id)){ return false; }
+        cars.put(id,car);
         return true;
     }
 
-    public Car getsCar(String id)
+    public Car getCar(String id)
     {
-        if(!Cars.containsKey(id)){ return null; }
-        return Cars.get(id);
+        //TODO: mutex
+        if(!cars.containsKey(id)){ return null; }
+        return cars.get(id);
     }
 
-    public boolean isParkEmpty()
+    public boolean isParkEmpty() //TODO Is it necessary?
     {
-        return Cars.isEmpty();
+        return cars.isEmpty();
     }
-
 
 }

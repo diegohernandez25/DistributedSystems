@@ -3,18 +3,19 @@ package Objects;
 import java.util.Objects;
 
 public class ReplacementCar extends Car {
+
     private int customerId;
 
-    public ReplacementCar(int ownerId) {
-        super(ownerId);
-    }
-
-    public int getCustomerId() {
-        return customerId;
+    public ReplacementCar() {
+        super();
     }
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
     }
 
     @Override

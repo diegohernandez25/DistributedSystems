@@ -14,7 +14,14 @@ import java.util.Stack;
 public class RepairArea {
 
     private static HashMap<String, MemStack<CarPart>> stock;
+
+
     Logger logger = new Logger();
+
+    public void startRepairProcedure()
+    {
+
+    }
 
     public RepairArea(HashMap<String,MemStack<CarPart>> stock)
     {

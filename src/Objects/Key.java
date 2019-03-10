@@ -14,9 +14,9 @@ public class Key {
 
     private static final String alphanum = upper + lower + digits;
 
-    public Key(String keyValue) { this.keyValue = keyValue; }
+    private Key(String keyValue) { this.keyValue = keyValue; }
 
-    public Key() { this(generateRandom(20, ThreadLocalRandom.current())); }
+    Key() { this(generateRandom(20, ThreadLocalRandom.current())); }
 
     public String getKeyValue() { return keyValue; }
 
