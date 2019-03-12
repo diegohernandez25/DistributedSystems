@@ -1,44 +1,47 @@
 package Locations;
 
 import Objects.Car;
-import Objects.ReplacementCar;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Park {
 
-    /**
-     * @brief Storage of all type of cars
-     * @key String Key ID.
-     * @value Car or Replacement Car.
-     * */
     private static HashMap<String, Car> cars;
-
+    /**
+     * Instantiation of the Park.
+     * */
     public Park()
     {
         cars = new HashMap<>();
     }
 
-    public boolean parkCar(String id, Car car)
+    /**
+     *  Park Car.
+     *
+     *      @param id - ID of the car key.
+     *      @param car - The car object.
+     *
+     *      @return Operation status.
+     * */
+    public synchronized boolean parkCar(String id, Car car)
     {
-        //TODO: mutex
+
         if(cars.containsKey(id)){ return false; }
         cars.put(id,car);
         return true;
     }
 
-    public Car getCar(String id)
+    /**
+     *  Gets Car.
+     *
+     *      @param id - ID of the car key.
+     *
+     *      @return the car.
+     * */
+    public synchronized Car getCar(String id)
     {
-        //TODO: mutex
         if(!cars.containsKey(id)){ return null; }
-        return cars.get(id);
-    }
 
-    public boolean isParkEmpty() //TODO Is it necessary?
-    {
-        return cars.isEmpty();
+        return cars.remove(id);
     }
 
 }

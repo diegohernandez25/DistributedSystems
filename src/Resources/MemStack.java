@@ -77,4 +77,5 @@ public class MemStack<R> extends MemObject<R>
         }
         else throw new MemException ("Stack empty!");
    }
+
 }

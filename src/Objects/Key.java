@@ -7,17 +7,33 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Key {
     private String keyValue;
+    private Integer id;
 
+    /**
+     *      Used variables to create an unique ID for the key car.
+     * */
     private static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String lower = upper.toLowerCase(Locale.ROOT);
     private static final String digits = "0123456789";
-
     private static final String alphanum = upper + lower + digits;
 
+    /**
+     *
+     *  Instantiation of the Key.
+     *
+     *      @param keyValue - Unique id of the key
+     *
+     * */
     private Key(String keyValue) { this.keyValue = keyValue; }
 
+    /**
+     *  Instantiation of the Key.
+     * */
     Key() { this(generateRandom(20, ThreadLocalRandom.current())); }
 
+    /**
+     *  Get the unique value of the Key that represent it.
+     * */
     public String getKeyValue() { return keyValue; }
 
     @Override
@@ -34,9 +50,12 @@ public class Key {
     }
 
     /**
-     * @brief Generate a random string.
-     * @param length - Length of the string.
-     * @return Random string.
+     *  Generates a random String.
+     *
+     *      @param length - length of the String.
+     *      @param random - object from the Random Class.
+     *
+     *      @return random String.
      * */
     private static String generateRandom(int length, Random random)
     {
@@ -47,4 +66,7 @@ public class Key {
         }
         return new String(buf);
     }
+
+    public void setId(Integer id) { this.id = id;}
+    public Integer getId(){ return this.id;}
 }

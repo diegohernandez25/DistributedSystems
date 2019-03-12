@@ -91,4 +91,12 @@ public class MemFIFO<R> extends MemObject<R>
        return inPnt == outPnt;
    }
 
+   //TODO Override it
+   public R peek () throws MemException
+   {
+       R val = null;
+       if(!empty) { val = mem[outPnt]; }
+       else throw new MemException("Fifo empty!");
+       return val;
+   }
 }

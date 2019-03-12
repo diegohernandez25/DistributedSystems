@@ -3,42 +3,14 @@ package Entities;
 import Locations.Lounge;
 import Locations.Park;
 import Objects.CustomerCar;
-import Objects.Key;
-import Objects.ReplacementCar;
 
 
 public class Customer extends Thread{
 
     /**
-     *  Types of attending constants
-     * */
-
-    private final static int    REQ_FIX_CAR = 0,
-                                PAYMENT = 1;
-
-    /**
-     *  Constants for the Car State.
-     * */
-    private final static int    NORMAL = 0,
-                                DAMAGED = 1,
-                                PARKED = 2,
-                                ON_REPAIR = 3;
-
-
-    /**
-     *  Constants for the Client State.
-     * */
-    private final static int    NORMAL_LIFE = 0,
-                                WANT_REPAIR = 1,
-                                NORMAL_W_CAR = 2,
-                                NORMAL_WO_CAR = 3,
-                                WANT_PAY = 4;
-
-
-    /**
      *  Customer identification.
      *
-     * @serialField customerId
+     *      @serialField customerId
      *
      * */
     private int customerId;
@@ -46,7 +18,7 @@ public class Customer extends Thread{
     /**
      *  Needs a car.
      *
-     * @serialField  requiresCar
+     *      @serialField  requiresCar
      *
      * */
     private boolean requiresCar;
@@ -54,7 +26,7 @@ public class Customer extends Thread{
     /**
      *  Posses a Car.
      *
-     * @serialField hasCar
+     *      @serialField hasCar
      *
      * */
     private boolean hasCar;
@@ -62,20 +34,21 @@ public class Customer extends Thread{
     /**
      *  Current state of the Customer.
      *
-     * @serialField clientState;
+     *      @serialField clientState;
      * */
     private int clientState;
 
     /**
      *  Current state of the Customer's Car.
      *
-     * @serialField clientState;
+     *      @serialField clientState;
      * */
     private int carState;
 
     /**
      *  Number of iteractions of the customer life cycle.
-     * @serialField nIter
+     *
+     *      @serialField nIter
      * */
     private int nIter = 0;
 
@@ -108,21 +81,11 @@ public class Customer extends Thread{
         this.customerId = customerId;
         this.requiresCar = requiresCar;
         this.hasCar = true;
-        this.clientState = NORMAL_LIFE;
-        this.carState = NORMAL;
         this.nIter = nIter;
         this.lounge = lounge;
         this.park = park;
         this.car = car;
     }
-
-    public int getClientId() { return customerId; }
-
-    public boolean requiresCar() { return requiresCar; }
-
-    public boolean hasCar() { return hasCar; }
-
-    public void setHasCar(boolean hasCar) { this.hasCar = hasCar; }
 
     @Override
     public String toString()
@@ -140,14 +103,15 @@ public class Customer extends Thread{
     @Override
     public void run()
     {
+        //TODO: Customer's life cycle
+        /*
         int i = 0;
         for(; i < nIter; i++)
         {
             livingNormalLife();
             park.parkCar(car.getKey().getKeyValue(),car);
             car = null;
-            lounge.enterCustomerQueue(customerId, REQ_FIX_CAR);
-            //lounge.talkWithManager();
+            lounge.enterCustomerQueue(customerId, false);
             if(wantsRental())
             {
                 Key rentalCarKey = lounge.getReplacementCarKey(customerId);
@@ -159,8 +123,8 @@ public class Customer extends Thread{
             {
                 lounge.exitLounge(customerId);
             }
-            //PAYMENT
         }
+        */
     }
 
     /**
@@ -175,5 +139,4 @@ public class Customer extends Thread{
         catch (InterruptedException e){}
     }
 
-    private boolean wantsRental() { return requiresCar; }
 }

@@ -1,21 +1,20 @@
 package Locations;
 
-import Entities.Customer;
 import Loggers.Logger;
 import Objects.Key;
 import Resources.MemException;
 import Resources.MemFIFO;
 import Resources.MemStack;
-import org.omg.PortableInterceptor.LOCATION_FORWARD;
+import java.util.HashMap;
 
 public class Lounge {
 
     /**
-     *  Types of attending constants
-     * */
-
-    private final static int    REQ_FIX_CAR = 0,
-                                PAYMENT = 1;
+     *  Created Constants for the Logger
+     *  */
+    private String  MANAGER     = "Manager",
+                    CUSTOMER    = "Customer",
+                    LOCAL       = "Lounge";
 
     /**
      * Customer constants states.
@@ -23,12 +22,11 @@ public class Lounge {
     private final static int    NORMAL_LIFE = 0,
                                 WAITING_REQUEST_REPAIR = 1,
                                 WAITING_REPLACEMENT_CAR = 2,
-                                GET_REPLACEMENT_CAR = 0,
-                                ATTENDED_W_SUBCAR = 2,
-                                ATTENDED_WO_SUBCAR = 3,
-                                WAITING_PAYMENT = 4,
-                                ATTENDING = 6,
-                                END_SERVICE = 5;
+                                GET_REPLACEMENT_CAR = 3,
+                                ATTENDED_W_SUBCAR = 4,
+                                ATTENDED_WO_SUBCAR = 5,
+                                ATTENDED = 6,
+                                ATTENDING = 7;
 
     /**
      *  Current states of customers.
@@ -38,31 +36,19 @@ public class Lounge {
     private int[] stateCustomers;
 
     /**
-     *  Manager constants states.
-     * */
-    private final static int    READING_PAPER = 0,
-                                CHECK_CUSTOMER = 1,
-                                ATTENDING_CUSTOMER = 2,
-                                CUST_KEY_GIVEN = 8,
-                                CHECK_STOCK = 3,
-                                REFILL_STOCK = 4,
-                                CHECK_REPAIRED_CARS = 5,
-                                ALERT_REPAIRED_CAR = 6,
-                                RECV_PAYMENT = 7;
-
-    /**
-     *  Current state of Manager.
-     *
-     *      @serialField stateManager
-     * */
-    private int stateManager;
-    /**
      *  All the Keys of Replacement Cars
      *
      *      @serialField replacementCarKeys
      *
      * */
     private MemStack<Key> replacementCarKeys;
+
+    /**
+     *  Record all replacement Keys used by a Customer ID
+     *
+     *      @serialField  usedReplacementCarKeys
+     * */
+    private Integer[] usedReplacementCarKeys;
 
     /**
      *  All the Keys of Customer Cars
@@ -91,33 +77,47 @@ public class Lounge {
 
     private MemFIFO<Integer> waitingReplacementKey;
 
+    //FIXME ew. This might not be the best solution
+    /**
+     *  Stack of clients which are waiting for payment
+     *
+     *      @serialField paymentQueue
+     * */
+    private MemFIFO<Integer> paymentQueue;
+
+    /**
+     *  Storage of car keys.
+     *
+     *      @serialField  repairedCarKeys
+     * */
+    private HashMap<String,Key> repairedCarKeys;
 
     /**
      *
      * Instantiation of the Lounge
      *      @param replacementKeys - Array of Key objects. NOTE: Must have the size equal
-     *                to the total number of replacement cars.
-     *      @param clients clients
-     *      @param customerKeys customer's keys
+     *                               to the total number of replacement cars.
+     *      @param clients - clients
+     *      @param customerKeys - customer's keys
      * */
-
-
     public Lounge(Key[] replacementKeys, Integer[] clients, Key[] customerKeys)
-    {
-        try {
-            this.replacementCarKeys = new MemStack<>(replacementKeys);
+    {   try {
             this.customerQueue = new MemFIFO<>(clients);
             this.customerCarKeys = new MemFIFO<>(customerKeys);
             this.customerFixedCarKeys = new MemFIFO<>(customerKeys);
-
+            this.usedReplacementCarKeys = new Integer[replacementKeys.length];
             this.stateCustomers = new int[clients.length];
-            for( int i = 0; i< clients.length; i++)
-            {
-                stateCustomers[i] = NORMAL_LIFE;
+
+            //Initiate the state of all customers.
+            for( int i = 0; i< clients.length; i++) { stateCustomers[i] = NORMAL_LIFE; }
+
+            //Initiate all usage of replacement car keys
+            for( int i = 0; i<replacementKeys.length; i++)
+            {   replacementKeys[i].setId(i);
+                this.usedReplacementCarKeys[i] = -1;                                //Meaning not used by any Customer.
             }
-
-            this.stateManager = READING_PAPER;
-
+            this.replacementCarKeys = new MemStack<>(replacementKeys);
+            //TODO Log everything
         } catch (MemException e) {
             Logger.logException(e);
         }
@@ -125,23 +125,24 @@ public class Lounge {
 
 
     /**
+     *  Customer enters queue to be attended by the Manager.
      *
-     * Definition of the carried out operations over the monitors:
-     *  - Go to the lounge
-     *  - Attend the customer
-     *  - Receive Payment
-     *  - Check missing stock.
-     *  - Check and alert about fixed cars.
+     *      @param customerId - Id of the customer to be attended
+     *      @param payment - type of attendance. (true/false) Pay for repair/Request repair.
+     *
+     *      @note Customer invokes this method
+     *
+     *      @return operation success so the thread can move on to the next operation.
      * */
+    public synchronized boolean enterCustomerQueue(Integer customerId, boolean payment)
+    {   if(payment)
+        {
+            try { paymentQueue.write(customerId); }
+            catch (MemException e) { Logger.logException(e); }
+        }
 
-    /**
-     * @note Customer invokes this method
-     * */
-    public synchronized boolean enterCustomerQueue(Integer customerId, int typeOperation)
-    {
-        //TODO: Reminder - Customer must wait
         try {
-            stateCustomers[customerId] = WAITING_REQUEST_REPAIR;
+            stateCustomers[customerId] = WAITING_REQUEST_REPAIR;    //FIXME: Not needed (?)
             customerQueue.write(customerId);
         } catch (MemException e) {
             Logger.logException(e);
@@ -150,48 +151,66 @@ public class Lounge {
 
         while (stateCustomers[customerId] != ATTENDING)
         {
-            try
-            {
-                wait();
-            }
-            catch(InterruptedException e){
-                return false; //FIXME ??
-            }
+            try { wait();}
+            catch(InterruptedException e){ }
         }
+        stateCustomers[customerId] = ATTENDED;
         return true;
     }
 
     /**
-     * @note Manager invokes this method.
-     * @return the ID of the next customer to attend
+     *  Operation to attend customer. Can be for receive payment or to initiate the repair of a car.
+     *
+     *      @note Manager invokes this method.
+     *
+     *      @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
     public synchronized boolean attendCustomer()
-    {
-        if(customerQueue.isEmpty()) { return (false); }
-        try
-        {
+    {   if (customerQueue.isEmpty()) { return (false); }
+        try {
             int customerId = customerQueue.read();
             stateCustomers[customerId] = ATTENDING;
-            notifyAll();
+            notifyAll(); //Customer notified that is being attended.
+
+            if(paymentQueue.peek() == customerId){              //Customer want to make payment
+                paymentQueue.read();
+                //Waits for the replacement key
+                int i = 0;
+                for(;i<usedReplacementCarKeys.length;i++) {
+                    if (usedReplacementCarKeys[i] == customerId) break; //Checks if it was given a replacement key
+                }
+                //FIXME Yikes! this thread should sleep, but is it a good idea? cuz of the waiting threads from the
+                // customer threads.
+                while (usedReplacementCarKeys[i] == customerId){}   //Either if a replacement keys
+                                                                    //wasn't retrieved it will get pass
+                                                                    //through this function with no problem.
+                                                                    //So a flag is not required
+
+                //TODO: Should anything be done on the payment?
+                Logger.log(CUSTOMER,LOCAL,"Payment given.",0,Logger.SUCCESS);
+                Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
+            }
+            else
+            {
+                //TODO: Post Job?
+            }
+
         }
-        catch (MemException e) {
-            Logger.logException(e);
-        }
+        catch (MemException e) { Logger.logException(e); }
         return (true);
     }
 
     /**
      *  Make available the key of the car to be fixed.
      *
-     *      @note Client invokes this method
-     *
      *      @param key - Key of the car to fix.
+     *
+     *      @note Client invokes this method
      *
      *      @return boolean about end operation status.
      * */
     public synchronized boolean giveKey(Key key)
-    {
-        try {
+    {   try {
             customerCarKeys.write(key);
         } catch (MemException e) {
             Logger.logException(e);
@@ -205,19 +224,24 @@ public class Lounge {
      *
      *      @note Client invokes this method.
      *
-     *      @param customerId - ID of the client who needs the replacement car.
+     *      @param customerId - ID of the clie125$ Digitnt who needs the replacement car.
      *
      *      @return the key of the replacement car.
      * */
     public synchronized Key getReplacementCarKey(Integer customerId)
-    {
+    {   //  If there are keys available, the customer will take one.
         if(!replacementCarKeys.isEmpty())
-        {   try { return replacementCarKeys.read(); }
+        {   try {
+                Key tmp = replacementCarKeys.read();
+                this.usedReplacementCarKeys[tmp.getId()] = customerId;      //User registers which key he/she took.
+                return tmp;
+            }
             catch (MemException e) {
                 Logger.logException(e);
                 return null;
             }
         }
+        //  Else the customer waits for a key.
         try
         {
             stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
@@ -236,15 +260,11 @@ public class Lounge {
             catch (InterruptedException e) { }
         }
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-        Key tmpKey = null;
-        try {
-            tmpKey = replacementCarKeys.read();
-        } catch (MemException e) {
+        try { return replacementCarKeys.read(); }
+        catch (MemException e) {
             Logger.logException(e);
             return  null;
         }
-        //TODO LogStatus
-        return tmpKey;
     }
 
     /**
@@ -257,12 +277,15 @@ public class Lounge {
      *      @return status of the operation.
      * */
     public synchronized boolean returnReplacementCarKey(Key key)
-    {
-        try {
+    {   try {
             replacementCarKeys.write(key);
-            int customerId = waitingReplacementKey.read();
-            stateCustomers[customerId] = GET_REPLACEMENT_CAR;
-            notifyAll();
+            if(!waitingReplacementKey.isEmpty())
+            {
+                int waitingCustomerId = waitingReplacementKey.read();
+                stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
+                notifyAll();
+            }
+            usedReplacementCarKeys[key.getId()] = -1; //Replacement car is now available.
         } catch (MemException e) {
             Logger.logException(e);
             return false;
@@ -273,40 +296,63 @@ public class Lounge {
     /**
      *  Exit Lounge
      *
-     *      @note Customer without the need of a replacement car invokes this method.
-     *
      *      @param customerId - Id of the customer who will exit the lounge
      *
+     *      @note Customer without the need of a replacement car invokes this method.
+     *
      * */
 
-    public void exitLounge(Integer customerId)
-    {
-        stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
+    public void exitLounge(Integer customerId) { stateCustomers[customerId] = ATTENDED_WO_SUBCAR; }
+
+    /**
+     *  Checks if customer queue is empty
+     *
+     *      @note Manager invokes this method
+     *
+     * */
+    public boolean isCustomerQueueEmpty() { return customerQueue.isEmpty(); }
+
+
+    /**
+     *  Checks if Replacement Car Keys is Empty
+     *
+     *      @return boolean (true/false) Available replacement cars/No replacement cars.
+     *
+     * */
+    public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
+
+    /**
+     *  Checks if Customer car keys are empty
+     *
+     *     @return boolean (true/false) Available customers cars/No customers cars.
+     * */
+    public boolean isCustomerCarKeysEmpty() { return customerCarKeys.isEmpty(); }
+
+    /**
+     *  Customer gives Manager his/hers car key.
+     *
+     *      @param key - Customer's car key.
+     */
+    public synchronized void giveManagerCarKey(Key key)
+    {   try {
+            customerCarKeys.write(key);
+        } catch (MemException e) {
+            Logger.logException(e);
+        }
     }
 
     /**
-     * @note Manager invokes this method
+     *  Customer retrieves his/hers car key.
+     *
+     *      @param idKey - ID of the key to retrieve
+     *
+     *      @return the Customer's key.
      * */
-    public boolean isCustomerQueueEmpty()
-    {
-        return customerQueue.isEmpty();
+    public synchronized Key retrieveCarKey(String idKey)
+    {   if(!repairedCarKeys.containsKey(idKey)) return null;
+        try{ return repairedCarKeys.remove(idKey); }
+        catch (Exception e){ return null;}
     }
 
-
-    /**
-     * @note Customer invokes this method
-     * */
-    public boolean isReplacementCarKeysEmpty()
-    {
-        return replacementCarKeys.isEmpty();
-    }
-
-    /**
-     * @note Mechanic invokes this method
-     * */
-    public boolean isCustomerCarKeysEmpty()
-    {
-        return customerCarKeys.isEmpty();
-    }
 
 }
