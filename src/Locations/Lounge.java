@@ -31,11 +31,26 @@ public class Lounge {
                                 GETTING_REPLACEMENT_CAR = 9;
 
     /**
+     *  Mechanic states
+     *  */
+    private final static int    WAITING_FOR_WORK = 0,
+                                FIXING_THE_CAR = 1,
+                                CHECKING_STOCK = 2,
+                                ALERTING_MANAGER = 3;
+
+    /**
      *  Current states of customers.
      *
      *      @serialField stateCustomers
      * */
     private int[] stateCustomers;
+
+    /**
+     *  Current states of mechanics.
+     *
+     *      @serialField stateMechanics
+     * */
+    private int[] stateMechanics;
 
     /**
      *  All the Keys of Replacement Cars
@@ -60,6 +75,14 @@ public class Lounge {
      * */
     //private MemFIFO<Key> customerCarKeys;
     private Key[] customerCarKeys; //TODO customerCarKeys -> subsCustomerCarKeys
+
+    /**
+     *  Queue of Car Keys to be repaired
+     *
+     *      @serialField carKeysQueue
+     *
+     * */
+    private MemFIFO<Key> carKeysRepairQueue;
 
     /**
      *  All the Keys of Customer Fixed Cars
@@ -103,7 +126,7 @@ public class Lounge {
      *      @param clients - clients
      *      @param customerKeys - customer's keys
      * */
-    public Lounge(Key[] replacementKeys, Integer[] clients, Key[] customerKeys)
+    public Lounge(Key[] replacementKeys, Integer[] clients, Integer[] mechanics, Key[] customerKeys)
     {   try {
             this.customerQueue = new MemFIFO<>(clients);
             //this.customerCarKeys = new MemFIFO<>(customerKeys);
@@ -111,9 +134,13 @@ public class Lounge {
             this.customerFixedCarKeys = new MemFIFO<>(customerKeys);
             this.usedReplacementCarKeys = new Integer[replacementKeys.length];
             this.stateCustomers = new int[clients.length];
+            this.stateMechanics = new int[mechanics.length];
 
             //Initiate the state of all customers.
             for( int i = 0; i< clients.length; i++) { stateCustomers[i] = NORMAL_LIFE; }
+
+            //Initiate the state of all mechanics.
+            for( int i = 0; i< mechanics.length; i++) { stateMechanics[i] = WAITING_FOR_WORK; }
 
             //Initiate all usage of replacement car keys
             for( int i = 0; i<replacementKeys.length; i++)
@@ -176,7 +203,7 @@ public class Lounge {
             stateCustomers[customerId] = ATTENDING;
             notifyAll(); //Customer notified that is being attended.
 
-            if(paymentQueue.peek() == customerId){              //Customer want to make payment
+            if(paymentQueue.peek() == customerId){              // Customer wants to make payment
                 paymentQueue.read();
                 //Waits for the replacement key
                 int i = 0;
@@ -198,6 +225,8 @@ public class Lounge {
             else
             {
                 //TODO: Post Job?
+                carKeysRepairQueue.write(customerCarKeys[customerId]);    // add car keys to repair queue
+                notifyAll();                                        // notify Mechanic that a car is available to be repaired
             }
 
         }
@@ -355,5 +384,32 @@ public class Lounge {
         Key key = customerCarKeys[customerId];
         customerCarKeys[customerId] = null;
         return key;
+    }
+
+    /**
+     *
+     *  Mechanic gets keys of car to be repaired
+     *
+     *  @return key of the car to repair
+     *
+     *  */
+    public synchronized Key getVehicle(int mechanicId)
+    {
+        if(isCustomerCarKeysEmpty()) return null;
+        try
+        {
+            stateMechanics[mechanicId] = FIXING_THE_CAR;
+            return carKeysRepairQueue.read();
+        }
+        catch (Exception e){ return null;}
+    }
+
+    /**
+     *  Mechanic alerts Manager for missing part
+     *  */
+    // FIXME: supplier site??
+    public synchronized void alertManager(Car car)
+    {
+        notifyAll();        // notify Manager
     }
 }
