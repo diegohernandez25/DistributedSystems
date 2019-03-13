@@ -26,7 +26,9 @@ public class Lounge {
                                 ATTENDED_W_SUBCAR = 4,
                                 ATTENDED_WO_SUBCAR = 5,
                                 ATTENDED = 6,
-                                ATTENDING = 7;
+                                ATTENDING = 7,
+                                CAR_FIXED = 8,
+                                GETTING_REPLACEMENT_CAR = 9;
 
     /**
      *  Current states of customers.
@@ -56,7 +58,8 @@ public class Lounge {
      *      @serialField customerCarKeys
      *
      * */
-    private MemFIFO<Key> customerCarKeys;
+    //private MemFIFO<Key> customerCarKeys;
+    private Key[] customerCarKeys; //TODO customerCarKeys -> subsCustomerCarKeys
 
     /**
      *  All the Keys of Customer Fixed Cars
@@ -103,7 +106,8 @@ public class Lounge {
     public Lounge(Key[] replacementKeys, Integer[] clients, Key[] customerKeys)
     {   try {
             this.customerQueue = new MemFIFO<>(clients);
-            this.customerCarKeys = new MemFIFO<>(customerKeys);
+            //this.customerCarKeys = new MemFIFO<>(customerKeys);
+            this.customerCarKeys = customerKeys;
             this.customerFixedCarKeys = new MemFIFO<>(customerKeys);
             this.usedReplacementCarKeys = new Integer[replacementKeys.length];
             this.stateCustomers = new int[clients.length];
@@ -187,8 +191,9 @@ public class Lounge {
                                                                     //So a flag is not required
 
                 //TODO: Should anything be done on the payment?
-                Logger.log(CUSTOMER,LOCAL,"Payment given.",0,Logger.SUCCESS);
-                Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
+                while (customerCarKeys[customerId] != null){}       //Manager waits until the customer retrieves the
+                                                                    //keys of his/her car.
+
             }
             else
             {
@@ -198,25 +203,6 @@ public class Lounge {
         }
         catch (MemException e) { Logger.logException(e); }
         return (true);
-    }
-
-    /**
-     *  Make available the key of the car to be fixed.
-     *
-     *      @param key - Key of the car to fix.
-     *
-     *      @note Client invokes this method
-     *
-     *      @return boolean about end operation status.
-     * */
-    public synchronized boolean giveKey(Key key)
-    {   try {
-            customerCarKeys.write(key);
-        } catch (MemException e) {
-            Logger.logException(e);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -252,10 +238,17 @@ public class Lounge {
             Logger.logException(e);
             return null;
         }
-        while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
+        while (stateCustomers[customerId] != GET_REPLACEMENT_CAR && stateCustomers[customerId] != CAR_FIXED)
         {
             try {
                 wait();
+                //TODO Ask Professor about this implementation.
+                if(stateCustomers[customerId] == GET_REPLACEMENT_CAR)
+                {
+                    stateCustomers[customerId] = GETTING_REPLACEMENT_CAR;
+                    return null;        //FIXME null means that the car is already repaired.
+                }
+
             }
             catch (InterruptedException e) { }
         }
@@ -326,27 +319,21 @@ public class Lounge {
      *
      *     @return boolean (true/false) Available customers cars/No customers cars.
      * */
-    public boolean isCustomerCarKeysEmpty() { return customerCarKeys.isEmpty(); }
+    public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
     /**
      *  Customer gives Manager his/hers car key.
      *
      *      @param key - Customer's car key.
      */
-    public synchronized void giveManagerCarKey(Key key)
-    {   try {
-            customerCarKeys.write(key);
-        } catch (MemException e) {
-            Logger.logException(e);
-        }
-    }
+    public synchronized void giveManagerCarKey(Key key, Integer customerId) {  customerCarKeys[customerId] = key; }
 
     /**
      *  Customer retrieves his/hers car key.
      *
      *      @param idKey - ID of the key to retrieve
      *
-     *      @return the Customer's key.
+     *      @return the Customer's car key.
      * */
     public synchronized Key retrieveCarKey(String idKey)
     {   if(!repairedCarKeys.containsKey(idKey)) return null;
@@ -354,5 +341,19 @@ public class Lounge {
         catch (Exception e){ return null;}
     }
 
-
+    /**
+     *  Customer pays for the service and retrieves the keys of his/her car.
+     *
+     *      @param customerId - ID of the customer.
+     *
+     *      @return the Customer's car key.
+     * */
+    public synchronized Key payForTheService(Integer customerId)
+    {
+        Logger.log(CUSTOMER,LOCAL,"Payment given.",0,Logger.SUCCESS);
+        Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
+        Key key = customerCarKeys[customerId];
+        customerCarKeys[customerId] = null;
+        return key;
+    }
 }
