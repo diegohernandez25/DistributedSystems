@@ -2,19 +2,61 @@ package Entities;
 
 public class Manager {
 
-//    private EnumManager state;
-    private int id;
+    /**
+     *  Manager identification
+     *
+     *      @serialField managerId
+     *
+     * */
+    private int managerId;
 
-    public Manager(int id)
+    /**
+     *  Lounge
+     *
+     *      @serialField lounge
+     * */
+    private Lounge lounge;
+
+    /**
+     *  SupplierSite
+     *
+     *      @serialField supplierSite
+     * */
+    private SupplierSite supplierSite;
+
+    /**
+     *  Instantiation of Manager Thread.
+     *
+     *      @param managerId identification of Manager.
+     *      @param lounge used lounge.
+     *      @param supplierSite used supplier site.
+     * */
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite)
     {
-        this.id = id;
-//        this.state = EnumManager.DECIDES_WHAT_TO_DO;
+        this.managerId = managerId;
+        this.lounge = lounge;
+        this.supplierSite = supplierSite;
     }
 
-//    public EnumManager getState() { return state; }
+    /**
+     *
+     *  Life cycle of Manager
+     *
+     *  */
+    @Override
+    public void run()
+    {
+        while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
+        {
+            wait();                                             // Do nothing
+        }
 
-//    public void setState(EnumManager state) { this.state = state; }
-
-//    public int getId() { return id; }
+        if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
+        {
+            CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
+            supplierSite.restockPart();                         // Replenishes the needed car part
+            notifyAll();                                        // Notify Mechanic for available car part
+        }
+    }
 
 }

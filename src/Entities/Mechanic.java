@@ -38,6 +38,11 @@ public class Mechanic extends Thread {
     private RepairArea repairArea;
 
     /**
+     *  Queue for cars waiting to be repaired
+     * */
+    private LinkedHashMap<Car, CarPart> carsToBeRepairedQueue;
+
+    /**
      *  Instantiation of Mechanic Thread.
      *
      *      @param mechanicId identification of Mechanic.
@@ -61,36 +66,41 @@ public class Mechanic extends Thread {
     @Override
     public void run()
     {
+        Car car = carsToBeRepairedQueue.entrySet().iterator().next();                                       // First car waiting for repair parts
+        CarPart carPart = carsToBeRepairedQueue.get(car);                                                   // Car part from the first car
 
-        readThePaper();                                                 // Mechanic waits for work
-        Key repairCarKey = lounge.getVehicle(mechanicId);               // Get keys of car to be repaired
-        Car repairCar = park.getCar(repairCarKey);                      // Get needer car
-
-        //FIXME: how to check and handle needed car parts?
-        CarPart neededPart = repairArea.getCarParts(repairCarKey);      // Get car part needed to repair the car
-        if(neededPart != null)                                          // If car part is available
-        {
-            fixCar();                                                   // Fix the car
-            park.parkCar(repairCar);
-        }
-        else
-        {
-            //FIXME: arg should be car or some car part?
-            lounge.alertManager(repairCar)                              // Alert manager for missing car part
+        while(lounge.isCarKeysRepairQueueEmpty() && !repairArea.checkCarPartInStock(carPart))               // Mechanic waits until needed parts available
+        {                                                                                                   // or any cars are available to be repaired
+            wait();
         }
 
-    }
-
-    /**
-     *  Reading the paper while waiting for work (internal operation)
-     * */
-    private void readThePaper()
-    {
-        try
-        {
-            sleep((long) (1 + 40 * Math.random()));
+        // Priority on car part now available, since this car is in front of the queue
+        if(repairArea.checkCarPartInStock(carPart))                                                         // If Mechanic was awoken because a
+        {                                                                                                   // needed car part is already available
+            repairArea.getCarPart(carPart, mechanicId);                                                     // Get the available part
+            fixCar();                                                                                       // Fix the car
+            park.parkCar(car);                                                                              // Park the repaired car in park
         }
-        catch (InterruptedException e){ }
+
+        if(!lounge.isCarKeysRepairQueueEmpty())                                                             // If Mechanic was awoken because there is
+        {                                                                                                   // another car waiting to be repaired
+            Key repairCarKey = lounge.getVehicle(mechanicId);                                               // Get keys of car to be repaired
+            Car repairCar = park.getCar(repairCarKey);                                                      // Get respective car
+            CarPart neededPart = repairArea.checkCarPartNeeded(mechanicId);                                 // Check which part needs repair
+
+            if(repairArea.checkCarPartInStock(neededPart))                                                  // If needed part is available in stock
+            {
+                repairArea.getCarPart(neededPart, mechanicId);                                              // Get required part from stock
+                fixCar();                                                                                   // Fix the car
+                park.parkCar(repairCar);                                                                    // Park repaired car in park
+            }
+            else                                                                                            // If part is not available
+            {
+                carsToBeRepairedQueue.put(repairCar, neededPart);                                           // Add to queue of cars to be repaired
+                lounge.alertManager(neededPart, mechanicId);                                                // Alerts the manager for missing car part
+            }
+        }
+
     }
 
     /**

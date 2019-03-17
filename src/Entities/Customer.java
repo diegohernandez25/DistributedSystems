@@ -71,28 +71,28 @@ public class Customer extends Thread{
     /**
      *  Parking Lot
      *
-     *      @serialized park
+     *      @serialField park
      * */
     private Park park;
 
     /**
      *  Outside World
      *
-     *      @serialized park
+     *      @serialField park
      * */
     private OutsideWorld outsideWorld;
 
     /**
      *  Car that the user posses.
      *
-     *      @serialized car
+     *      @serialField car
      * */
     private Car car;
 
     /**
      *  Replacement car that the user posses.
      *
-     *      @serialized repCar
+     *      @serialField repCar
      * */
     private Car repCar;
 
@@ -142,7 +142,7 @@ public class Customer extends Thread{
             livingNormalLife();                                         //Customers waits until car needs a fix.
             park.parkCar(key.getKeyValue(),car);                        //Customer parks his/her car.
             car = null;                                                 //Customer does not have a car anymore.
-            lounge.enterCustomerQueue(customerId,false);        //Customer wants to request repair, so it
+            lounge.enterCustomerQueue(customerId,false);                //Customer wants to request repair, so it
                                                                         //waits for attendance.
             lounge.giveManagerCarKey(key, customerId);                  //Customer gives key to manager.
             key = null;
@@ -175,7 +175,7 @@ public class Customer extends Thread{
                 park.parkCar(repKey.getKeyValue(), repCar);             //After the customer is alerted, the customer
                 repCar = null;                                          //parks the replacement car.
             }
-            lounge.enterCustomerQueue(customerId,true);         //After the customer is alerted, he/she goes to
+            lounge.enterCustomerQueue(customerId,true);                 //After the customer is alerted, he/she goes to
                                                                         //the lounge and waits for his/her turn to pay
                                                                         //for the service.
             if(repKey != null)

@@ -6,20 +6,30 @@ import java.util.ArrayList;
 
 public class SupplierSite<R> {
 
-    public SupplierSite(){}
+    /**
+     *  Repair Area
+     *
+     *      @serialField repairArea
+     * */
+    private RepairArea repairArea;
 
     /**
-     * @param name - Name of the part of the car.
-     * @param number - Total number of parts.
-     * @return all requested parts
+     *
+     * Instantiation of the Supplier Site
+     *      @param repairArea used repair area
+     *
      * */
-    public ArrayList<CarPart> getParts(String name, int number)
+    public SupplierSite(RepairArea repairArea)
     {
-        ArrayList<CarPart> tmp = new ArrayList<>();
-        for( int i = 0; i< number; i++)
-        {
-            tmp.add(new CarPart(name));
-        }
-        return tmp;
+        this.repairArea = repairArea;
+    }
+
+    /**
+     * Restocks car part. Always gets 3 of the part.
+     * @param carPart car part to be replenished.
+     * */
+    public synchronized void restockPart(CarPart carPart)
+    {
+        repairArea.addToStock(carPart);                         // add parts to stock of repair area
     }
 }

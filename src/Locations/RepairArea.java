@@ -9,75 +9,91 @@ import sun.java2d.loops.ProcessPath;
 import java.awt.image.Kernel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
 
 public class RepairArea {
 
-    private static HashMap<String, MemStack<CarPart>> stock;
+    /**
+     *  Mechanic states
+     *  */
+    private final static int    WAITING_FOR_WORK = 0,
+                                FIXING_THE_CAR = 1,
+                                CHECKING_STOCK = 2,
+                                ALERTING_MANAGER = 3;
+
+    // Hashmap of car part + number of available parts
+    private static HashMap<CarPart, Integer> stock;
 
     Logger logger = new Logger();
 
-    // FIXME: should it be like this?
-    public RepairArea(HashMap<String,MemStack<CarPart>> stock)
+    /**
+     *
+     * Instantiation of the Repair Area
+     *      @param stock - stock of car parts and the number of available parts
+     *      @param mechanics - Mechanics
+     *
+     * */
+    public RepairArea(HashMap<CarPart, Integer> stock, Integer[] mechanics)
     {
-        RepairArea.stock = stock;
+        this.stock = stock;
+        this.stateMechanics = new int[mechanics.length];
     }
-
-//    public ArrayList<CarPart> getCarParts(String name, Integer number) {
-//        ArrayList<CarPart> tmp = new ArrayList<>();
-//        MemStack<CarPart> partStock = stock.get(name);
-//        if (partStock == null || partStock.isEmpty()) return null;
-//        int count = number;
-//        while (count-- > 0)
-//        {
-//            try {
-//                tmp.add(partStock.read());
-//            } catch (MemException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//        stock.remove(name);
-//        stock.put(name, partStock); //FIXME: Is this really necessary??
-//        return tmp;
-//    }
-//
-//    public boolean addCarParts(String name, MemStack<CarPart> parts)
-//    {
-//        MemStack<CarPart> partStock = stock.get(name);
-//        while(!parts.isEmpty())
-//        {
-//            if(partStock.isFull())
-//            {
-//                //FIXME Process id
-//                Logger.log("Manager","Repair Area",
-//                        "Aquire more car parts than the limit",
-//                        0, Logger.WARNING);
-//                return false;
-//            }
-//            try {
-//                partStock.write(parts.read());
-//            } catch (MemException e) {
-//                Logger.logException(e);
-//                return false;
-//            }
-//        }
-//        stock.remove(name); //FIXME: Is this really necessary??
-//        stock.put(name,partStock);
-//        return true;
-//    }
 
     /**
-     *  Checks if car part is available
+     *  Adds a number of car parts to stock
+     *      @param carPart car part to add to stock
+     *      @param number number of the car part to add to stock
      * */
-    // FIXME: ???
-    // args as car or as part? car should have random needed part? ...
-    public CarPart getCarParts(Car car)
+    public void addToStock(CarPart carPart, int number)
     {
-        // check stock for part
-
-        // return needed car key and remove it from stock
+        stock.put(carPart, number);
     }
 
+    /**
+     *  Checks if car part is available in stock
+     *      @param carPart car part to check
+     *      @return boolean (true/false) Car part is in stock/Car part doesn't exist or isn't available
+     * */
+    public synchronized boolean checkCarPartInStock(CarPart carPart)
+    {
+        // check stock for part
+        if(stock.get(carPart) == 0 || stock.get(carPart) == null)
+        {
+            // if not available (out of stock or inexistent), return false
+            return false;
+        }
+
+        // else, it exists and in stock
+        return true;
+    }
+
+    /**
+     *  Gets car part from stock
+     *      @param carPart car part to get from stock
+     *      @param mechanicId id of the Mechanic
+     *      @return CarPart removes specific car part from stock and returns it
+     * */
+    public synchronized CarPart getCarPart(CarPart carPart, int mechanicId)
+    {
+        stateMechanics[mechanicId] = CHECKING_STOCK;
+        // remove one of the car parts from stock
+        int inStock = stock.get(carPart);
+        inStock--;
+        stock.put(carPart, inStock);
+
+        // return it
+        return carPart;
+    }
+
+    /**
+     *  Checks which part is needed for the car
+     *      @param mechanicId id of the Mechanic
+     *      @return CarPart car part needed for a car
+     * */
+    public synchronized CarPart checkCarPartNeeded(int mechanicId)
+    {
+        stateMechanics[mechanicId] = FIXING_THE_CAR;
+        CarPart carPart = new CarPart((int) Math.random() * 2);
+        return carPart;
+    }
 
 }
