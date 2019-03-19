@@ -5,10 +5,19 @@ import Objects.Key;
 import Resources.MemException;
 import Resources.MemFIFO;
 import Resources.MemStack;
+import sun.rmi.runtime.Log;
+
 import java.util.HashMap;
 
 public class Lounge {
 
+    /**
+     *  Type of Manager Tasks
+     * */
+    private static final Integer    ATTEND_CUSTOMER = 0,
+                                    CALL_CUSTOMER   = 1,
+                                    FILL_STOCK      = 2,
+                                    READ_PAPER      = 3;
     /**
      *  Created Constants for the Logger
      *  */
@@ -58,8 +67,8 @@ public class Lounge {
      *      @serialField customerCarKeys
      *
      * */
-    //private MemFIFO<Key> customerCarKeys;
-    private Key[] customerCarKeys; //TODO customerCarKeys -> subsCustomerCarKeys
+
+    private Key[] customerCarKeys;
 
     /**
      *  All the Keys of Customer Fixed Cars
@@ -80,7 +89,7 @@ public class Lounge {
 
     private MemFIFO<Integer> waitingReplacementKey;
 
-    //FIXME ew. This might not be the best solution
+
     /**
      *  Stack of clients which are waiting for payment
      *
@@ -176,24 +185,22 @@ public class Lounge {
             stateCustomers[customerId] = ATTENDING;
             notifyAll(); //Customer notified that is being attended.
 
-            if(paymentQueue.peek() == customerId){              //Customer want to make payment
+            if(paymentQueue.peek() == customerId){                      //Customer want to make payment
                 paymentQueue.read();
-                //Waits for the replacement key
                 int i = 0;
                 for(;i<usedReplacementCarKeys.length;i++) {
                     if (usedReplacementCarKeys[i] == customerId) break; //Checks if it was given a replacement key
                 }
-                //FIXME Yikes! this thread should sleep, but is it a good idea? cuz of the waiting threads from the
-                // customer threads.
-                while (usedReplacementCarKeys[i] == customerId){}   //Either if a replacement keys
-                                                                    //wasn't retrieved it will get pass
-                                                                    //through this function with no problem.
-                                                                    //So a flag is not required
 
-                //TODO: Should anything be done on the payment?
-                while (customerCarKeys[customerId] != null){}       //Manager waits until the customer retrieves the
-                                                                    //keys of his/her car.
-
+                while (usedReplacementCarKeys[i] == customerId
+                            || customerCarKeys[customerId] != null)
+                {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        Logger.logException(e);
+                    }
+                }
             }
             else
             {
@@ -238,22 +245,13 @@ public class Lounge {
             Logger.logException(e);
             return null;
         }
-        while (stateCustomers[customerId] != GET_REPLACEMENT_CAR && stateCustomers[customerId] != CAR_FIXED)
+        while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
         {
-            try {
-                wait();
-                //TODO Ask Professor about this implementation.
-                if(stateCustomers[customerId] == GET_REPLACEMENT_CAR)
-                {
-                    stateCustomers[customerId] = GETTING_REPLACEMENT_CAR;
-                    return null;        //FIXME null means that the car is already repaired.
-                }
-
-            }
+            try { wait(); }
             catch (InterruptedException e) { }
         }
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-        try { return replacementCarKeys.read(); }
+        try { return replacementCarKeys.read(); }           //Returns Key.
         catch (MemException e) {
             Logger.logException(e);
             return  null;
@@ -326,7 +324,11 @@ public class Lounge {
      *
      *      @param key - Customer's car key.
      */
-    public synchronized void giveManagerCarKey(Key key, Integer customerId) {  customerCarKeys[customerId] = key; }
+    public synchronized void giveManagerCarKey(Key key, Integer customerId)
+    {
+        customerCarKeys[customerId] = key;
+        notifyAll();
+    }
 
     /**
      *  Customer retrieves his/hers car key.
@@ -337,7 +339,11 @@ public class Lounge {
      * */
     public synchronized Key retrieveCarKey(String idKey)
     {   if(!repairedCarKeys.containsKey(idKey)) return null;
-        try{ return repairedCarKeys.remove(idKey); }
+        try
+        {   Key tmp = repairedCarKeys.remove(idKey);
+            notifyAll();
+            return tmp;
+        }
         catch (Exception e){ return null;}
     }
 
@@ -355,5 +361,12 @@ public class Lounge {
         Key key = customerCarKeys[customerId];
         customerCarKeys[customerId] = null;
         return key;
+    }
+    public Integer getNextTask()
+    {
+        //if(!callCustomerQueue.isEmpty()) return CALL_CUSTOMER;
+        if(!customerQueue.isEmpty()) return ATTEND_CUSTOMER; //FIXME This might be an else if instead
+        //else if(!fillStockType.isEmpty()) return FILL_STOCK;
+        else return READ_PAPER;
     }
 }

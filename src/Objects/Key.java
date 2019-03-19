@@ -29,7 +29,7 @@ public class Key {
     /**
      *  Instantiation of the Key.
      * */
-    Key() { this(generateRandom(20, ThreadLocalRandom.current())); }
+    public Key() { this(generateRandom(20, ThreadLocalRandom.current())); }
 
     /**
      *  Get the unique value of the Key that represent it.

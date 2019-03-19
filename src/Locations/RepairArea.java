@@ -4,12 +4,8 @@ import Loggers.Logger;
 import Objects.CarPart;
 import Resources.MemException;
 import Resources.MemStack;
-import sun.java2d.loops.ProcessPath;
-
-import java.awt.image.Kernel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
 
 public class RepairArea {
 

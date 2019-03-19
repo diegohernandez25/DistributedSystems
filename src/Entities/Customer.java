@@ -7,14 +7,12 @@ import Loggers.Logger;
 import Objects.Car;
 import Objects.CustomerCar;
 import Objects.Key;
-import Objects.ReplacementCar;
 
 
 public class Customer extends Thread{
 
-    private static final String CLASS       = "Customer",
-                                CUSTOMER    = "Customer",
-                                NONE        = "None";
+    private static final String CLASS       = "Customer";
+    private static final String NONE        = "None";
 
     /**
      *  Customer identification.
@@ -152,18 +150,6 @@ public class Customer extends Thread{
                 repKey = lounge.getReplacementCarKey(customerId);       //Customer waits for a key of a replacement car
                                                                         //and grabs it from the lounge.
 
-                //TODO This case needs more analysis!
-                if(repKey == null)                                      //If car is already fixed...
-                {
-                    lounge.enterCustomerQueue(customerId,true); //After the customer is alerted, he/she goes to
-                                                                        //the lounge and waits for his/her turn to pay
-                                                                        //for the service.
-                    car = park.getCar(key.getKeyValue());               //Customer returns the key of the replacement
-                                                                        // car
-                    Logger.log(CLASS,NONE,"Operation finished!",
-                            0,Logger.SUCCESS);
-                    continue;                                           //Finish interaction. FIXME: Does the professor likes this approach.
-                }
                 repCar = park.getCar(key.getKeyValue());                //Gets replacement car in the park.
             }
             else lounge.exitLounge(customerId);                         //...else, the Customer just leaves the Lounge.
@@ -183,8 +169,9 @@ public class Customer extends Thread{
                 lounge.giveManagerCarKey(repKey,customerId);            //Customer returns the key of the replacement
                 repKey = null;                                          //car
             }
-            key = lounge.payForTheService(customerId);
-            car = park.getCar(key.getKeyValue());
+            key = lounge.payForTheService(customerId);                  //Customer pays the service and gets the keys
+                                                                        //of his/her car.
+            car = park.getCar(key.getKeyValue());                       //Customer gets his/her car from the park.
             Logger.log(CLASS,NONE,"Operation finished!",0,
                     Logger.SUCCESS);
         }
