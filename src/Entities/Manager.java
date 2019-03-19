@@ -6,57 +6,60 @@ import Locations.SupplierSite;
 import Loggers.Logger;
 import jdk.nashorn.internal.runtime.ECMAException;
 
-public class Manager extends Thread{
+    /**
+     *  Manager identification
+     *
+     *      @serialField managerId
+     *
+     * */
+    private int managerId;
 
     /**
-     *  Type of Manager Tasks
+     *  Lounge
+     *
+     *      @serialField lounge
      * */
-    private static final int    ATTEND_CUSTOMER = 0,
-                                CALL_CUSTOMER   = 1,
-                                FILL_STOCK      = 2,
-                                READ_PAPER      = 3,
-                                DAY_OFF         = 4;
-
-
-
-    private static final String CLASS   = "Manager",
-                                RUN     = "run";
-
     private Lounge lounge;
 
-    private RepairArea repairArea;
-
+    /**
+     *  SupplierSite
+     *
+     *      @serialField supplierSite
+     * */
     private SupplierSite supplierSite;
 
-    public Manager(Lounge lounge, RepairArea repairArea, SupplierSite supplierSite)
-    {   this.lounge = lounge;
-        this.repairArea = repairArea;
+    /**
+     *  Instantiation of Manager Thread.
+     *
+     *      @param managerId identification of Manager.
+     *      @param lounge used lounge.
+     *      @param supplierSite used supplier site.
+     * */
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite)
+    {
+        this.managerId = managerId;
+        this.lounge = lounge;
         this.supplierSite = supplierSite;
     }
 
+    /**
+     *
+     *  Life cycle of Manager
+     *
+     *  */
     @Override
-    public void run() {
-        Integer task;
-        while (!(task = lounge.getNextTask()).equals(DAY_OFF))
+    public void run()
+    {
+        while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
         {
-            System.out.println(task);
-            switch (task){
-                case ATTEND_CUSTOMER:
-                    lounge.attendCustomer();
-                    break;
-                case CALL_CUSTOMER:
-                    break;
-                case FILL_STOCK:
-                    break;
-                case READ_PAPER:
-                    break;
-                case DAY_OFF:
-                    break;
-                default:
-                    Logger.log(CLASS,CLASS,"Unknown type of task",0,Logger.ERROR);
-                    break;
-            }
+            wait();                                             // Do nothing
+        }
 
+        if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
+        {
+            CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
+            supplierSite.restockPart();                         // Replenishes the needed car part
+            notifyAll();                                        // Notify Mechanic for available car part
         }
     }
 

@@ -40,11 +40,26 @@ public class Lounge {
                                 GETTING_REPLACEMENT_CAR = 9;
 
     /**
+     *  Mechanic states
+     *  */
+    private final static int    WAITING_FOR_WORK = 0,
+                                FIXING_THE_CAR = 1,
+                                CHECKING_STOCK = 2,
+                                ALERTING_MANAGER = 3;
+
+    /**
      *  Current states of customers.
      *
      *      @serialField stateCustomers
      * */
     private int[] stateCustomers;
+
+    /**
+     *  Current states of mechanics.
+     *
+     *      @serialField stateMechanics
+     * */
+    private int[] stateMechanics;
 
     /**
      *  All the Keys of Replacement Cars
@@ -69,6 +84,22 @@ public class Lounge {
      * */
 
     private Key[] customerCarKeys;
+
+    /**
+     *  Queue of Car Keys to be repaired
+     *
+     *      @serialField carKeysQueue
+     *
+     * */
+    private MemFIFO<Key> carKeysRepairQueue;
+
+    /**
+     *  Queue of car parts needed to be replenished
+     *
+     *      @serialField carPartsQueue
+     *
+     * */
+    private MemFIFO<CarPart> carPartsQueue;
 
     /**
      *  All the Keys of Customer Fixed Cars
@@ -110,9 +141,10 @@ public class Lounge {
      *      @param replacementKeys - Array of Key objects. NOTE: Must have the size equal
      *                               to the total number of replacement cars.
      *      @param clients - clients
+     *      @param mechanics - mechanics
      *      @param customerKeys - customer's keys
      * */
-    public Lounge(Key[] replacementKeys, Integer[] clients, Key[] customerKeys)
+    public Lounge(Key[] replacementKeys, Integer[] clients, Integer[] mechanics, Key[] customerKeys)
     {   try {
             this.customerQueue = new MemFIFO<>(clients);
             //this.customerCarKeys = new MemFIFO<>(customerKeys);
@@ -120,9 +152,13 @@ public class Lounge {
             this.customerFixedCarKeys = new MemFIFO<>(customerKeys);
             this.usedReplacementCarKeys = new Integer[replacementKeys.length];
             this.stateCustomers = new int[clients.length];
+            this.stateMechanics = new int[mechanics.length];
 
             //Initiate the state of all customers.
             for( int i = 0; i< clients.length; i++) { stateCustomers[i] = NORMAL_LIFE; }
+
+            //Initiate the state of all mechanics.
+            for( int i = 0; i< mechanics.length; i++) { stateMechanics[i] = WAITING_FOR_WORK; }
 
             //Initiate all usage of replacement car keys
             for( int i = 0; i<replacementKeys.length; i++)
@@ -185,7 +221,7 @@ public class Lounge {
             stateCustomers[customerId] = ATTENDING;
             notifyAll(); //Customer notified that is being attended.
 
-            if(paymentQueue.peek() == customerId){                      //Customer want to make payment
+            if(paymentQueue.peek() == customerId){              // Customer wants to make payment
                 paymentQueue.read();
                 int i = 0;
                 for(;i<usedReplacementCarKeys.length;i++) {
@@ -205,6 +241,9 @@ public class Lounge {
             else
             {
                 //TODO: Post Job?
+                carKeysRepairQueue.write(customerCarKeys[customerId]);      // add car keys to repair queue
+                customerCarKeys[customerId] = null;                         // removes customers keys
+                notifyAll();                                                // notify Mechanic that a car is available to be repaired
             }
 
         }
@@ -319,6 +358,21 @@ public class Lounge {
      * */
     public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
+
+    /**
+     *  Checks if queue of keys of cars to be repaired is empty
+     *
+     *      @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
+     * */
+    public boolean isCarKeysRepairQueueEmpty() { return carKeysRepairQueue.isEmpty(); }
+
+    /**
+     *  Checks if queue of car parts needed to be replenished is empty
+     *
+     *      @return boolean (true/false) No car parts need to be replenished/Car parts available to be replenished.
+     * */
+    public boolean isCarPartsQueueEmpty() { return carPartsQueue.isEmpty(); }
+
     /**
      *  Customer gives Manager his/hers car key.
      *
@@ -362,11 +416,53 @@ public class Lounge {
         customerCarKeys[customerId] = null;
         return key;
     }
-    public Integer getNextTask()
+
+    /**
+     *
+     *  Mechanic gets keys of car to be repaired
+     *
+     *      @param mechanicId ID of the Mechanic
+     *
+     *      @return key of the car to repair
+     *
+     *  */
+    public synchronized Key getCarKey(int mechanicId)
     {
-        //if(!callCustomerQueue.isEmpty()) return CALL_CUSTOMER;
-        if(!customerQueue.isEmpty()) return ATTEND_CUSTOMER; //FIXME This might be an else if instead
-        //else if(!fillStockType.isEmpty()) return FILL_STOCK;
-        else return READ_PAPER;
+        if(isCustomerCarKeysEmpty()) return null;
+        try
+        {
+            stateMechanics[mechanicId] = FIXING_THE_CAR;
+            return carKeysRepairQueue.read();
+        }
+        catch (Exception e){ return null; }
     }
+
+    /**
+     *
+     *  Mechanic alerts the manager for missing car part that is needed
+     *
+     *  @param carPart car part that is needed to be restocked
+     *
+     *  @param mechanicId id of the Mechanic
+     *
+     * */
+    public synchronized void alertManager(CarPart carPart, int mechanicId)
+    {
+        stateMechanics[mechanicId] = ALERTING_MANAGER;
+        carPartsQueue.write(carPart);                               // Add car part to queue of need to replenish
+        notifyAll();                                                // Notifies Manager that car part is needed
+    }
+
+    /**
+     *
+     *  Manager gets first part car waiting to be replenished and removes it
+     *
+     *  @return car part needed to be replenished
+     *
+     * */
+    public synchronized CarPart getPartFromQueue()
+    {
+        return carPartsQueue.read();
+    }
+
 }
