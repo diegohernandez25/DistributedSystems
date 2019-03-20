@@ -1,9 +1,5 @@
 package Locations;
 
-import Objects.CarPart;
-
-import java.util.ArrayList;
-
 public class SupplierSite<R> {
 
     /**
@@ -30,6 +26,6 @@ public class SupplierSite<R> {
      * */
     public synchronized void restockPart(CarPart carPart)
     {
-        repairArea.addToStock(carPart);                         // add parts to stock of repair area
+        //FIXME repairArea.addToStock(carPart);                         // add parts to stock of repair area
     }
 }

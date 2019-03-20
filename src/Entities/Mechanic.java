@@ -2,9 +2,6 @@ package Entities;
 
 import Locations.Lounge;
 import Locations.Park;
-import Loggers.Logger;
-import Objects.CarPart;
-import Objects.Key;
 
 public class Mechanic extends Thread {
 

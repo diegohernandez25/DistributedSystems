@@ -1,10 +1,7 @@
 package Locations;
 
 import Loggers.Logger;
-import Objects.CarPart;
-import Resources.MemException;
-import Resources.MemStack;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
 public class RepairArea {
@@ -32,7 +29,7 @@ public class RepairArea {
     public RepairArea(HashMap<CarPart, Integer> stock, Integer[] mechanics)
     {
         this.stock = stock;
-        this.stateMechanics = new int[mechanics.length];
+        //FIXME this.stateMechanics = new int[mechanics.length];
     }
 
     /**
@@ -71,7 +68,7 @@ public class RepairArea {
      * */
     public synchronized CarPart getCarPart(CarPart carPart, int mechanicId)
     {
-        stateMechanics[mechanicId] = CHECKING_STOCK;
+        //FIXME stateMechanics[mechanicId] = CHECKING_STOCK;
         // remove one of the car parts from stock
         int inStock = stock.get(carPart);
         inStock--;
@@ -88,7 +85,7 @@ public class RepairArea {
      * */
     public synchronized CarPart checkCarPartNeeded(int mechanicId)
     {
-        stateMechanics[mechanicId] = FIXING_THE_CAR;
+        //FIXME stateMechanics[mechanicId] = FIXING_THE_CAR;
         CarPart carPart = new CarPart((int) Math.random() * 2);
         return carPart;
     }

@@ -4,9 +4,6 @@ import Locations.Lounge;
 import Locations.OutsideWorld;
 import Locations.Park;
 import Loggers.Logger;
-import Objects.Car;
-import Objects.CustomerCar;
-import Objects.Key;
 
 
 public class Customer extends Thread{
@@ -85,14 +82,14 @@ public class Customer extends Thread{
      *
      *      @serialField car
      * */
-    private Car car;
+    private Integer car;
 
     /**
      *  Replacement car that the user posses.
      *
      *      @serialField repCar
      * */
-    private Car repCar;
+    private Integer repCar;
 
     /**
      *  Instantiation of Customer Thread.
@@ -102,7 +99,7 @@ public class Customer extends Thread{
      *      @param nIter Number of iteraction through the customer
      *                   thread life cycle
      * */
-    public Customer(int customerId, boolean requiresCar, int nIter, CustomerCar car, Lounge lounge, Park park,
+    public Customer(int customerId, boolean requiresCar, int nIter, Integer car, Lounge lounge, Park park,
                     OutsideWorld outsideWorld)
     {
         this.customerId = customerId;
@@ -136,42 +133,44 @@ public class Customer extends Thread{
         int i = 0;
         for(; i < nIter; i++)
         {
-            Key key = car.getKey();
+            //Key key = car.getKey();
+            int key = car;
             livingNormalLife();                                         //Customers waits until car needs a fix.
-            park.parkCar(key.getKeyValue(),car);                        //Customer parks his/her car.
+            //park.parkCar(key.getKeyValue(),car);                        //Customer parks his/her car.
+            park.parkCar(car);
             car = null;                                                 //Customer does not have a car anymore.
             lounge.enterCustomerQueue(customerId,false);                //Customer wants to request repair, so it
                                                                         //waits for attendance.
             lounge.giveManagerCarKey(key, customerId);                  //Customer gives key to manager.
-            key = null;
-            Key repKey = null;
+            key = -1;
+            int repKey = -1;
             if(wantsRental())                                           //If Customer needs a replacement car...
             {
                 repKey = lounge.getReplacementCarKey(customerId);       //Customer waits for a key of a replacement car
                                                                         //and grabs it from the lounge.
 
-                repCar = park.getCar(key.getKeyValue());                //Gets replacement car in the park.
+                repCar = park.getCar(key);                //Gets replacement car in the park.
             }
             else lounge.exitLounge(customerId);                         //...else, the Customer just leaves the Lounge.
             outsideWorld.waitForRepair(customerId);                     //Customer waits in the outside world until the
                                                                         //his/her car is fixed.
 
-            if(repKey != null)                                          //If customer has a replacement car...
+            if(repKey != -1)                                          //If customer has a replacement car...
             {
-                park.parkCar(repKey.getKeyValue(), repCar);             //After the customer is alerted, the customer
+                park.parkCar(repKey);             //After the customer is alerted, the customer
                 repCar = null;                                          //parks the replacement car.
             }
             lounge.enterCustomerQueue(customerId,true);                 //After the customer is alerted, he/she goes to
                                                                         //the lounge and waits for his/her turn to pay
                                                                         //for the service.
-            if(repKey != null)
+            if(repKey != -1)
             {
                 lounge.giveManagerCarKey(repKey,customerId);            //Customer returns the key of the replacement
-                repKey = null;                                          //car
+                repKey = -1;                                          //car
             }
             key = lounge.payForTheService(customerId);                  //Customer pays the service and gets the keys
                                                                         //of his/her car.
-            car = park.getCar(key.getKeyValue());                       //Customer gets his/her car from the park.
+            car = park.getCar(key);                       //Customer gets his/her car from the park.
             Logger.log(CLASS,NONE,"Operation finished!",0,
                     Logger.SUCCESS);
         }

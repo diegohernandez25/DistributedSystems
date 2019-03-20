@@ -1,11 +1,10 @@
 package Entities;
 
 import Locations.Lounge;
-import Locations.RepairArea;
 import Locations.SupplierSite;
-import Loggers.Logger;
-import jdk.nashorn.internal.runtime.ECMAException;
 
+public class Manager extends Thread
+{
     /**
      *  Manager identification
      *
@@ -52,13 +51,17 @@ import jdk.nashorn.internal.runtime.ECMAException;
     {
         while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
         {
-            wait();                                             // Do nothing
+            try {
+                wait();                                             // Do nothing
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
         {
             CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
-            supplierSite.restockPart();                         // Replenishes the needed car part
+            //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
             notifyAll();                                        // Notify Mechanic for available car part
         }
     }

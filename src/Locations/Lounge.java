@@ -1,11 +1,9 @@
 package Locations;
 
 import Loggers.Logger;
-import Objects.Key;
 import Resources.MemException;
 import Resources.MemFIFO;
 import Resources.MemStack;
-import sun.rmi.runtime.Log;
 
 import java.util.HashMap;
 
@@ -67,8 +65,8 @@ public class Lounge {
      *      @serialField replacementCarKeys
      *
      * */
-    private MemStack<Key> replacementCarKeys;
-
+    //private MemStack<Key> replacementCarKeys;
+    private MemStack<Integer> replacementCarKeys; //Car key id == key id
     /**
      *  Record all replacement Keys used by a Customer ID
      *
@@ -83,7 +81,8 @@ public class Lounge {
      *
      * */
 
-    private Key[] customerCarKeys;
+    //private Key[] customerCarKeys;
+    private Integer[] customerCarKeys; //TODO Should have the length of total users
 
     /**
      *  Queue of Car Keys to be repaired
@@ -91,15 +90,16 @@ public class Lounge {
      *      @serialField carKeysQueue
      *
      * */
-    private MemFIFO<Key> carKeysRepairQueue;
-
+    //private MemFIFO<Key> carKeysRepairQueue;
+    private MemFIFO<Integer> carKeysRepairQueue;
     /**
      *  Queue of car parts needed to be replenished
      *
      *      @serialField carPartsQueue
      *
      * */
-    private MemFIFO<CarPart> carPartsQueue;
+    //private MemFIFO<CarPart> carPartsQueue;
+    private MemFIFO<Integer> carPartsQueue;
 
     /**
      *  All the Keys of Customer Fixed Cars
@@ -107,7 +107,8 @@ public class Lounge {
      *      @serialField customerFixedCarKeys
      *
      * */
-    private MemFIFO<Key> customerFixedCarKeys;
+    //private MemFIFO<Key> customerFixedCarKeys;
+    private MemFIFO<Integer> customerFixedCarKeys;
     /**
      *  Queue of ids of waiting customers
      *
@@ -133,7 +134,12 @@ public class Lounge {
      *
      *      @serialField  repairedCarKeys
      * */
-    private HashMap<String,Key> repairedCarKeys;
+    //private HashMap<String,Key> repairedCarKeys;
+    /**
+     * Key-> client id;
+     * Value -> car id;
+     */
+    private HashMap<Integer,Integer> repairedCarKeys;
 
     /**
      *
@@ -144,13 +150,13 @@ public class Lounge {
      *      @param mechanics - mechanics
      *      @param customerKeys - customer's keys
      * */
-    public Lounge(Key[] replacementKeys, Integer[] clients, Integer[] mechanics, Key[] customerKeys)
+    public Lounge(Integer[] replacementKeys, Integer[] clients, Integer[] mechanics, Integer[] customerKeys)
     {   try {
             this.customerQueue = new MemFIFO<>(clients);
             //this.customerCarKeys = new MemFIFO<>(customerKeys);
             this.customerCarKeys = customerKeys;
             this.customerFixedCarKeys = new MemFIFO<>(customerKeys);
-            this.usedReplacementCarKeys = new Integer[replacementKeys.length];
+            this.usedReplacementCarKeys = new Integer[replacementKeys.length]; // TODO replacementKeys.length == total number of replacement cars
             this.stateCustomers = new int[clients.length];
             this.stateMechanics = new int[mechanics.length];
 
@@ -161,10 +167,10 @@ public class Lounge {
             for( int i = 0; i< mechanics.length; i++) { stateMechanics[i] = WAITING_FOR_WORK; }
 
             //Initiate all usage of replacement car keys
-            for( int i = 0; i<replacementKeys.length; i++)
+            /*for( int i = 0; i<replacementKeys.length; i++) FIXME Whats this?
             {   replacementKeys[i].setId(i);
                 this.usedReplacementCarKeys[i] = -1;                                //Meaning not used by any Customer.
-            }
+            }*/
             this.replacementCarKeys = new MemStack<>(replacementKeys);
             //TODO Log everything
         } catch (MemException e) {
@@ -260,7 +266,7 @@ public class Lounge {
      *
      *      @return the key of the replacement car.
      * */
-    public synchronized Key getReplacementCarKey(Integer customerId)
+    /*public synchronized Key getReplacementCarKey(Integer customerId)
     {   //  If there are keys available, the customer will take one.
         if(!replacementCarKeys.isEmpty())
         {   try {
@@ -295,6 +301,43 @@ public class Lounge {
             Logger.logException(e);
             return  null;
         }
+    }*/
+
+    public synchronized Integer getReplacementCarKey(Integer customerId)
+    {   //  If there are keys available, the customer will take one.
+        if(!replacementCarKeys.isEmpty())
+        {   try {
+            int tmp = replacementCarKeys.read();
+            this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+            return tmp;
+        }
+        catch (MemException e) {
+            Logger.logException(e);
+            return null;
+        }
+        }
+        //  Else the customer waits for a key.
+        try
+        {
+            stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
+            waitingReplacementKey.write(customerId);
+        }
+        catch (MemException e)
+        {
+            Logger.logException(e);
+            return null;
+        }
+        while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
+        {
+            try { wait(); }
+            catch (InterruptedException e) { }
+        }
+        stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+        try { return replacementCarKeys.read(); }           //Returns Key.
+        catch (MemException e) {
+            Logger.logException(e);
+            return  null;
+        }
     }
 
     /**
@@ -306,7 +349,7 @@ public class Lounge {
      *
      *      @return status of the operation.
      * */
-    public synchronized boolean returnReplacementCarKey(Key key)
+    /*public synchronized boolean returnReplacementCarKey(Key key)
     {   try {
             replacementCarKeys.write(key);
             if(!waitingReplacementKey.isEmpty())
@@ -321,8 +364,23 @@ public class Lounge {
             return false;
         }
         return true;
+    }*/
+    public synchronized boolean returnReplacementCarKey(Integer key)
+    {   try {
+        replacementCarKeys.write(key);
+        if(!waitingReplacementKey.isEmpty())
+        {
+            int waitingCustomerId = waitingReplacementKey.read();
+            stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
+            notifyAll();
+        }
+        usedReplacementCarKeys[key] = -1; //Replacement car is now available. //FIXME Becareful with key! the id is not the same as the index
+    } catch (MemException e) {
+        Logger.logException(e);
+        return false;
     }
-
+        return true;
+    }
     /**
      *  Exit Lounge
      *
@@ -378,7 +436,12 @@ public class Lounge {
      *
      *      @param key - Customer's car key.
      */
-    public synchronized void giveManagerCarKey(Key key, Integer customerId)
+    /*public synchronized void giveManagerCarKey(Key key, Integer customerId)
+    {
+        customerCarKeys[customerId] = key;
+        notifyAll();
+    }*/
+    public synchronized void giveManagerCarKey(Integer key, Integer customerId)
     {
         customerCarKeys[customerId] = key;
         notifyAll();
@@ -391,10 +454,19 @@ public class Lounge {
      *
      *      @return the Customer's car key.
      * */
-    public synchronized Key retrieveCarKey(String idKey)
+    /*public synchronized Key retrieveCarKey(String idKey)
     {   if(!repairedCarKeys.containsKey(idKey)) return null;
         try
         {   Key tmp = repairedCarKeys.remove(idKey);
+            notifyAll();
+            return tmp;
+        }
+        catch (Exception e){ return null;}
+    }*/
+    public synchronized Integer retrieveCarKey(String idKey)
+    {   if(!repairedCarKeys.containsKey(idKey)) return null;
+        try
+        {   Integer tmp = repairedCarKeys.remove(idKey);
             notifyAll();
             return tmp;
         }
@@ -408,15 +480,22 @@ public class Lounge {
      *
      *      @return the Customer's car key.
      * */
-    public synchronized Key payForTheService(Integer customerId)
+    /*public synchronized Key payForTheService(Integer customerId)
     {
         Logger.log(CUSTOMER,LOCAL,"Payment given.",0,Logger.SUCCESS);
         Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
         Key key = customerCarKeys[customerId];
         customerCarKeys[customerId] = null;
         return key;
+    }*/
+    public synchronized Integer payForTheService(Integer customerId)
+    {
+        Logger.log(CUSTOMER,LOCAL,"Payment given.",0,Logger.SUCCESS);
+        Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
+        int key = customerCarKeys[customerId];
+        customerCarKeys[customerId] = null;
+        return key;
     }
-
     /**
      *
      *  Mechanic gets keys of car to be repaired
@@ -426,7 +505,17 @@ public class Lounge {
      *      @return key of the car to repair
      *
      *  */
-    public synchronized Key getCarKey(int mechanicId)
+    /*public synchronized Key getCarKey(int mechanicId)
+    {
+        if(isCustomerCarKeysEmpty()) return null;
+        try
+        {
+            stateMechanics[mechanicId] = FIXING_THE_CAR;
+            return carKeysRepairQueue.read();
+        }
+        catch (Exception e){ return null; }
+    }*/
+    public synchronized Integer getCarKey(int mechanicId)
     {
         if(isCustomerCarKeysEmpty()) return null;
         try
@@ -436,7 +525,6 @@ public class Lounge {
         }
         catch (Exception e){ return null; }
     }
-
     /**
      *
      *  Mechanic alerts the manager for missing car part that is needed
@@ -446,10 +534,24 @@ public class Lounge {
      *  @param mechanicId id of the Mechanic
      *
      * */
-    public synchronized void alertManager(CarPart carPart, int mechanicId)
+    /*public synchronized void alertManager(CarPart carPart, int mechanicId)
     {
         stateMechanics[mechanicId] = ALERTING_MANAGER;
-        carPartsQueue.write(carPart);                               // Add car part to queue of need to replenish
+        try {
+            carPartsQueue.write(carPart);                               // Add car part to queue of need to replenish
+        } catch (MemException e) {
+            e.printStackTrace();
+        }
+        notifyAll();                                                // Notifies Manager that car part is needed
+    }*/
+    public synchronized void alertManager(int carPart, int mechanicId)
+    {
+        stateMechanics[mechanicId] = ALERTING_MANAGER;
+        try {
+            carPartsQueue.write(carPart);                               // Add car part to queue of need to replenish
+        } catch (MemException e) {
+            e.printStackTrace();
+        }
         notifyAll();                                                // Notifies Manager that car part is needed
     }
 
@@ -460,9 +562,22 @@ public class Lounge {
      *  @return car part needed to be replenished
      *
      * */
-    public synchronized CarPart getPartFromQueue()
+    /*public synchronized CarPart getPartFromQueue()
     {
-        return carPartsQueue.read();
+        try {
+            return carPartsQueue.read();
+        } catch (MemException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }*/
+    public synchronized Integer getPartFromQueue()
+    {
+        try {
+            return carPartsQueue.read();
+        } catch (MemException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-
 }
