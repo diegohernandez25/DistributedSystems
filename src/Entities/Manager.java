@@ -46,6 +46,25 @@ public class Manager extends Thread
      *  Life cycle of Manager
      *
      *  */
+//    @Override
+//    public void run()
+//    {
+//        while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
+//        {
+//            try {
+//                wait();                                             // Do nothing
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
+//        {
+//            CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
+//            //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
+//            notifyAll();                                        // Notify Mechanic for available car part
+//        }
+//    }
     @Override
     public void run()
     {
@@ -60,7 +79,7 @@ public class Manager extends Thread
 
         if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
         {
-            CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
+            int carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
             //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
             notifyAll();                                        // Notify Mechanic for available car part
         }

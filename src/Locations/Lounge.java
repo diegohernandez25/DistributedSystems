@@ -557,7 +557,7 @@ public class Lounge {
 
     /**
      *
-     *  Manager gets first part car waiting to be replenished and removes it
+     *  Manager gets first car part waiting to be replenished and removes it
      *
      *  @return car part needed to be replenished
      *

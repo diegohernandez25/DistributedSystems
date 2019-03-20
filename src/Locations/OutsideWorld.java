@@ -53,7 +53,7 @@ public class OutsideWorld {
      *
      *      @param customerId - ID of the customer to alert .
      * */
-    public void alertCustomer(Integer customerId) //TODO: Does it need to be synchronized?
+    public synchronized void alertCustomer(Integer customerId) //TODO: Does it need to be synchronized?
     {
         waitingForRepair[customerId]=false;
         notifyAll();

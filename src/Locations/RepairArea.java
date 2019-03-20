@@ -15,7 +15,8 @@ public class RepairArea {
                                 ALERTING_MANAGER = 3;
 
     // Hashmap of car part + number of available parts
-    private static HashMap<CarPart, Integer> stock;
+//    private static HashMap<CarPart, Integer> stock;
+    private static HashMap<Integer, Integer> stock;
 
     Logger logger = new Logger();
 
@@ -26,7 +27,12 @@ public class RepairArea {
      *      @param mechanics - Mechanics
      *
      * */
-    public RepairArea(HashMap<CarPart, Integer> stock, Integer[] mechanics)
+//    public RepairArea(HashMap<CarPart, Integer> stock, Integer[] mechanics)
+//    {
+//        this.stock = stock;
+//        //FIXME this.stateMechanics = new int[mechanics.length];
+//    }
+    public RepairArea(HashMap<Integer, Integer> stock, Integer[] mechanics)
     {
         this.stock = stock;
         //FIXME this.stateMechanics = new int[mechanics.length];
@@ -37,7 +43,11 @@ public class RepairArea {
      *      @param carPart car part to add to stock
      *      @param number number of the car part to add to stock
      * */
-    public void addToStock(CarPart carPart, int number)
+//    public void addToStock(CarPart carPart, int number)
+//    {
+//        stock.put(carPart, number);
+//    }
+    public void addToStock(Integer carPart, int number)
     {
         stock.put(carPart, number);
     }
@@ -47,7 +57,19 @@ public class RepairArea {
      *      @param carPart car part to check
      *      @return boolean (true/false) Car part is in stock/Car part doesn't exist or isn't available
      * */
-    public synchronized boolean checkCarPartInStock(CarPart carPart)
+//    public synchronized boolean checkCarPartInStock(CarPart carPart)
+//    {
+//        // check stock for part
+//        if(stock.get(carPart) == 0 || stock.get(carPart) == null)
+//        {
+//            // if not available (out of stock or inexistent), return false
+//            return false;
+//        }
+//
+//        // else, it exists and in stock
+//        return true;
+//    }
+    public synchronized boolean checkCarPartInStock(Integer carPart)
     {
         // check stock for part
         if(stock.get(carPart) == 0 || stock.get(carPart) == null)
@@ -64,9 +86,20 @@ public class RepairArea {
      *  Gets car part from stock
      *      @param carPart car part to get from stock
      *      @param mechanicId id of the Mechanic
-     *      @return CarPart removes specific car part from stock and returns it
+     *      @return Integer removes specific car part from stock and returns it
      * */
-    public synchronized CarPart getCarPart(CarPart carPart, int mechanicId)
+//    public synchronized CarPart getCarPart(CarPart carPart, int mechanicId)
+//    {
+//        //FIXME stateMechanics[mechanicId] = CHECKING_STOCK;
+//        // remove one of the car parts from stock
+//        int inStock = stock.get(carPart);
+//        inStock--;
+//        stock.put(carPart, inStock);
+//
+//        // return it
+//        return carPart;
+//    }
+    public synchronized Integer getCarPart(Integer carPart, int mechanicId)
     {
         //FIXME stateMechanics[mechanicId] = CHECKING_STOCK;
         // remove one of the car parts from stock
@@ -81,12 +114,18 @@ public class RepairArea {
     /**
      *  Checks which part is needed for the car
      *      @param mechanicId id of the Mechanic
-     *      @return CarPart car part needed for a car
+     *      @return Integer car part needed for a car
      * */
-    public synchronized CarPart checkCarPartNeeded(int mechanicId)
+//    public synchronized CarPart checkCarPartNeeded(int mechanicId)
+//    {
+//        //FIXME stateMechanics[mechanicId] = FIXING_THE_CAR;
+//        CarPart carPart = new CarPart((int) Math.random() * 2);
+//        return carPart;
+//    }
+    public synchronized Integer checkCarPartNeeded(int mechanicId)
     {
         //FIXME stateMechanics[mechanicId] = FIXING_THE_CAR;
-        CarPart carPart = new CarPart((int) Math.random() * 2);
+        Integer carPart = new Integer((int) Math.random() * 2);
         return carPart;
     }
 
