@@ -46,6 +46,14 @@ public class Lounge {
                                 ALERTING_MANAGER = 3;
 
     /**
+     *  Current state of Manager
+     *
+     *      @serialField stateManager
+     *
+     * */
+    private int stateManager;
+
+    /**
      *  Current states of customers.
      *
      *      @serialField stateCustomers
@@ -159,6 +167,9 @@ public class Lounge {
             this.usedReplacementCarKeys = new Integer[replacementKeys.length]; // TODO replacementKeys.length == total number of replacement cars
             this.stateCustomers = new int[clients.length];
             this.stateMechanics = new int[mechanics.length];
+
+            // Initiate the state of Manager.
+            this.stateManager = READ_PAPER;
 
             //Initiate the state of all customers.
             for( int i = 0; i< clients.length; i++) { stateCustomers[i] = NORMAL_LIFE; }
@@ -579,5 +590,62 @@ public class Lounge {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     *  Get Manager current state
+     *
+     *  @return manager state
+     *
+     * */
+    public Integer getManagerState()
+    {
+        return stateManager;
+    }
+
+    /**
+     *  Get a Customer's current state
+     *
+     *  @param customer Customer to get state from
+     *  @return specific Customer's state
+     *
+     * */
+    public Integer getCustomerState(int customer)
+    {
+        return stateCustomers[customer];
+    }
+
+    /**
+     *  Get a Mechanic's current state
+     *
+     *  @param mechanic Mechanic to get state from
+     *  @return specific Mechanic's state
+     *
+     * */
+    public Integer getMechanicState(int mechanic)
+    {
+        return stateMechanics[mechanic];
+    }
+
+    /**
+     *  Get number of Customers
+     *
+     *  @return number of Customers
+     *
+     * */
+    public Integer getNumCustomers()
+    {
+        return stateCustomers.length;
+    }
+
+    /**
+     *  Get number of Mechanics
+     *
+     *  @return number of Mechanics
+     *
+     * */
+    public Integer getNumMechanics()
+    {
+        return stateMechanics.length;
     }
 }
