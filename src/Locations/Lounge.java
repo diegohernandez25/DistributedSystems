@@ -592,60 +592,61 @@ public class Lounge {
         return null;
     }
 
-    /**
-     *  Get Manager current state
-     *
-     *  @return manager state
-     *
-     * */
-    public Integer getManagerState()
-    {
-        return stateManager;
-    }
-
-    /**
-     *  Get a Customer's current state
-     *
-     *  @param customer Customer to get state from
-     *  @return specific Customer's state
-     *
-     * */
-    public Integer getCustomerState(int customer)
-    {
-        return stateCustomers[customer];
-    }
-
-    /**
-     *  Get a Mechanic's current state
-     *
-     *  @param mechanic Mechanic to get state from
-     *  @return specific Mechanic's state
-     *
-     * */
-    public Integer getMechanicState(int mechanic)
-    {
-        return stateMechanics[mechanic];
-    }
-
-    /**
-     *  Get number of Customers
-     *
-     *  @return number of Customers
-     *
-     * */
-    public Integer getNumCustomers()
-    {
-        return stateCustomers.length;
-    }
-
-    /**
-     *  Get number of Mechanics
-     *
-     *  @return number of Mechanics
-     *
-     * */
-    public Integer getNumMechanics()
-    {
-        return stateMechanics.length;
-    }
+    //FIXME this is the wrong way of doing the logger, delete?
+//    /**
+//     *  Get Manager current state
+//     *
+//     *  @return manager state
+//     *
+//     * */
+//    public Integer getManagerState()
+//    {
+//        return stateManager;
+//    }
+//
+//    /**
+//     *  Get a Customer's current state
+//     *
+//     *  @param customer Customer to get state from
+//     *  @return specific Customer's state
+//     *
+//     * */
+//    public Integer getCustomerState(int customer)
+//    {
+//        return stateCustomers[customer];
+//    }
+//
+//    /**
+//     *  Get a Mechanic's current state
+//     *
+//     *  @param mechanic Mechanic to get state from
+//     *  @return specific Mechanic's state
+//     *
+//     * */
+//    public Integer getMechanicState(int mechanic)
+//    {
+//        return stateMechanics[mechanic];
+//    }
+//
+//    /**
+//     *  Get number of Customers
+//     *
+//     *  @return number of Customers
+//     *
+//     * */
+//    public Integer getNumCustomers()
+//    {
+//        return stateCustomers.length;
+//    }
+//
+//    /**
+//     *  Get number of Mechanics
+//     *
+//     *  @return number of Mechanics
+//     *
+//     * */
+//    public Integer getNumMechanics()
+//    {
+//        return stateMechanics.length;
+//    }
 }
