@@ -78,4 +78,11 @@ public class MemStack<R> extends MemObject<R>
         else throw new MemException ("Stack empty!");
    }
 
+   public R peek() throws MemException
+   {
+       if (stackPnt != 0)
+       {    return mem[stackPnt];
+       }
+       else throw new MemException ("Stack empty!");
+   }
 }

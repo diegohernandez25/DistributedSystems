@@ -32,13 +32,13 @@ public class Mechanic extends Thread {
      *
      *      @serialField repairArea
      * */
-    private RepairArea repairArea;
+    //private RepairArea repairArea;
 
     /**
      *  Queue for cars waiting to be repaired. Association: Car ID - Car Part ID
      * */
 //    private LinkedHashMap<Car, CarPart> carsToBeRepairedQueue;
-    private LinkedHashMap<Integer, Integer> carsToBeRepairedQueue;
+    //private LinkedHashMap<Integer, Integer> carsToBeRepairedQueue;
 
     /**
      *  Instantiation of Mechanic Thread.
@@ -48,13 +48,13 @@ public class Mechanic extends Thread {
      *      @param park used park.
      *      @param repairArea used repair area.
      * */
-    public Mechanic(int mechanicId, Lounge lounge, Park park, RepairArea repairArea)
+    /*public Mechanic(int mechanicId, Lounge lounge, Park park, RepairArea repairArea)
     {
         this.mechanicId = mechanicId;
         this.lounge = lounge;
         this.park = park;
-        this.repairArea = repairArea;
-    }
+        //this.repairArea = repairArea;
+    }*/
 
     /**
      *
@@ -100,7 +100,7 @@ public class Mechanic extends Thread {
 //        }
 //
 //    }
-    @Override
+/*    @Override
     public void run()
     {
         int car = carsToBeRepairedQueue.entrySet().iterator().next();                                       // First car waiting for repair parts
@@ -139,7 +139,7 @@ public class Mechanic extends Thread {
         }
 
     }
-
+*/
     /**
      *  Fixing the car (internal operation)
      * */
@@ -151,14 +151,14 @@ public class Mechanic extends Thread {
 //        }
 //        catch (InterruptedException e){ }
 //    }
-    private Integer fixCar()
+   /* private Integer fixCar()
     {
         try
         {
             sleep((long) (1 + 40 * Math.random()));
         }
         catch (InterruptedException e){ }
-    }
+    }*/
 
     @Override
     public String toString()

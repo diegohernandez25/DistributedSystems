@@ -1,132 +1,201 @@
 package Locations;
 
 import Loggers.Logger;
+import Resources.MemException;
+import Resources.MemFIFO;
+import java.util.Random;
 
-import java.util.HashMap;
-
-public class RepairArea {
+public class RepairArea
+{
 
     /**
-     *  Mechanic states
-     *  */
-    private final static int    WAITING_FOR_WORK = 0,
-                                FIXING_THE_CAR = 1,
-                                CHECKING_STOCK = 2,
-                                ALERTING_MANAGER = 3;
+     *      States of the cars.
+     *
+     * */
+    private static int  NOT_REGISTERED = 0,
+                        CHECKED = 1,
+                        WAITING_PARTS = 2,
+                        ON_REPAIR = 3,
+                        REPAIRED = 4;
+    /**
+     *      Cars waiting for parts
+     *
+     *      @serialField carsWaitingForParts
+     * */
+    private MemFIFO<Integer> carsWaitingForParts;
 
-    // Hashmap of car part + number of available parts
-//    private static HashMap<CarPart, Integer> stock;
-    private static HashMap<Integer, Integer> stock;
+    /**
+     *      Range of the IDs of car types
+     *
+     *      @serialField rangeCarPartTypes
+     * */
+    private int rangeCarPartTypes;
 
-    Logger logger = new Logger();
+    /**
+     *      Array of car's status.
+     *      Index represents the id of the car and the value the state of the car.
+     *
+     *      @serialField statusOfCars
+     * */
+    private int[] statusOfCars;
+
+    /**
+     *      Array of number of carParts to be used.
+     *      Index represents the id of the car. Value represents the number of parts available.
+     *
+     *      @serialField carParts
+     * */
+
+    private int[] carParts;
+
+    /**
+     *      Array with the id part type.
+     *      Index represents the id of the car.
+     *      Value the needed part for the repair.
+     * */
+    private int[] carNeededPart;
+
 
     /**
      *
-     * Instantiation of the Repair Area
-     *      @param stock - stock of car parts and the number of available parts
-     *      @param mechanics - Mechanics
-     *
+     * Instantiation of the Lounge
+     *      @param rangeCarPartTypes - Range of car types.
+     *      @param totalNumCars - total number of cars
      * */
-//    public RepairArea(HashMap<CarPart, Integer> stock, Integer[] mechanics)
-//    {
-//        this.stock = stock;
-//        //FIXME this.stateMechanics = new int[mechanics.length];
-//    }
-    public RepairArea(HashMap<Integer, Integer> stock, Integer[] mechanics)
+    public RepairArea(int rangeCarPartTypes, int totalNumCars, int[] carParts)
     {
-        this.stock = stock;
-        //FIXME this.stateMechanics = new int[mechanics.length];
-    }
-
-    /**
-     *  Adds a number of car parts to stock
-     *      @param carPart car part to add to stock
-     *      @param number number of the car part to add to stock
-     * */
-//    public void addToStock(CarPart carPart, int number)
-//    {
-//        stock.put(carPart, number);
-//    }
-    public void addToStock(Integer carPart, int number)
-    {
-        stock.put(carPart, number);
-    }
-
-    /**
-     *  Checks if car part is available in stock
-     *      @param carPart car part to check
-     *      @return boolean (true/false) Car part is in stock/Car part doesn't exist or isn't available
-     * */
-//    public synchronized boolean checkCarPartInStock(CarPart carPart)
-//    {
-//        // check stock for part
-//        if(stock.get(carPart) == 0 || stock.get(carPart) == null)
-//        {
-//            // if not available (out of stock or inexistent), return false
-//            return false;
-//        }
-//
-//        // else, it exists and in stock
-//        return true;
-//    }
-    public synchronized boolean checkCarPartInStock(Integer carPart)
-    {
-        // check stock for part
-        if(stock.get(carPart) == 0 || stock.get(carPart) == null)
-        {
-            // if not available (out of stock or inexistent), return false
-            return false;
+        this.rangeCarPartTypes = rangeCarPartTypes;
+        this.carParts = carParts;
+        this.statusOfCars = new int[totalNumCars];
+        this.carNeededPart = new int[totalNumCars];
+        for(int i = 0; i<totalNumCars; i++){
+            this.statusOfCars[i] = NOT_REGISTERED;
+            this.carNeededPart[i] = -1;
         }
-
-        // else, it exists and in stock
-        return true;
+        try {
+            this.carsWaitingForParts = new MemFIFO<>(new Integer[totalNumCars]);
+        } catch (MemException e) {
+            Logger.logException(e);
+        }
     }
 
     /**
-     *  Gets car part from stock
-     *      @param carPart car part to get from stock
-     *      @param mechanicId id of the Mechanic
-     *      @return Integer removes specific car part from stock and returns it
+     *      Checks the needed parts for the car to repair
+     *
+     *      @param idCar    - id of the car to check
+     *
+     *      @return the id of the part needed for repair
      * */
-//    public synchronized CarPart getCarPart(CarPart carPart, int mechanicId)
-//    {
-//        //FIXME stateMechanics[mechanicId] = CHECKING_STOCK;
-//        // remove one of the car parts from stock
-//        int inStock = stock.get(carPart);
-//        inStock--;
-//        stock.put(carPart, inStock);
-//
-//        // return it
-//        return carPart;
-//    }
-    public synchronized Integer getCarPart(Integer carPart, int mechanicId)
-    {
-        //FIXME stateMechanics[mechanicId] = CHECKING_STOCK;
-        // remove one of the car parts from stock
-        int inStock = stock.get(carPart);
-        inStock--;
-        stock.put(carPart, inStock);
-
-        // return it
-        return carPart;
+    public int checkCar(int idCar)
+    {   Random rand = null;
+        int randomNum = rand.nextInt(rangeCarPartTypes)+1;
+        assert (randomNum <= rangeCarPartTypes && randomNum >= 0);
+        statusOfCars[idCar] = CHECKED;
+        carNeededPart[idCar] = randomNum; //FIXME: Needed??
+        return randomNum;
     }
 
     /**
-     *  Checks which part is needed for the car
-     *      @param mechanicId id of the Mechanic
-     *      @return Integer car part needed for a car
+     *      Checks availability of car part
+     *
+     *      @param partId    - ID of the part.
+     *
+     *      @return true if there are parts available. False otherwise.
      * */
-//    public synchronized CarPart checkCarPartNeeded(int mechanicId)
-//    {
-//        //FIXME stateMechanics[mechanicId] = FIXING_THE_CAR;
-//        CarPart carPart = new CarPart((int) Math.random() * 2);
-//        return carPart;
-//    }
-    public synchronized Integer checkCarPartNeeded(int mechanicId)
-    {
-        //FIXME stateMechanics[mechanicId] = FIXING_THE_CAR;
-        Integer carPart = new Integer((int) Math.random() * 2);
-        return carPart;
+    public synchronized boolean checkPartAvailability(int partId)
+    {   assert (partId <= rangeCarPartTypes);
+        return carParts[partId] != 0;
     }
+
+    /**
+     *      Checks availability of car parts and if available repairs the car
+     *
+     *      @param carId    - The Id of car to repair.
+     *      @param partId   - The id of the car part needed for the repair.
+     *
+     *      @return true ready for repair. False otherwise
+     * */
+    public synchronized boolean repairCar(int carId, int partId)
+    {
+        assert (partId <= rangeCarPartTypes);
+        if(carParts[carId]>0)
+        {
+            statusOfCars[carId] = ON_REPAIR;
+            carNeededPart[carId] = -1;
+            carParts[partId]--;
+            return true;
+        }
+        statusOfCars[carId] = WAITING_PARTS;    //else
+        try {
+            carsWaitingForParts.write(carId);
+        } catch (MemException e) {
+            Logger.logException(e);
+        }
+        return false;
+    }
+
+    /**
+     *      Checks if car there are cars waiting for parts
+     *
+     *      @return true - no cars waiting for parts
+     *
+     * */
+    public synchronized boolean CarsWaitingForPartsIsEmpty()
+    {
+        return carsWaitingForParts.isEmpty();
+    }
+
+    /**
+     *      Checks which of the waiting cars are ready for repair
+     *
+     *      @return id of the car ready for repair.
+     * */
+    public synchronized int getWaitingCarWithPartsAvailable()
+    {
+        int length = carsWaitingForParts.size();
+        int tmp = -1;
+        while (length >= 0)
+        {   length--;
+            try
+            {   tmp = carsWaitingForParts.read();
+                if(checkPartAvailability(carNeededPart[tmp])) {
+                    statusOfCars[tmp] = ON_REPAIR;
+                    carNeededPart[tmp] = -1;
+                    carParts[carNeededPart[tmp]]--;
+                    break;
+                }
+                carsWaitingForParts.write(tmp);
+            } catch (MemException e) { Logger.logException(e); }
+        }
+        while (length >= 0)//Re-establish arrival order.
+        {   length--;
+            try { carsWaitingForParts.write(carsWaitingForParts.read()); }
+            catch (MemException e) { Logger.logException(e); }
+        }
+        return tmp; //returns the id of the car which got repaired.
+    }
+
+    /**
+     *      Conclude repair of the car.
+     *
+     *      @param idCar    - Id of the car.
+     * */
+    public void concludeCarRepair(int idCar)
+    {
+        statusOfCars[idCar] = REPAIRED;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

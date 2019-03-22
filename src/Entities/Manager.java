@@ -65,7 +65,7 @@ public class Manager extends Thread
 //            notifyAll();                                        // Notify Mechanic for available car part
 //        }
 //    }
-    @Override
+   /* @Override
     public void run()
     {
         while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
@@ -83,7 +83,7 @@ public class Manager extends Thread
             //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
             notifyAll();                                        // Notify Mechanic for available car part
         }
-    }
+    }*/
 
     private void readPaper()
     {

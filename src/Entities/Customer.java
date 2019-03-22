@@ -113,13 +113,23 @@ public class Customer extends Thread{
         this.repCar = null;
     }
 
+    /**
+     *      To String
+     * */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Customer{" +
-                "id=" + customerId +
+                "customerId=" + customerId +
                 ", requiresCar=" + requiresCar +
                 ", hasCar=" + hasCar +
+                ", clientState=" + clientState +
+                ", carState=" + carState +
+                ", nIter=" + nIter +
+                ", lounge=" + lounge +
+                ", park=" + park +
+                ", outsideWorld=" + outsideWorld +
+                ", car=" + car +
+                ", repCar=" + repCar +
                 '}';
     }
 
@@ -157,7 +167,7 @@ public class Customer extends Thread{
 
             if(repKey != -1)                                          //If customer has a replacement car...
             {
-                park.parkCar(repKey);             //After the customer is alerted, the customer
+                park.parkCar(repKey);                                   //After the customer is alerted, the customer
                 repCar = null;                                          //parks the replacement car.
             }
             lounge.enterCustomerQueue(customerId,true);                 //After the customer is alerted, he/she goes to
@@ -166,11 +176,11 @@ public class Customer extends Thread{
             if(repKey != -1)
             {
                 lounge.giveManagerCarKey(repKey,customerId);            //Customer returns the key of the replacement
-                repKey = -1;                                          //car
+                repKey = -1;                                            //car
             }
             key = lounge.payForTheService(customerId);                  //Customer pays the service and gets the keys
                                                                         //of his/her car.
-            car = park.getCar(key);                       //Customer gets his/her car from the park.
+            car = park.getCar(key);                                     //Customer gets his/her car from the park.
             Logger.log(CLASS,NONE,"Operation finished!",0,
                     Logger.SUCCESS);
         }

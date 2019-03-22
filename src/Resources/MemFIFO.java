@@ -99,4 +99,5 @@ public class MemFIFO<R> extends MemObject<R>
        else throw new MemException("Fifo empty!");
        return val;
    }
+
 }
