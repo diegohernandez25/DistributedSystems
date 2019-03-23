@@ -180,6 +180,7 @@ public class RepairArea
                     if(carParts[carNeededPart[tmp]] == 0)
                     {   Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
                                 "ERROR: There is no parts to fix the car. THis should not happen!",0,Logger.ERROR);
+                        System.exit(1);
                     }
                     carNeededPart[tmp] = -1;
                     carParts[carNeededPart[tmp]]--;

@@ -3,11 +3,6 @@ package Locations;
 import Loggers.Logger;
 import Resources.MemException;
 import Resources.MemFIFO;
-import Resources.MemStack;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.function.LongUnaryOperator;
 
 public class Lounge {
 
@@ -415,13 +410,6 @@ public class Lounge {
     public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
 
     /**
-     *  Checks if queue of car parts needed to be replenished is empty
-     *
-     *      @return boolean (true/false) No car parts need to be replenished/Car parts available to be replenished.
-     * */
-    //public boolean isCarPartsQueueEmpty() { return carPartsQueue.isEmpty(); }
-
-    /**
      *      Customer gives Manager his/hers car key.
      *
      *      @param key - Customer's car key.
@@ -576,32 +564,50 @@ public class Lounge {
      * */
     public boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
 
-    /**
-     *Returns fixed car key to the storage of customers key for retrieval purposes.
-     * */
-    public int readyToGiveBackCustomerKey()
+
+
+    public synchronized int getFixedCarKey()
     {
-        String READY_TO_GIVE_BACK_CUSTOMER_KEY = "readyToGiveBackCustomerKey";
         if(!isCustomerCarKeysEmpty())
         {
             try {
-                int idKey = customerFixedCarKeys.read();
-                if(memKeysCustomers[idKey] == -1)
-                {
-                    Logger.log(MANAGER,LOCAL,READY_TO_GIVE_BACK_CUSTOMER_KEY,
-                            "Error: Key does not have a customer registered!. This should no happend",
-                            0,Logger.ERROR);
-                            System.exit(1);
-                }
-                memKeysCustomers[idKey] = -1;
-                return memKeysCustomers[idKey];
+                return customerFixedCarKeys.read();
             } catch (MemException e) {
                 Logger.logException(e);
                 System.exit(1);
             }
-
         }
         return -1;
     }
+
+    public synchronized int getCustomerFromKey(int idKey)
+    {
+        String GET_CUSTOMER_FROM_KEY = "getCustomerFromKey";
+        if(memKeysCustomers[idKey] == -1)
+        {
+            Logger.log(MANAGER,LOCAL,GET_CUSTOMER_FROM_KEY,
+                    "Error: Key does not have a customer registered!. This should no happend",
+                    0,Logger.ERROR);
+            System.exit(1);
+        }
+        memKeysCustomers[idKey] = -1;
+        return memKeysCustomers[idKey];
+    }
+
+    public synchronized void readyToDeliverKey(int idCustomer, int idKey)
+    {   String READY_TO_DELIVER_KEY= "readyToDeliverKey";
+        customerCarKeys[idCustomer] = idKey;
+
+    }
+    /**
+     * Get the number of existing part car types.
+     * @return number of type parts.
+     * */
+    public int getNumberOfPartTypes(){ return requiredParts.length;}
+
+    /**
+     *  Get the requested number of a part
+     * */
+    public int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
 
 }

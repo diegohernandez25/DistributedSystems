@@ -1,6 +1,8 @@
 package Entities;
 
 import Locations.Lounge;
+import Locations.OutsideWorld;
+import Locations.RepairArea;
 import Locations.SupplierSite;
 
 public class Manager extends Thread
@@ -28,6 +30,19 @@ public class Manager extends Thread
     private SupplierSite supplierSite;
 
     /**
+     * Repair Area
+     * @serialField repairArea;
+     * */
+    private RepairArea repairArea;
+
+
+    /**
+     * Outside World
+     * @serialField outsideWorld;
+     * */
+    private OutsideWorld outsideWorld;
+
+    /**
      *  Instantiation of Manager Thread.
      *
      *      @param managerId identification of Manager.
@@ -39,6 +54,7 @@ public class Manager extends Thread
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
+
     }
 
     /**
@@ -46,44 +62,48 @@ public class Manager extends Thread
      *  Life cycle of Manager
      *
      *  */
-//    @Override
-//    public void run()
-//    {
-//        while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
-//        {
-//            try {
-//                wait();                                             // Do nothing
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
-//        {
-//            CarPart carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
-//            //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
-//            notifyAll();                                        // Notify Mechanic for available car part
-//        }
-//    }
-   /* @Override
+    @Override
     public void run()
     {
-        while(lounge.isCarPartsQueueEmpty())                    // While there's no car parts to be replenished
+        int maxNumParts = lounge.getNumberOfPartTypes();
+        while (true)
         {
-            try {
-                wait();                                             // Do nothing
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            /**
+             *      Refill car parts stock
+             * */
+            int indexPart = 0;
+            if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)    // First checks if there is a need to refill
+                                                                            // the stock
+            {
+                int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
+                        indexPart,lounge.requestedNumberPart(indexPart));
+                repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
+                lounge.alertStockRefill(indexPart);                         // Alert mechanics that stock has been
+                                                                            // renewed
             }
-        }
 
-        if(!lounge.isCarPartsQueueEmpty())                      // Checks if it was awoken to replenish car parts
-        {
-            int carPart = lounge.getPartFromQueue();        // Get first car part waiting to be replenished
-            //supplierSite.restockPart();                         // Replenishes the needed car part FIXME
-            notifyAll();                                        // Notify Mechanic for available car part
+            /**
+             *      Alert customers to get their fixed cars
+             * */
+            else if(!lounge.isCustomerFixedCarKeysEmpty())                  // Checks if there are car fixed
+            {
+                int keyId = lounge.getFixedCarKey();                        // Gets key of fixed car
+                int customerId = lounge.getCustomerFromKey(keyId);          // Gets the customer whom key belongs to
+                                                                            // him/her
+                lounge.readyToDeliverKey(customerId,keyId);                 // Makes available the key to take
+                outsideWorld.alertCustomer(customerId);                     // Alert Customer
+            }
+            /**
+             *      Attend Customer
+             * */
+            else if(!lounge.attendCustomer())                               // Attends customer
+            {
+                readPaper();
+            }
+
+
         }
-    }*/
+    }
 
     private void readPaper()
     {
