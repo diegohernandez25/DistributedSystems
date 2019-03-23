@@ -1,5 +1,7 @@
 package Locations;
 
+import java.io.*;
+
 public class GeneralRepInformation {
 
     /**
@@ -360,118 +362,170 @@ public class GeneralRepInformation {
     }
 
     /**
-     *  Prints values of Logger
+     *  Prints values of Logger on console, and writes it in a file "log.txt"
      * */
     @Override
     public void run()
     {
         /**
-        *
-        *  Clear console
-        *
-        */
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+         *  Initialize temporary string
+         * */
+        String s = "";
 
         /**
-         *
-         *  Print Static content
-         *
-         */
-        System.out.printf(" MAN  MECHANIC                                                                 CUSTOMER                                                                                       %n" +
-                "Stat  St0 St1  S00 C00 P00 R00 S01 C01 P01 R01 S02 C02 P02 R02 S03 C03 P03 R03 S04 C04 P04 R04 S05 C05 P05 R05 S06 C06 P06 R06 S07 C07 P07 R07 S08 C08 P08 R08 S09 C09 P09 R09%n" +
-                "               S10 C10 P10 R10 S11 C11 P11 R11 S12 C12 P12 R12 S13 C13 P13 R13 S14 C14 P14 R14 S15 C15 P15 R15 S16 C16 P16 R16 S17 C17 P17 R17 S18 C18 P18 R18 S19 C19 P19 R19%n" +
-                "               S20 C20 P20 R20 S21 C21 P21 R21 S22 C22 P22 R22 S23 C23 P23 R23 S24 C24 P24 R24 S25 C25 P25 R25 S26 C26 P26 R26 S27 C27 P27 R27 S28 C28 P28 R28 S29 C29 P29 R29%n" +
-                "                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n" +
-                "               InQ WtK NRV    NCV  NPV       NSRQ   Prt0  NV0  S0 Prt1  NV1  S1 Prt2  NV1  S1                         PP0   PP1   PP2                                         %n");
+         *  Initialize file, with the name "log.txt"
+         * */
+        try
+        {
+            File f = new File("log.txt");
 
-        /**
-         *
-         *  Print Manager states
-         *
-         */
-        System.out.printf("%4s ", managerStates[stateManager]);
+            /**
+             *  Initialize PrintWriter to write on file
+             *  If file does not exist, creates a new one
+             *  If it exists, append to the existing file
+             * */
+            PrintWriter pw = new PrintWriter(new FileOutputStream(f,true));
 
-        /**
-         *
-         *  For every Mechanic, print its state
-         *
-         */
-        for(int i = 0; i < numMechanics; i++) {
-            System.out.printf(" %3s", mechanicStates[stateMechanic[i]]);
-        }
+            /**
+             *
+             *  Clear console
+             *
+             */
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
 
-        /**
-         *
-         *  For every Customer, print its
-         *      state - current state of Customer
-         *              String
-         *      vehicle - current vehicle driven by Customer
-         *                own car: customer ID
-         *                replacement car: R#
-         *                none: '-'
-         *      need for replacement vehicle - if it needs a replacemet car
-         *                                     T or F
-         *      repair status - if its car has already been repaired
-         *                      T or F
-         *
-         */
-        for(int i = 0; i < numCustomers; i++) {
-            if(i % 10 == 0 && i != 0){
-                System.out.printf("%n             ");
+            /**
+             *
+             *  Print Static content
+             *
+             */
+            s = String.format(" MAN  MECHANIC                                                                 CUSTOMER                                                                             %n" +
+                    "Stat  St0 St1  S00 C00 P00 R00 S01 C01 P01 R01 S02 C02 P02 R02 S03 C03 P03 R03 S04 C04 P04 R04 S05 C05 P05 R05 S06 C06 P06 R06 S07 C07 P07 R07 S08 C08 P08 R08 S09 C09 P09 R09%n" +
+                    "               S10 C10 P10 R10 S11 C11 P11 R11 S12 C12 P12 R12 S13 C13 P13 R13 S14 C14 P14 R14 S15 C15 P15 R15 S16 C16 P16 R16 S17 C17 P17 R17 S18 C18 P18 R18 S19 C19 P19 R19%n" +
+                    "               S20 C20 P20 R20 S21 C21 P21 R21 S22 C22 P22 R22 S23 C23 P23 R23 S24 C24 P24 R24 S25 C25 P25 R25 S26 C26 P26 R26 S27 C27 P27 R27 S28 C28 P28 R28 S29 C29 P29 R29%n" +
+                    "                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n" +
+                    "               InQ WtK NRV    NCV  NPV       NSRQ   Prt0  NV0  S0 Prt1  NV1  S1 Prt2  NV1  S1                         PP0   PP1   PP2                                         %n");
+            System.out.printf(s);
+            pw.append(s);
+
+            /**
+             *
+             *  Print Manager states
+             *
+             */
+            s = String.format("%4s ", managerStates[stateManager]);
+            System.out.printf(s);
+            pw.append(s);
+
+            /**
+             *
+             *  For every Mechanic, print its state
+             *
+             */
+            for(int i = 0; i < numMechanics; i++) {
+                s = String.format(" %3s", mechanicStates[stateMechanic[i]]);
+                System.out.printf(s);
+                pw.append(s);
             }
 
-            System.out.printf("  %3s  %2s  %1s   %1s", customerStates[stateCustomer[i]], customerVehicle[i], customerNeedsReplacement[i], customerCarRepaired[i]);
+            /**
+             *
+             *  For every Customer, print its
+             *      state - current state of Customer
+             *              String
+             *      vehicle - current vehicle driven by Customer
+             *                own car: customer ID
+             *                replacement car: R#
+             *                none: '-'
+             *      need for replacement vehicle - if it needs a replacemet car
+             *                                     T or F
+             *      repair status - if its car has already been repaired
+             *                      T or F
+             *
+             */
+            for(int i = 0; i < numCustomers; i++) {
+                if(i % 10 == 0 && i != 0){
+                    s = String.format("%n             ");
+                    System.out.printf(s);
+                    pw.append(s);
+                }
+
+                s = String.format("  %3s  %2s  %1s   %1s", customerStates[stateCustomer[i]], customerVehicle[i], customerNeedsReplacement[i], customerCarRepaired[i]);
+                System.out.printf(s);
+                pw.append(s);
+            }
+
+            /**
+             *
+             *  Print Locations description
+             *
+             */
+
+            /**
+             *
+             *      Lounge:
+             *          InQ - number of Customers in queue
+             *          WtK - number of Customers waiting for replacement car
+             *          NRV - number of cars that have been repaired
+             *
+             */
+            s = String.format("%n                %02d  %02d  %02d", numCustomersQueue, numCustomersReplacementQueue, numCarsRepaired);
+            System.out.printf(s);
+            pw.append(s);
+
+            /**
+             *
+             *     Park:
+             *          NCV - number of Customer cars parked
+             *          NPV - number of replacement cars parked
+             *
+             */
+            s = String.format("     %02d   %02d", numCarsParked, numReplacementParked);
+            System.out.printf(s);
+            pw.append(s);
+
+            /**
+             *
+             *     Repair Area:
+             *         NSRQ - number of requests made by Manager to Repair Area
+             *         Prt# - number of parts # in storage
+             *         NV# - number of cars waiting for part #
+             *         S# - flag signaling Manager has been alerted for missing part # (T/F)
+             *
+             * */
+            s = String.format("        %02d   ", numPostJobs);
+            System.out.printf(s);
+            pw.append(s);
+            for(int i = 0; i < numParts; i++) {
+                s = String.format("  %02d    %02d   %1s", numPartAvailable[i], numCarWaitingPart[i], flagMissingPart[i]);
+                System.out.printf(s);
+                pw.append(s);
+            }
+
+            /**
+             *
+             *      Suppliers Site:
+             *          PP# - number of each parts that have been purchased so far
+             *
+             * */
+            s = String.format("                      ");
+            System.out.printf(s);
+            pw.append(s);
+            for(int i = 0; i < numParts; i++) {
+                s = String.format("    %02d", numBoughtPart[i]);
+                System.out.printf(s);
+                pw.append(s);
+            }
+
+            /**
+             *  Separates 2 logs and closes PrintWriter
+             * */
+            pw.append("\n******************************************************************************************************************************************************************************\n");
+            pw.close();
         }
-
-        /**
-         *
-         *  Print Locations description
-         *
-         */
-
-        /**
-         *
-         *      Lounge:
-         *          InQ - number of Customers in queue
-         *          WtK - number of Customers waiting for replacement car
-         *          NRV - number of cars that have been repaired
-         *
-         */
-        System.out.printf("%n                %02d  %02d  %02d", numCustomersQueue, numCustomersReplacementQueue, numCarsRepaired);
-
-        /**
-         *
-         *     Park:
-         *          NCV - number of Customer cars parked
-         *          NPV - number of replacement cars parked
-         *
-         */
-        System.out.printf("     %02d   %02d", numCarsParked, numReplacementParked);
-
-        /**
-         *
-         *     Repair Area:
-         *         NSRQ - number of requests made by Manager to Repair Area
-         *         Prt# - number of parts # in storage
-         *         NV# - number of cars waiting for part #
-         *         S# - flag signaling Manager has been alerted for missing part # (T/F)
-         *
-         * */
-        System.out.printf("        %02d   ", numPostJobs);
-        for(int i = 0; i < numParts; i++) {
-            System.out.printf("  %02d    %02d   %1s", numPartAvailable[i], numCarWaitingPart[i], flagMissingPart[i]);
-        }
-
-        /**
-         *
-         *      Suppliers Site:
-         *          PP# - number of each parts that have been purchased so far
-         *
-         * */
-        System.out.printf("                      ");
-        for(int i = 0; i < numParts; i++) {
-            System.out.printf("    %02d", numBoughtPart[i]);
+        catch (Exception e)
+        {
+            System.out.println("Couldn't write on file\nException:\n" + e);
         }
     }
 }
