@@ -262,7 +262,7 @@ public class Lounge {
                     if (usedReplacementCarKeys[i] == customerId)            //Checks if it was given a replacement key
                         break;
                 }
-
+                if(i == usedReplacementCarKeys.length) i--; //FIXME: Fita cola
                 while (usedReplacementCarKeys[i] == customerId
                         || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
                                                                             // replacement key and the client to
@@ -280,6 +280,7 @@ public class Lounge {
                 int toRepairCarKey = customerCarKeys[customerId];
                 carKeysToRepairQueue.write(toRepairCarKey);                 // add car keys to repair queue
                 customerCarKeys[customerId] = -1;                           // removes customers keys
+
                 return toRepairCarKey;
 
             }
@@ -360,8 +361,8 @@ public class Lounge {
             if(!waitingReplacementKey.isEmpty())    //alert thread waiting for a key
             {   int waitingCustomerId = waitingReplacementKey.read();
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
-                notifyAll();
             }
+            notifyAll();    //Notifies manager and Customer!
         } catch (MemException e) {
             Logger.logException(e);
             return false;
@@ -438,6 +439,7 @@ public class Lounge {
         Logger.log(MANAGER,LOCAL,"Payment received.",0,Logger.SUCCESS);
         int key = customerCarKeys[customerId];
         customerCarKeys[customerId] = -1;
+        notifyAll();
         return key;
     }
     /**
