@@ -13,10 +13,10 @@ public class Lounge {
     /**
      *  Type of Manager Tasks
      * */
-    private static final int        ATTEND_CUSTOMER = 0,
-                                    CALL_CUSTOMER   = 1,
-                                    FILL_STOCK      = 2,
-                                    READ_PAPER      = 3;
+    private static final int        READ_PAPER = 0,
+                                    ATTEND_CUSTOMER = 1,
+                                    CALL_CUSTOMER = 2,
+                                    FILL_STOCK = 3;
     /**
      *  Created Constants for the Logger
      *  */
