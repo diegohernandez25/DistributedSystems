@@ -14,9 +14,8 @@ public class Park {
     }
 
     /**
-     *      Park Car.
-     *
-     *      @return Operation status.
+     *Park Car.
+     *@return Operation status.
      * */
     public synchronized boolean parkCar(Integer carId)
     {
@@ -26,9 +25,8 @@ public class Park {
         return true;
     }
     /**
-     *      Gets Car.
-     *
-     *      @return the car.
+     *Gets Car.
+     *@return the car.
      * */
     public synchronized Integer getCar(Integer carId)
     {

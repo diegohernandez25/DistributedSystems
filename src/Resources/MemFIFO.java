@@ -1,5 +1,7 @@
 package Resources;
 
+import java.util.Arrays;
+
 /**
  *    Parametric FIFO derived from a parametric memory.
  *    Errors are reported.
@@ -91,7 +93,7 @@ public class MemFIFO<R> extends MemObject<R>
        return inPnt == outPnt;
    }
 
-   //TODO Override it
+
    public R peek () throws MemException
    {
        R val = null;
@@ -100,4 +102,22 @@ public class MemFIFO<R> extends MemObject<R>
        return val;
    }
 
+   /**
+    *       Checks if storage contains input value.
+    *
+    *       @param val    - value to check
+    *
+    *       @return true - storage contains value. false- otherwise.
+    * */
+   public boolean containsValue(R val)
+   {    for (R r : mem) { if (r.equals(val)) return true; }
+        return false;
+   }
+
+    @Override
+    public String toString() {
+        return "MemFIFO{" +
+                "mem=" + Arrays.toString(mem) +
+                '}';
+    }
 }

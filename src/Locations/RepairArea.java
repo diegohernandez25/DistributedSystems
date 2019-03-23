@@ -56,6 +56,13 @@ public class RepairArea
     private int[] carParts;
 
     /**
+     * Max stock possible for each car part
+     * Index represents the id of the part
+     * @serialField maxCarParts;
+     * */
+    private int[] maxCarPartsNumber;
+
+    /**
      *      Array with the id part type.
      *      Index represents the id of the car.
      *      Value the needed part for the repair.
@@ -69,12 +76,13 @@ public class RepairArea
      *      @param rangeCarPartTypes - Range of car types.
      *      @param totalNumCars - total number of cars
      * */
-    public RepairArea(int rangeCarPartTypes, int totalNumCars, int[] carParts)
+    public RepairArea(int rangeCarPartTypes, int totalNumCars, int[] carParts, int[] maxCarPartsNumber)
     {
         this.rangeCarPartTypes = rangeCarPartTypes;
         this.carParts = carParts;
         this.statusOfCars = new int[totalNumCars];
         this.carNeededPart = new int[totalNumCars];
+        this.maxCarPartsNumber = maxCarPartsNumber;
         for(int i = 0; i<totalNumCars; i++){
             this.statusOfCars[i] = NOT_REGISTERED;
             this.carNeededPart[i] = -1;
@@ -224,5 +232,16 @@ public class RepairArea
         Logger.log(MANAGER,REPAIR_AREA,"Error: Car parts is not empty!",0,Logger.ERROR);
         System.exit(1);
         return false;
+    }
+
+    /**
+     * Get maximum number of a specific part that can be stored on the repairArea
+     * @param partId    - Id of the car part.
+     * @return the maximum number of storage for the part
+     * */
+    public int getMaxPartStock(int partId)
+    {
+        assert (partId <= rangeCarPartTypes);
+        return maxCarPartsNumber[partId];
     }
 }

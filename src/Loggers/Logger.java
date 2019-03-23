@@ -45,6 +45,18 @@ public class Logger {
     {
         String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String log = "[ " + timeStamp + " ]\t"+"[ "+pid+" ]\t"+"( "+local +" )\t"+entity+": "+msg+".";
+        printCorrepondentFormat(log,type);
+    }
+
+    public static void log(String entity, String local, String function, String msg, int pid, int type)
+    {
+        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
+        String log = "[ " + timeStamp + " ]\t"+"[ "+pid+" ]\t"+"( "+local +" )\t"+"( "+function+" )"+entity+": "+msg+".";
+        printCorrepondentFormat(log,type);
+    }
+
+    private static void printCorrepondentFormat(String log, int type)
+    {
         switch (type)
         {
             case SUCCESS:

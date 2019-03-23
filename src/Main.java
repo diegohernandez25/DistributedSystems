@@ -8,6 +8,11 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static final int NUM_CLIENTS = 30,
+                            NUM_MECHANICS = 2,
+                            NUM_REPLACEMENT_CARS = 3,
+                            NUM_PART_TYPES = 3;
+
     public static void main(String[] args)
     {
         OutsideWorld outsideWorld;
@@ -18,27 +23,15 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Number of clients: ");
-        int numClients = sc.nextInt();
-        assert numClients > 0;
 
-        System.out.print("Number of interactions: ");
-        int numIter = sc.nextInt();
-        assert numIter > 0;
+        int numClients = NUM_CLIENTS;
+        int numMechanics = NUM_MECHANICS;
+        int numReplacementCars = NUM_REPLACEMENT_CARS;
+        int stockLength = NUM_PART_TYPES;
 
-        System.out.print("Number of mechanics: ");
-        int numMechanics = sc.nextInt();
-        assert numMechanics > 0;
-
-        System.out.print("Number of replacement cars: ");
-        int numReplacementCars = sc.nextInt();
-        assert numReplacementCars > 0;
-
-        System.out.print("Stock length: ");
-        int stockLength = sc.nextInt();
-        assert stockLength > 0;
-
-        //TODO initiate all types of keys
+        /**
+         *      Cars initiation.
+         * */
         int totalCars = numClients + numReplacementCars;
         int i = 0;
         Integer[] arrayCustomerCars = new Integer[numClients];
@@ -52,6 +45,8 @@ public class Main {
             arrayReplacementCars[i - numClients] = i;
             arrayAllCars[i] = i;
         }
+
+
 
         //lounge = new Lounge(arrayReplacementCars,)
 

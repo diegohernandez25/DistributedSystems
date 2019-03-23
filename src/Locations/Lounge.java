@@ -101,7 +101,7 @@ public class Lounge {
      *
      * */
 
-    private MemFIFO<Integer> carKeysRepairQueue;
+    private MemFIFO<Integer> carKeysToRepairQueue;
     /**
      *  Queue of car parts needed to be replenished
      *
@@ -111,18 +111,20 @@ public class Lounge {
     private int[] requiredParts;
 
     /**
-     *  All the Keys of Customer Fixed Cars
+     *      All the Keys of Customer Fixed Cars
      *
      *      @serialField customerFixedCarKeys
      *
      * */
     private MemFIFO<Integer> customerFixedCarKeys;
     /**
-     *  Queue of ids of waiting customers
+     *      Queue of ids of waiting customers
      *
      *      @serialField replacementCarKeys
      *
      * */
+
+
 
     private MemFIFO<Integer> customerQueue;
 
@@ -137,20 +139,25 @@ public class Lounge {
 
     /**
      *      Stack of clients which are waiting for payment
-     *
      *      @serialField paymentQueue
      * */
     private MemFIFO<Integer> paymentQueue;
 
     /**
-     *      Array of car parts that needs to be refilled.
-     *      Index represents the id of the part to refill stock
-     *      Value represents the number of stock to refill.
-     *      Alert: Be careful with concurrency.
-     *
-     *      @serialField carPartsToRefill
+     * Array of car parts that needs to be refilled.
+     * Index represents the id of the part to refill stock
+     * Value represents the number of stock to refill.
+     * Alert: Be careful with concurrency.
+     * @serialField carPartsToRefill
      * */
     private int[] carPartsToRefill;
+
+
+    /**
+     * Array with the purpose of getting the id of the customer with the car Key id as an index
+     * @serialField memKeyCustomers
+     * */
+    private int[] memKeysCustomers;
 
 
     /**
@@ -186,8 +193,12 @@ public class Lounge {
         for (int i = 0; i<carPartsToRefill.length; i++)
             this.carPartsToRefill[i] = 0;
 
+        this.memKeysCustomers = new int[clients.length];
+        for(int i = 0; i<memKeysCustomers.length;i++)
+            this.memKeysCustomers[i] = -1;
+
         try {
-                this.carKeysRepairQueue = new MemFIFO<>(new Integer[clients.length]);
+                this.carKeysToRepairQueue = new MemFIFO<>(new Integer[clients.length]);
                 this.customerFixedCarKeys = new MemFIFO<>(new Integer[clients.length]);
                 this.customerQueue = new MemFIFO<>(new Integer[clients.length]);
                 this.waitingReplacementKey = new MemFIFO<>(new Integer[clients.length]);
@@ -271,7 +282,7 @@ public class Lounge {
             else
             {
                 //TODO: Patricia
-                carKeysRepairQueue.write(customerCarKeys[customerId]);      // add car keys to repair queue
+                carKeysToRepairQueue.write(customerCarKeys[customerId]);    // add car keys to repair queue
                 customerCarKeys[customerId] = -1;                           // removes customers keys
                 notifyAll();                                                // notify Mechanic that a car is available to be repaired
             }
@@ -401,7 +412,7 @@ public class Lounge {
      *
      *      @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
      * */
-    public boolean isCarKeysRepairQueueEmpty() { return carKeysRepairQueue.isEmpty(); }
+    public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
 
     /**
      *  Checks if queue of car parts needed to be replenished is empty
@@ -411,13 +422,14 @@ public class Lounge {
     //public boolean isCarPartsQueueEmpty() { return carPartsQueue.isEmpty(); }
 
     /**
-     *  Customer gives Manager his/hers car key.
+     *      Customer gives Manager his/hers car key.
      *
      *      @param key - Customer's car key.
      */
     public synchronized void giveManagerCarKey(int key, int customerId)
     {
         customerCarKeys[customerId] = key;
+        memKeysCustomers[key] = customerId;
         notifyAll();
     }
 
@@ -447,7 +459,7 @@ public class Lounge {
      *      @return key of the car to repair
      *
      *  */
-    public synchronized int getCarKey(int mechanicId)
+    public synchronized int getCarToRepairKey(int mechanicId)
     {
         String GET_CAR_KEY  = "getCarKey";
         if(isCustomerCarKeysEmpty())
@@ -458,7 +470,7 @@ public class Lounge {
         try
         {
             stateMechanics[mechanicId] = FIXING_THE_CAR;
-            return carKeysRepairQueue.read();
+            return carKeysToRepairQueue.read();
         }
         catch (Exception e){
             Logger.logException(e);
@@ -472,8 +484,11 @@ public class Lounge {
      *      to repair
      * */
     public synchronized int checkCarToRepair()
-    {   if( !carKeysRepairQueue.isEmpty())
-        {   try { return carKeysRepairQueue.read(); }
+    {   if( !carKeysToRepairQueue.isEmpty())
+        {   try {
+                //TODO Change status of car
+                return carKeysToRepairQueue.read();
+            }
             catch (MemException e) { Logger.logException(e); }
         }
         return -1;
@@ -536,6 +551,57 @@ public class Lounge {
     public synchronized void alertStockRefill(int idType)
     {
         carPartsToRefill[idType] = 0;
+    }
+
+    /**
+     *Mechanic return key of the repaired car
+     *@param idKey    - the id of the key (= idCar)
+     * */
+    public void alertManagerRepairDone(int idKey)
+    {   String ALERT_REPAIR_DONE = "alertRepairDone";
+        if(customerFixedCarKeys.containsValue(idKey))
+        {
+            Logger.log(MECHANIC,LOCAL,ALERT_REPAIR_DONE,
+                    "Car was already registered as repaired. This should not happen",0,Logger.ERROR);
+        }
+        try {
+            customerFixedCarKeys.write(idKey);
+        } catch (MemException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *Checks if there are cars repaired
+     * */
+    public boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
+
+    /**
+     *Returns fixed car key to the storage of customers key for retrieval purposes.
+     * */
+    public int readyToGiveBackCustomerKey()
+    {
+        String READY_TO_GIVE_BACK_CUSTOMER_KEY = "readyToGiveBackCustomerKey";
+        if(!isCustomerCarKeysEmpty())
+        {
+            try {
+                int idKey = customerFixedCarKeys.read();
+                if(memKeysCustomers[idKey] == -1)
+                {
+                    Logger.log(MANAGER,LOCAL,READY_TO_GIVE_BACK_CUSTOMER_KEY,
+                            "Error: Key does not have a customer registered!. This should no happend",
+                            0,Logger.ERROR);
+                            System.exit(1);
+                }
+                memKeysCustomers[idKey] = -1;
+                return memKeysCustomers[idKey];
+            } catch (MemException e) {
+                Logger.logException(e);
+                System.exit(1);
+            }
+
+        }
+        return -1;
     }
 
 }
