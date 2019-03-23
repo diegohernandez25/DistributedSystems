@@ -7,6 +7,7 @@ import Resources.MemStack;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.LongUnaryOperator;
 
 public class Lounge {
 
@@ -22,7 +23,8 @@ public class Lounge {
      *  */
     private static final String     MANAGER     = "Manager",
                                     CUSTOMER    = "Customer",
-                                    LOCAL       = "Lounge";
+                                    LOCAL       = "Lounge",
+                                    MECHANIC    = "Mechanic";
 
     /**
      * Customer constants states.
@@ -141,29 +143,6 @@ public class Lounge {
     private MemFIFO<Integer> paymentQueue;
 
     /**
-     *      Storage of car keys.
-     *
-     *      @serialField  repairedCarKeys
-     * */
-    //private HashMap<String,Key> repairedCarKeys;
-    /**
-     *      HashMap of customer cars and its associated keys.
-     *
-     *      @serialField repairedCarKeys
-     *
-     */
-    private HashMap<Integer, Integer> repairedCarKeys;
-
-
-    /**
-     *      FIFO of all the current car to check and repair
-     *
-     *      @serialField carsToRepair
-     *
-     * */
-    //private MemFIFO<Integer> carsToRepair; FIXME: Maybe not needed
-
-    /**
      *      Array of car parts that needs to be refilled.
      *      Index represents the id of the part to refill stock
      *      Value represents the number of stock to refill.
@@ -173,7 +152,6 @@ public class Lounge {
      * */
     private int[] carPartsToRefill;
 
-    private boolean requestPart;
 
     /**
      *
@@ -208,8 +186,6 @@ public class Lounge {
         for (int i = 0; i<carPartsToRefill.length; i++)
             this.carPartsToRefill[i] = 0;
 
-        this.repairedCarKeys = new HashMap<>(); //FIXME: Is it needed?
-
         try {
                 this.carKeysRepairQueue = new MemFIFO<>(new Integer[clients.length]);
                 this.customerFixedCarKeys = new MemFIFO<>(new Integer[clients.length]);
@@ -222,7 +198,6 @@ public class Lounge {
                 Logger.logException(e);
         }
 
-        requestPart = false;
 
         System.out.println(this.toString());
     }
@@ -318,16 +293,16 @@ public class Lounge {
     public synchronized int getReplacementCarKey(int customerId)
     {   //  If there are keys available, the customer will take one.
         if(!replacementCarKeys.isEmpty())
-        {   try {
-            int tmp = replacementCarKeys.read();
-            this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
-            stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-            return tmp;
-        }
-        catch (MemException e) {
-            Logger.logException(e);
-            return -1;
-        }
+        {   try
+            {   int tmp = replacementCarKeys.read();
+                this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+                stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+                return tmp;                                         //ENDS Here
+            }
+            catch (MemException e)
+            {   Logger.logException(e);
+                return -1;
+            }
         }
         //  Else the customer waits for a key.
         try
@@ -335,8 +310,7 @@ public class Lounge {
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
-        {
-            Logger.logException(e);
+        {   Logger.logException(e);
             return -1;
         }
         while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
@@ -348,7 +322,9 @@ public class Lounge {
             int tmp = replacementCarKeys.read();
             this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
             return tmp;
-        } catch (MemException e){ }
+        } catch (MemException e){
+            Logger.logException(e);
+        }
         return -1;
     }
 
@@ -362,10 +338,18 @@ public class Lounge {
      *      @return status of the operation.
      * */
     public synchronized boolean returnReplacementCarKey(int key)
-    {   try {
+    {
+        String RETURN_REPLACEMENT_CAR_KEY = "returnReplacementCarKey";
+        if(replacementCarKeys.containsValue(key))
+        {
+            Logger.log(CUSTOMER,LOCAL,RETURN_REPLACEMENT_CAR_KEY,"Error: replacement car key is already available. " +
+                    "This should not happen",0,Logger.ERROR);
+            System.exit(1);
+        }
+        try {
             replacementCarKeys.write(key);
-            usedReplacementCarKeys[key] = -1; //Replacement car is now available. //FIXME Becareful with key! the id is not the same as the index
-            if(!waitingReplacementKey.isEmpty())
+            usedReplacementCarKeys[key] = -1; //FIXME Be careful with key! the id is not the same as the index
+            if(!waitingReplacementKey.isEmpty())    //alert thread waiting for a key
             {   int waitingCustomerId = waitingReplacementKey.read();
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
                 notifyAll();
@@ -463,59 +447,23 @@ public class Lounge {
      *      @return key of the car to repair
      *
      *  */
-    /*public synchronized int getCarKey(int mechanicId)
+    public synchronized int getCarKey(int mechanicId)
     {
-        if(isCustomerCarKeysEmpty()) return null;
+        String GET_CAR_KEY  = "getCarKey";
+        if(isCustomerCarKeysEmpty())
+        {
+            Logger.log(MECHANIC,LOCAL,GET_CAR_KEY,"Error: There is no key, this should not happen!",0,Logger.ERROR);
+            return -1;
+        }
         try
         {
             stateMechanics[mechanicId] = FIXING_THE_CAR;
             return carKeysRepairQueue.read();
         }
-        catch (Exception e){ return null; }
-    }*/
-    /**
-     *
-     *  Mechanic alerts the manager for missing car part that is needed
-     *
-     *  @param carPart car part that is needed to be restocked
-     *
-     *  @param mechanicId id of the Mechanic
-     *
-     * */
-
-   /* public synchronized void alertManager(int carPart, int mechanicId)
-    {
-        stateMechanics[mechanicId] = ALERTING_MANAGER;
-        try {
-            carPartsQueue.write(carPart);                               // Add car part to queue of need to replenish
-        } catch (MemException e) {
-            e.printStackTrace();
-        }
-        notifyAll();                                                // Notifies Manager that car part is needed
+        catch (Exception e){
+            Logger.logException(e);
+            return -1; }
     }
-
-    /**
-     *
-     *  Manager gets first car part waiting to be replenished and removes it
-     *
-     *  @return car part needed to be replenished
-     *
-     * */
-
-    /*public synchronized int getPartFromQueue()
-    {
-        try {
-            return carPartsQueue.read();
-        } catch (MemException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
-
-
-    /**
-     * ---------------------------Mechanic---------------------
-     * */
 
     /**
      *      Mechanic checks if a new car needs repair
@@ -537,16 +485,25 @@ public class Lounge {
      *      @param idType   - the id of the part to refill stock
      *      @param number   - the number of stock needed    //FIXME: maybe not needed
      *
-     *      @return the status of the operation
+     *      @return true - request done. false - request has already been made.
      * */
    public synchronized boolean requestPart(int idType, int number)
    {
        if(carPartsToRefill[idType] == 0)
        {    carPartsToRefill[idType] = number;
-            requestPart = true;
             return true;
        }
        return false;
+   }
+
+   public synchronized boolean registerStockRefill(int idType)
+   {
+       if(carPartsToRefill[idType] != 0)
+       {    carPartsToRefill[idType] = 0;
+            return true;
+       }
+       Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
+        return false;
    }
 
    /**
@@ -554,9 +511,9 @@ public class Lounge {
     *
     *       @return id of the part to refill. Returns -1 if no part is needed to refill
     * */
-    public synchronized int checksPartsRequest()
+    public synchronized int checksPartsRequest(int index)
     {
-        for(int i= 0; i<carPartsToRefill.length; i++)
+        for(int i= index; i<carPartsToRefill.length; i++)
         {   if(carPartsToRefill[i] != 0) return i;
         }
         return -1;

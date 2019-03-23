@@ -9,6 +9,13 @@ public class RepairArea
 {
 
     /**
+     *
+     * */
+    private static String   MANAGER     = "Manager",
+                            MECHANIC    = "Mechanic",
+                            REPAIR_AREA = "Repair Area";
+
+    /**
      *      States of the cars.
      *
      * */
@@ -150,9 +157,11 @@ public class RepairArea
      *
      *      @return id of the car ready for repair.
      * */
-    public synchronized int getWaitingCarWithPartsAvailable()
-    {
+    public synchronized int repairWaitingCarWithPartsAvailable()
+    {   String REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE = "repairWaitingCarWithPartsAvailable";
         int length = carsWaitingForParts.size();
+        Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+                "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
         int tmp = -1;
         while (length >= 0)
         {   length--;
@@ -160,6 +169,10 @@ public class RepairArea
             {   tmp = carsWaitingForParts.read();
                 if(checkPartAvailability(carNeededPart[tmp])) {
                     statusOfCars[tmp] = ON_REPAIR;
+                    if(carParts[carNeededPart[tmp]] == 0)
+                    {   Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+                                "ERROR: There is no parts to fix the car. THis should not happen!",0,Logger.ERROR);
+                    }
                     carNeededPart[tmp] = -1;
                     carParts[carNeededPart[tmp]]--;
                     break;
@@ -167,12 +180,14 @@ public class RepairArea
                 carsWaitingForParts.write(tmp);
             } catch (MemException e) { Logger.logException(e); }
         }
-        while (length >= 0)//Re-establish arrival order.
+        while (length >= 0)                                                 //Re-establish arrival order.
         {   length--;
             try { carsWaitingForParts.write(carsWaitingForParts.read()); }
             catch (MemException e) { Logger.logException(e); }
         }
-        return tmp; //returns the id of the car which got repaired.
+        Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+                "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
+        return tmp;                                                         //returns the id of the car which got repaired.
     }
 
     /**
@@ -180,22 +195,34 @@ public class RepairArea
      *
      *      @param idCar    - Id of the car.
      * */
-    public void concludeCarRepair(int idCar)
-    {
+    public void concludeCarRepair(int idCar) {
+        String CONCLUDE_CAR_REPAIR = "Conclude Car Repair";
+        if (statusOfCars[idCar] == REPAIRED)
+        {
+            Logger.log(REPAIR_AREA,MECHANIC,CONCLUDE_CAR_REPAIR,
+                    "Error: Car was registeres as repaired before, this should not happen",0,Logger.ERROR);
+            System.exit(1);
+        }
         statusOfCars[idCar] = REPAIRED;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     *      Refill car Part stock
+     *
+     *      @param idPart   - ID of car part.
+     *      @param quantity - number of car parts to refill
+     *
+     *      @return true - refill done to accordance. false - There shouldn't be a refill.
+     * */
+    public boolean refillCarPartStock(int idPart, int quantity)
+    {
+        assert idPart <= rangeCarPartTypes;
+        if(carParts[idPart] == 0) {
+            carParts[idPart] = quantity;
+            return true;
+        }
+        Logger.log(MANAGER,REPAIR_AREA,"Error: Car parts is not empty!",0,Logger.ERROR);
+        System.exit(1);
+        return false;
+    }
 }
