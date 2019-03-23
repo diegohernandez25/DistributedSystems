@@ -67,9 +67,7 @@ public class Manager extends Thread
      *  */
     @Override
     public void run()
-    {
-        int maxNumParts = lounge.getNumberOfPartTypes();
-        while (true)
+    {   while (true)
         {
             /**
              *      Refill car parts stock
@@ -100,7 +98,7 @@ public class Manager extends Thread
             /**
              *      Attend Customer
              * */
-            else if((val = lounge.attendCustomer())!=-1)                               // Attends customer
+            else if((val = lounge.attendCustomer())!=-1)                    // Attends customer
             {
                 if(val == -2)
                 {

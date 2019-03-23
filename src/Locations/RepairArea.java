@@ -176,7 +176,7 @@ public class RepairArea
      * */
     public synchronized int repairWaitingCarWithPartsAvailable()
     {   String REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE = "repairWaitingCarWithPartsAvailable";
-        int length = carsWaitingForParts.size();
+        int length = carsWaitingForParts.numElements();
         Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
                 "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
         int tmp = -1;
@@ -184,24 +184,17 @@ public class RepairArea
         {   length--;
             try
             {   tmp = carsWaitingForParts.read();
-                if(checkPartAvailability(carNeededPart[tmp])) {
-                    statusOfCars[tmp] = ON_REPAIR;
-                    if(carParts[carNeededPart[tmp]] == 0)
-                    {   Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
-                                "ERROR: There is no parts to fix the car. THis should not happen!",0,Logger.ERROR);
-                        System.exit(1);
-                    }
-                    carNeededPart[tmp] = -1;
-                    carParts[carNeededPart[tmp]]--;
-                    break;
+                if(reserveCarPart[tmp] != -1)
+                {   statusOfCars[tmp] = ON_REPAIR;
+                    reserveCarPart[tmp] = -1;
+                    continue;
                 }
                 carsWaitingForParts.write(tmp);
             } catch (MemException e) { Logger.logException(e); }
         }
-        while (length >= 0)                                                 //Re-establish arrival order.
-        {   length--;
-            try { carsWaitingForParts.write(carsWaitingForParts.read()); }
-            catch (MemException e) { Logger.logException(e); }
+        if(length == -1)
+        {   Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+                    "There was no parts reserved",0,Logger.WARNING);
         }
         Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
                 "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
@@ -238,7 +231,7 @@ public class RepairArea
         if(carParts[idPart] == 0) {
             carParts[idPart] = quantity;
             workToDo = true;
-            notifyAll();
+            notifyAll();        //notify sleeping mechanics
             return true;
         }
         Logger.log(MANAGER,REPAIR_AREA,"Error: Car parts is not empty!",0,Logger.ERROR);
@@ -274,12 +267,9 @@ public class RepairArea
         Logger.log(MECHANIC, REPAIR_AREA, READ_PAPER, "Mechanic " + mechanicId + " has waken.", mechanicId, Logger.SUCCESS);
     }
 
-    public static int   CONTINUE_REPAIR_CAR = 1,
-                        REPAIR_NEW_CAR = 2,
-                        WAKEN =3;
 
     public synchronized int findNextTask()
-    {
+    {   int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3;
         String FIND_NEXT_TASK = "findNextTask";
         if(!workToDo) {
             {   int[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
@@ -297,15 +287,14 @@ public class RepairArea
                 }
                 for(int i = 0; i< carsNeedsCheck.length; i++)
                 {   if(carsNeedsCheck[i])
-                {   carsNeedsCheck[i] =false;
-                    return REPAIR_NEW_CAR;
-                }
+                    {   carsNeedsCheck[i] =false;
+                        return REPAIR_NEW_CAR;
+                    }
                 }
                 workToDo = false;
             }
             while (!workToDo)
-            {
-                try {
+            {   try {
                     Logger.log(MECHANIC,REPAIR_AREA,FIND_NEXT_TASK,"Mechanic is sleeping",0,Logger.WARNING);
                     wait();
                 } catch (InterruptedException e) {
@@ -320,7 +309,7 @@ public class RepairArea
 
     public synchronized void postJob(int carID)
     {   carsNeedsCheck[carID] = true;
-        workToDo = true;
+        workToDo = true;                        //notify sleeping mechanics
         notifyAll();
     }
 
