@@ -1,5 +1,6 @@
 package Resources;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -113,6 +114,19 @@ public class MemFIFO<R> extends MemObject<R>
    {    for (R r : mem) { if (r.equals(val)) return true; }
         return false;
    }
+
+    public int numElements(){
+        return Math.abs(outPnt - inPnt);
+    }
+
+    public int[] getStorage(){
+        int size = numElements();
+        int index = inPnt;
+        int[] array = new int[size];
+        for(int i = 0;i<size;i++, index = (index+1) % mem.length) {   array[i] = (int) mem[index]; } //FIXME: Fita-cola
+        return array;
+    }
+
 
     @Override
     public String toString() {

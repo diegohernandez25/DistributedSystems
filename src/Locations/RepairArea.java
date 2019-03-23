@@ -9,11 +9,12 @@ public class RepairArea
 {
 
     /**
-     *
+     *      Constants
      * */
     private static String   MANAGER     = "Manager",
                             MECHANIC    = "Mechanic",
                             REPAIR_AREA = "Repair Area";
+
 
     /**
      *      States of the cars.
@@ -69,6 +70,12 @@ public class RepairArea
      * */
     private int[] carNeededPart;
 
+    private boolean workToDo = false;
+
+    private boolean[] carsNeedsCheck;
+
+    private int[] reserveCarPart;
+
 
     /**
      *
@@ -83,9 +90,11 @@ public class RepairArea
         this.statusOfCars = new int[totalNumCars];
         this.carNeededPart = new int[totalNumCars];
         this.maxCarPartsNumber = maxCarPartsNumber;
+        this.carsNeedsCheck = new boolean[totalNumCars];
         for(int i = 0; i<totalNumCars; i++){
             this.statusOfCars[i] = NOT_REGISTERED;
             this.carNeededPart[i] = -1;
+            this.carsNeedsCheck[i] = false;
         }
         try {
             this.carsWaitingForParts = new MemFIFO<>(new Integer[totalNumCars]);
@@ -228,6 +237,8 @@ public class RepairArea
         assert idPart <= rangeCarPartTypes;
         if(carParts[idPart] == 0) {
             carParts[idPart] = quantity;
+            workToDo = true;
+            notifyAll();
             return true;
         }
         Logger.log(MANAGER,REPAIR_AREA,"Error: Car parts is not empty!",0,Logger.ERROR);
@@ -245,4 +256,72 @@ public class RepairArea
         assert (partId <= rangeCarPartTypes);
         return maxCarPartsNumber[partId];
     }
+
+    /**
+     * Mechanic sleeps until a new car is in need for repair or when a car part arrived.
+     * */
+    public synchronized void readPaper(int mechanicId) {
+        String READ_PAPER = "readPaper";
+        //FIXME when to put workToDo= false?? THIS IS A CASE OF DEADLOCK!
+
+        while (!workToDo) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Logger.logException(e);
+            }
+        }
+        Logger.log(MECHANIC, REPAIR_AREA, READ_PAPER, "Mechanic " + mechanicId + " has waken.", mechanicId, Logger.SUCCESS);
+    }
+
+    public static int   CONTINUE_REPAIR_CAR = 1,
+                        REPAIR_NEW_CAR = 2,
+                        WAKEN =3;
+
+    public synchronized int findNextTask()
+    {
+        String FIND_NEXT_TASK = "findNextTask";
+        if(!workToDo) {
+            {   int[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
+                for(int i: tmpWaitPartCarts)
+                {
+                    int tmpPart;
+                    if((tmpPart = carNeededPart[i]) != -1)
+                    {   if(carParts[tmpPart] != 0) {
+                            carNeededPart[i] = -1;
+                            reserveCarPart[i] = tmpPart; //Reserve part for the car;
+                            carParts[tmpPart]-=1;
+                            return CONTINUE_REPAIR_CAR;
+                        }
+                    }
+                }
+                for(int i = 0; i< carsNeedsCheck.length; i++)
+                {   if(carsNeedsCheck[i])
+                {   carsNeedsCheck[i] =false;
+                    return REPAIR_NEW_CAR;
+                }
+                }
+                workToDo = false;
+            }
+            while (!workToDo)
+            {
+                try {
+                    Logger.log(MECHANIC,REPAIR_AREA,FIND_NEXT_TASK,"Mechanic is sleeping",0,Logger.WARNING);
+                    wait();
+                } catch (InterruptedException e) {
+                    Logger.logException(e);
+                }
+            }
+        }
+        Logger.log(MECHANIC,REPAIR_AREA,FIND_NEXT_TASK,"Mechanic has woken",0,Logger.SUCCESS);
+        return WAKEN;
+    }
+
+
+    public synchronized void postJob(int carID)
+    {   carsNeedsCheck[carID] = true;
+        workToDo = true;
+        notifyAll();
+    }
+
 }

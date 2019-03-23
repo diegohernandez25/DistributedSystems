@@ -4,9 +4,12 @@ import Locations.Lounge;
 import Locations.OutsideWorld;
 import Locations.RepairArea;
 import Locations.SupplierSite;
+import Loggers.Logger;
 
 public class Manager extends Thread
 {
+    public String   MANAGER = "Manager",
+                    RUN     = "Run";
     /**
      *  Manager identification
      *
@@ -72,6 +75,7 @@ public class Manager extends Thread
              *      Refill car parts stock
              * */
             int indexPart = 0;
+            int val = -1;
             if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)    // First checks if there is a need to refill
                                                                             // the stock
             {
@@ -96,9 +100,15 @@ public class Manager extends Thread
             /**
              *      Attend Customer
              * */
-            else if(!lounge.attendCustomer())                               // Attends customer
+            else if((val = lounge.attendCustomer())!=-1)                               // Attends customer
             {
-                readPaper();
+                if(val == -2)
+                {
+                    Logger.log(MANAGER,MANAGER,RUN,"Payment received",0,Logger.SUCCESS);
+                }
+                else {
+                    repairArea.postJob(val);
+                }
             }
 
 

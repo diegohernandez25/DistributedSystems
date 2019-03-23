@@ -249,8 +249,8 @@ public class Lounge {
      *
      *      @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
-    public synchronized boolean attendCustomer()
-    {   if (customerQueue.isEmpty()) { return (false); }
+    public synchronized int attendCustomer()
+    {   if (customerQueue.isEmpty()) { return -1; }
         try {
             int customerId = customerQueue.read();
             stateCustomers[customerId] = ATTENDING;
@@ -277,14 +277,16 @@ public class Lounge {
             else
             {
                 //TODO: Patricia
-                carKeysToRepairQueue.write(customerCarKeys[customerId]);    // add car keys to repair queue
+                int toRepairCarKey = customerCarKeys[customerId];
+                carKeysToRepairQueue.write(toRepairCarKey);                 // add car keys to repair queue
                 customerCarKeys[customerId] = -1;                           // removes customers keys
-                notifyAll();                                                // notify Mechanic that a car is available to be repaired
+                return toRepairCarKey;
+
             }
 
         }
         catch (MemException e) { Logger.logException(e); }
-        return (true);
+        return -2; //FIXME Yikes. This means that it was an payment operation
     }
 
     /**

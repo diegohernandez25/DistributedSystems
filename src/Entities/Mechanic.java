@@ -8,6 +8,14 @@ import Loggers.Logger;
 public class Mechanic extends Thread {
 
 
+    /**
+     *      Mechanic Tasks
+     * */
+    public static int   CONTINUE_REPAIR_CAR = 1,
+                        REPAIR_NEW_CAR = 2,
+                        SLEEP =3;
+
+
     public String   MECHANIC = "Mechanic",
                     RUN = "run";
     /**
@@ -74,6 +82,7 @@ public class Mechanic extends Thread {
                                                                                         // a car that was waiting for
                                                                                         // parts he/she repairs it
             {
+                fixCar();
                 repairArea.concludeCarRepair(idCurrentCar);                             // Registers repair conclusion
                                                                                         // on Repair Area
                 idCurrentKey = idCurrentCar;
@@ -116,8 +125,7 @@ public class Mechanic extends Thread {
             }
             else
             {
-                readsPaper();                                                           // If nothing to do, reads paper;
-                //TODO: Maybe alert the mechanic with a notify all?
+               //
             }
         }
     }
