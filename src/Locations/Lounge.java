@@ -609,7 +609,7 @@ public class Lounge {
    public synchronized boolean registerStockRefill(int idType)
    {   String FUNCTION = "registerStockRefill";
        if(carPartsToRefill[idType] != 0)
-       {    Logger.log(MECHANIC,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
+       {    Logger.log(MANAGER,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
            carPartsToRefill[idType] = 0;
             return true;
        }
@@ -627,7 +627,7 @@ public class Lounge {
        // Logger.log(MANAGER,LOCAL,FUNCTION,"Checking if refill of stock is needed",0,10);
         for(int i= index; i<carPartsToRefill.length; i++)
         {   if(carPartsToRefill[i] != 0)
-            {   Logger.log(MANAGER,LOCAL,FUNCTION,"Part type "+i+"requires stock refill",0,Logger.WARNING);
+            {   Logger.log(MANAGER,LOCAL,FUNCTION,"Part type "+i+" requires stock refill",0,Logger.WARNING);
                 return i;
             }
 

@@ -83,6 +83,7 @@ public class Manager extends Thread
                         indexPart,lounge.requestedNumberPart(indexPart));
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
                 lounge.registerStockRefill(indexPart);
+
             }
 
             /**

@@ -118,7 +118,12 @@ public class MemFIFO<R> extends MemObject<R>
    }
 
     public int numElements(){
-        return Math.abs(outPnt - inPnt);
+       if(mem.length==1)
+       {
+           if(empty) return 0;
+           else return 1;
+       }
+       return Math.abs(outPnt - inPnt);
     }
 
     public Integer[] getStorage(){

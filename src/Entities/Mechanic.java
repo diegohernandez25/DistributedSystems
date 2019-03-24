@@ -105,13 +105,13 @@ public class Mechanic extends Thread {
                             System.exit(1);
                         }
                         Logger.log(MECHANIC,MECHANIC,RUN,"Checking car "+idCurrentCar,mechanicId,10);
-                        int carPart = repairArea.checkCar(idCurrentCar,mechanicId);             // Checks which part the car
+                        int carPart = repairArea.checkCar(idCurrentCar,mechanicId);//FIXME             // Checks which part the car
                                                                                                 // needs for its repair.
-                        Logger.log(MECHANIC,MECHANIC,RUN,"Check done. Car needs part "+carPart+". Proceeding to repair"
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Check done. Car needs part "+(carPart)+". Proceeding to repair"
                                 ,mechanicId,10);
-                        if(!repairArea.repairCar(idCurrentCar,carPart,mechanicId))
+                        if(!repairArea.repairCar(idCurrentCar,(carPart),mechanicId))
                         {
-                            Logger.log(MECHANIC,MECHANIC,RUN,"Car part "+carPart+" not available. Requesting stock refill"
+                            Logger.log(MECHANIC,MECHANIC,RUN,"Car part "+(carPart)+" not available. Requesting stock refill"
                                     ,mechanicId,Logger.WARNING);
                             lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart)     // Requests parts.
                                     ,mechanicId);

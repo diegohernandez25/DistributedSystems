@@ -75,17 +75,18 @@ public class OutsideWorld {
             try {
                 customersNotYetAtOutsideWorld.write(customerId);
                 Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer "+customerId+" not yet at the outside world",0, Logger.WARNING);
+                return;
             } catch (MemException e) {
                 Logger.logException(e);
                 System.exit(1);
             }
         }
-        else
-        {
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
-            waitingForRepair[customerId]=false;
-        }
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, Logger.WARNING);
+        //else
+        //{
+        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
+        waitingForRepair[customerId]=false;
+        //}
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, Logger.WARNING);
         notifyAll();
     }
 

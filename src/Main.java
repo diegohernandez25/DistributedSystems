@@ -11,7 +11,7 @@ public class Main {
     public static final int NUM_CLIENTS = 1,
                             NUM_MECHANICS = 1,
                             NUM_REPLACEMENT_CARS = 1,
-                            NUM_PART_TYPES = 1;
+                            NUM_PART_TYPES = 3;
 
     public static void main(String[] args)
     {
@@ -28,7 +28,7 @@ public class Main {
 
         Park park = new Park(NUM_REPLACEMENT_CARS+NUM_CLIENTS, replacementCarKeys);
 
-        int[] carParts = {3,3,3};
+        int[] carParts = {0,0,0};
         int[] maxCarParts = {3,3,3};
         RepairArea repairArea = new RepairArea(NUM_CLIENTS, NUM_PART_TYPES, carParts, maxCarParts);
 

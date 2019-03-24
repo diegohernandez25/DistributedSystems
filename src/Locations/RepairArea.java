@@ -55,7 +55,7 @@ public class RepairArea
      *      @serialField carParts
      * */
 
-    private int[] carParts;
+    private volatile int[] carParts;
 
     /**
      * Max stock possible for each car part
@@ -89,9 +89,11 @@ public class RepairArea
         this.carNeededPart = new int[totalNumCars];
         this.maxCarPartsNumber = maxCarParts;
         this.carsNeedsCheck = new boolean[totalNumCars];
+        this.reserveCarPart = new int[totalNumCars];
         for(int i = 0; i<totalNumCars; i++){
             this.statusOfCars[i] = NOT_REGISTERED;
             this.carNeededPart[i] = -1;
+            this.reserveCarPart[i] = -1;
             this.carsNeedsCheck[i] = false;
         }
         try {
@@ -111,7 +113,7 @@ public class RepairArea
     public synchronized int checkCar(int idCar, int mechanicId)
     {   String FUNCTION = "checkCar";
         Random rand = new Random();
-        int randomNum = rand.nextInt(rangeCarPartTypes)+1;
+        int randomNum = rand.nextInt(rangeCarPartTypes);
         assert (randomNum <= rangeCarPartTypes && randomNum >= 0);
         statusOfCars[idCar] = CHECKED;
         carNeededPart[idCar] = randomNum; //FIXME: Needed??
@@ -183,19 +185,19 @@ public class RepairArea
         Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
                 "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
         int tmp = -1;
-        while (length >= 0)
+        while (length > 0)
         {   length--;
             try
-            {   tmp = carsWaitingForParts.read();
+            {   tmp = carsWaitingForParts.read();//gets
                 if(reserveCarPart[tmp] != -1)
                 {   statusOfCars[tmp] = ON_REPAIR;
                     Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
                             "Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],
                             mechanicId,Logger.SUCCESS);
                     reserveCarPart[tmp] = -1; //part car taken
-                    continue;
+                    continue; //does not put back
                 }
-                carsWaitingForParts.write(tmp);
+                carsWaitingForParts.write(tmp);//put back
             } catch (MemException e) { Logger.logException(e); }
         }
         if(length == -1)
@@ -242,7 +244,7 @@ public class RepairArea
         if(carParts[idPart] == 0) {
             carParts[idPart] = quantity;
             workToDo = true;
-            Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics"+quantity,
+            Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",
                     0,Logger.SUCCESS);
             notifyAll();        //notify sleeping mechanics
             return true;
@@ -269,18 +271,32 @@ public class RepairArea
         if(workToDo)
         {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
             Integer[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
-            for(int i: tmpWaitPartCarts)
-            {
-                int tmpPart;
-                if((tmpPart = carNeededPart[i]) != -1)
-                {   if(carParts[tmpPart] != 0) {
-                        carNeededPart[i] = -1;
-                        reserveCarPart[i] = tmpPart; //Reserve part for the car;
-                        carParts[tmpPart]-=1;
-                        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Continue repair car",mechanicId,Logger.SUCCESS);
-                        return CONTINUE_REPAIR_CAR;
+            int size = carsWaitingForParts.numElements();
+            boolean flag = false;
+            while(size-- >0)
+            {   try {
+                    int tmpCar = carsWaitingForParts.read();//gets
+                    int tmpPart;
+                    if((tmpPart= carNeededPart[tmpCar]) != -1)
+                    {   if(carParts[tmpPart] != 0) {
+                            carNeededPart[tmpCar] = -1;
+                            reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
+                            carParts[tmpPart]-=1;
+                            flag = true;
+                            //continue;
+                            // return CONTINUE_REPAIR_CAR;
+                        }
                     }
+                    carsWaitingForParts.write(tmpCar);//and always put back
+                    size--;
+                } catch (MemException e) {
+                    Logger.logException(e);
+                    System.exit(1);
                 }
+            }
+            if(flag)
+            {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Continue repair car",mechanicId,Logger.SUCCESS);
+                return CONTINUE_REPAIR_CAR;
             }
             for(int i = 0; i< carsNeedsCheck.length; i++)
             {   if(carsNeedsCheck[i])

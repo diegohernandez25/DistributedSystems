@@ -43,7 +43,6 @@ public class Park {
         }
         Logger.log(LOCAL,LOCAL,FUNCTION,"Car parked.",id,Logger.SUCCESS);
         cars[carId] = true;
-        System.out.println("RETURNING TRUE");
         return true;
     }
     /**

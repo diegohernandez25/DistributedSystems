@@ -168,7 +168,7 @@ public class Customer extends Thread{
             park.parkCar(repCar,customerId);                        //After the customer is alerted, the customer
             repCar = -1;                                          //parks the replacement car.
         }
-        Logger.log(CLASS,CLASS,FUNCTION,"Enter queue to pay "+repCar,customerId,10);
+        Logger.log(CLASS,CLASS,FUNCTION,"Enter queue to pay ",customerId,10);
         lounge.enterCustomerQueue(customerId,true);         //After the customer is alerted, he/she goes to
                                                                     //the lounge and waits for his/her turn to pay
                                                                     //for the service.
