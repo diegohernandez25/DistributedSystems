@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args)
     {
 
-        OutsideWorld outsideWorld = new OutsideWorld(NUM_CLIENTS);
+        Locations.OutsideWorld outsideWorld = new OutsideWorld(NUM_CLIENTS);
 
         int[] replacementCarKeys = new int[NUM_REPLACEMENT_CARS];
         for(int i = NUM_CLIENTS; i< NUM_CLIENTS + NUM_REPLACEMENT_CARS; i++)
