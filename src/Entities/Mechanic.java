@@ -86,8 +86,12 @@ public class Mechanic extends Thread {
                         fixCar();
                         repairArea.concludeCarRepair(idCurrentCar);                             // Registers repair conclusion
                                                                                                 // on Repair Area
+                        gri.setNumCarsRepaired();                                               // Log additional car repaired
+
                         idCurrentKey = idCurrentCar;
                         park.parkCar(idCurrentCar);                                             // Leaves car at the park
+                        gri.setNumCarsParked(1);                                                // Log Customer car parked
+
                         lounge.alertManagerRepairDone(idCurrentKey);                            // Alerts manager that repair
                                                                                                 // is done
                     }
@@ -108,17 +112,27 @@ public class Mechanic extends Thread {
                                     0, Logger.ERROR);
                             System.exit(1);
                         }
+                        gri.setNumCarsParked(-1);                                               // Log Customer car removed from park
+
                         int carPart = repairArea.checkCar(idCurrentCar);                        // Checks which part the car
                                                                                                 // needs for its repair.
                         if(!repairArea.repairCar(idCurrentCar,carPart))
                         {
                             lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart));   // Requests parts.
+                            gri.setFlagMissingPart(carPart, "T");                          // Log Manager has been advised for missing part
+                            gri.setNumCarWaitingPart(carPart, 1);                          // Log new car waiting for part
+
                             continue;                                                           // Re-starts cycle once again.
                         }
+
+                        gri.setNumPartAvailable(carPart, -1);                              // Log car part being needed
+
                         fixCar();                                                               // Mechanic starts fixing the
-                        // car
+                                                                                                // car
                         repairArea.concludeCarRepair(idCurrentCar);                             // Registers conclusion of
-                        // repair at the repair Area
+                                                                                                // repair at the repair Area
+                        gri.setNumCarsRepaired();                                               // Log additional car repaired
+
                         if(!park.parkCar(idCurrentCar))                                         // Parks the car
                         {   Logger.log(MECHANIC,MECHANIC,RUN,
                                 "Error: The car is already in the park. " +
@@ -126,6 +140,7 @@ public class Mechanic extends Thread {
                                 0, Logger.ERROR);
                             System.exit(1);
                         }
+                        gri.setNumCarsParked(1);                                                // Log repaired car parked
                         lounge.alertManagerRepairDone(idCurrentCar);                            // Alerts manager that the repair
                         // is done
                         continue;                                                               // Goes back to cycle

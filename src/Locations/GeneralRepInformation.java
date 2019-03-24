@@ -366,11 +366,11 @@ public class GeneralRepInformation extends Thread {
     /**
      *  Sets the number of cars waiting for a specific part
      *  @param part the part the cars are waiting for
-     *  @param num the number of cars waiting for the part
+     *  @param num the number of cars waiting for the part. +1 if new car waiting for part, -1 if car no longer needs part
      * */
     public synchronized void setNumCarWaitingPart(int part, int num)
     {
-        this.numCarWaitingPart[part] = num;
+        this.numCarWaitingPart[part] += num;
     }
 
     /**

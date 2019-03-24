@@ -185,6 +185,8 @@ public class Customer extends Thread{
         outsideWorld.waitForRepair(customerId);                     //Customer waits in the outside world until the
                                                                     //his/her car is fixed.
 
+        gri.setCustomerCarRepaired(customerId);                     //Log Customer car has been fixed
+
         if(repKey != -1)                                            //If customer has a replacement car...
         {
             park.parkCar(repKey);                                   //After the customer is alerted, the customer

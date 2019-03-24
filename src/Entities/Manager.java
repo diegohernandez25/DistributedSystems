@@ -83,8 +83,15 @@ public class Manager extends Thread
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
                         indexPart,lounge.requestedNumberPart(indexPart));
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
+                gri.setNumBoughtPart(indexPart, numberParts);               // Log added number of specific car part restocked
+                gri.setNumPartAvailable(indexPart, numberParts);            // Log number of parts now available in stock
+                gri.setNumCarWaitingPart(indexPart, -1);               // Log minus one car needs the part
+
                 lounge.alertStockRefill(indexPart);                         // Alert mechanics that stock has been
                                                                             // renewed
+
+                //FIXME should not be in here
+                gri.setNumPartAvailable(indexPart, -1);                // Log part is going to be in use by Mechanic
             }
 
             /**
@@ -109,6 +116,7 @@ public class Manager extends Thread
                 }
                 else {
                     repairArea.postJob(val);
+                    gri.setNumPostJobs();           // Log additional job posted
                 }
             }
 
