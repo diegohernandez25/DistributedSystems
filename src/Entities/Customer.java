@@ -186,7 +186,7 @@ public class Customer extends Thread{
         Logger.log(CLASS,CLASS,FUNCTION,"Got back car "+car,customerId,10);
         Logger.log(CLASS,NONE,"Operation finished!",0,
                 Logger.SUCCESS);
-        System.exit(1); //FIXME: DELETE
+        //System.exit(1); //FIXME: DELETE
 
     }
 

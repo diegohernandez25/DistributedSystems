@@ -83,20 +83,21 @@ public class Manager extends Thread
                         indexPart,lounge.requestedNumberPart(indexPart));
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
                 lounge.registerStockRefill(indexPart);
+                continue;                                                   //Refills all the asked stock
 
             }
 
             /**
              *      Alert remaining customers to get their fixed cars
              * */
-            else if(!outsideWorld.customersNotYetAtOutsideWorldisEmpty())
+            if(!outsideWorld.customersNotYetAtOutsideWorldisEmpty())
             {
                 outsideWorld.alertRemainingCustomers();
             }
             /**
              *      Alert Currrent Customer.
              * */
-            else if(!lounge.isCustomerFixedCarKeysEmpty())                  // Checks if there are car fixed
+            if(!lounge.isCustomerFixedCarKeysEmpty())                  // Checks if there are car fixed
             {
                 int keyId = lounge.getFixedCarKey();                        // Gets key of fixed car
                 int customerId = lounge.getCustomerFromKey(keyId);          // Gets the customer whom key belongs to
@@ -107,7 +108,7 @@ public class Manager extends Thread
             /**
              *      Attend Customer
              * */
-            else if((val = lounge.attendCustomer())!=-1)                    // Attends customer
+            if((val = lounge.attendCustomer())!=-1)                    // Attends customer
             {
                 if(val == -2)
                 {

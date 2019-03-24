@@ -291,7 +291,7 @@ public class Lounge {
                 }
                 int i = 0;
                 for(;i<usedReplacementCarKeys.length;i++) {
-                    if (usedReplacementCarKeys[i] == customerId)            //Checks if it was given a replacement key
+                    if (usedReplacementCarKeys[i] == customerId)
                         break;
                 }
                 if(i == usedReplacementCarKeys.length)
@@ -599,7 +599,8 @@ public class Lounge {
         Logger.log(MECHANIC,LOCAL,FUNCTION,"Requesting car parts of type "+idType,mechanicId,10);
        if(carPartsToRefill[idType] == 0)
        {    Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
-            carPartsToRefill[idType] = number;
+            //carPartsToRefill[idType] = number;
+            carPartsToRefill[idType] += number;
             return true;
        }
        Logger.log(MECHANIC,LOCAL,FUNCTION,"Request has already been made of type part:"+idType,mechanicId,Logger.WARNING);
@@ -610,7 +611,8 @@ public class Lounge {
    {   String FUNCTION = "registerStockRefill";
        if(carPartsToRefill[idType] != 0)
        {    Logger.log(MANAGER,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
-           carPartsToRefill[idType] = 0;
+            carPartsToRefill[idType] = 0;
+           //carPartsToRefill[idType] -=number;
             return true;
        }
        Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
@@ -653,10 +655,13 @@ public class Lounge {
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
     {   String FUNCTION = "alertRepairDone";
-        if(!customerFixedCarKeys.isEmpty() && customerFixedCarKeys.containsValue(idKey))
+        if(!customerFixedCarKeys.isEmpty())
         {
-            Logger.log(MECHANIC,LOCAL,FUNCTION,
-                    "Car was already registered as repaired. This should not happen",mechanicId,Logger.ERROR);
+            if(customerFixedCarKeys.containsValue(idKey)) {
+                Logger.log(MECHANIC, LOCAL, FUNCTION,
+                        "Car was already registered as repaired. This should not happen", mechanicId, Logger.ERROR);
+                System.exit(1);
+            }
         }
         try {
             customerFixedCarKeys.write(idKey);

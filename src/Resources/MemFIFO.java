@@ -30,6 +30,8 @@ public class MemFIFO<R> extends MemObject<R>
 
    private volatile boolean empty;
 
+   private int numElem;
+
   /**
    *   FIFO instantiation.
    *   The instantiation only takes place if the memory exists.
@@ -44,6 +46,7 @@ public class MemFIFO<R> extends MemObject<R>
      super (storage);
      inPnt = outPnt = 0;
      empty = true;
+     this.numElem= 0;
    }
 
   /**
@@ -62,6 +65,7 @@ public class MemFIFO<R> extends MemObject<R>
         { mem[inPnt] = val;
           inPnt = (inPnt + 1) % mem.length;
           empty = false;
+          this.numElem++;
         }
         else throw new MemException ("Fifo full!");
    }
@@ -85,6 +89,7 @@ public class MemFIFO<R> extends MemObject<R>
           outPnt = (outPnt + 1) % mem.length;
           if(mem.length==1) empty = true;
           else empty = (inPnt == outPnt);
+          this.numElem--;
         }
         else throw new MemException ("Fifo empty!");
      return val;
@@ -113,25 +118,14 @@ public class MemFIFO<R> extends MemObject<R>
     * */
    public boolean containsValue(R val)
    {    if(empty) return false;
-        for (R r : mem) { if (r.equals(val)) return true; }
+        for (R r : mem) {
+            if(r == null) continue;
+            if (r.equals(val)) return true; }
         return false;
    }
 
     public int numElements(){
-       if(mem.length==1)
-       {
-           if(empty) return 0;
-           else return 1;
-       }
-       return Math.abs(outPnt - inPnt);
-    }
-
-    public Integer[] getStorage(){
-        int size = numElements();
-        int index = inPnt;
-        Integer[] array = new Integer[size];
-        for(int i = 0;i<size;i++, index = (index+1) % mem.length) {   array[i] = (Integer) mem[index]; } //FIXME: Fita-cola
-        return array;
+       return numElem;
     }
 
 

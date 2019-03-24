@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int NUM_CLIENTS = 1,
+    public static final int NUM_CLIENTS = 2,
                             NUM_MECHANICS = 1,
                             NUM_REPLACEMENT_CARS = 1,
                             NUM_PART_TYPES = 3;
@@ -29,7 +29,7 @@ public class Main {
         Park park = new Park(NUM_REPLACEMENT_CARS+NUM_CLIENTS, replacementCarKeys);
 
         int[] carParts = {0,0,0};
-        int[] maxCarParts = {3,3,3};
+        int[] maxCarParts = {1,1,1};
         RepairArea repairArea = new RepairArea(NUM_CLIENTS, NUM_PART_TYPES, carParts, maxCarParts);
 
         SupplierSite supplierSite = new SupplierSite(NUM_PART_TYPES);
@@ -51,8 +51,6 @@ public class Main {
             customer[i].start();
 
         manager.start();
-
-
 
 
         for(int i = 0;i<NUM_CLIENTS; i++) {

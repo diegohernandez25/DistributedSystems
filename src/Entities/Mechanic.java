@@ -4,6 +4,7 @@ import Locations.Lounge;
 import Locations.Park;
 import Locations.RepairArea;
 import Loggers.Logger;
+import com.sun.javafx.stage.FocusUngrabEvent;
 
 public class Mechanic extends Thread {
 
@@ -64,7 +65,7 @@ public class Mechanic extends Thread {
      *  */
     @Override
     public void run()
-    {
+    {   String FUNCTION = "run";
         int idCurrentCar;
         int idCurrentKey;
         while(true)
@@ -79,12 +80,17 @@ public class Mechanic extends Thread {
                                                                                                 // parts he/she repairs it
                     {
                         fixCar();
+                        Logger.log(MECHANIC,MECHANIC, FUNCTION,"Parking continue and concluded car",mechanicId,10);
                         repairArea.concludeCarRepair(idCurrentCar,mechanicId);                  // Registers repair conclusion
                                                                                                 // on Repair Area
                         idCurrentKey = idCurrentCar;
-                        park.parkCar(idCurrentCar,mechanicId);                                  // Leaves car at the park
+                        Logger.log(MECHANIC,MECHANIC, FUNCTION,"Going to park customer car"+idCurrentCar,mechanicId,10);
+                        park.parkCar(idCurrentCar,mechanicId);
+                        idCurrentCar=-1;// Leaves car at the park
+                        Logger.log(MECHANIC,MECHANIC, FUNCTION,"Going to alert manager about fixed car" +
+                                "and give back customer key"+idCurrentKey,mechanicId,10);
                         lounge.alertManagerRepairDone(idCurrentKey,mechanicId);                 // Alerts manager that repair
-                                                                                                // is done
+                        idCurrentKey=-1;                                                                        // is done
                     }
                     else{
                         Logger.log(MECHANIC,MECHANIC,RUN,

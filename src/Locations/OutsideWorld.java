@@ -20,7 +20,7 @@ public class OutsideWorld {
      * */
     boolean[] waitingForRepair;
 
-    MemFIFO<Integer> customersNotYetAtOutsideWorld;
+    volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
     /**
      *
      * Instantiation of the Outside World
@@ -69,23 +69,23 @@ public class OutsideWorld {
      * */
     public synchronized void alertCustomer(Integer customerId) //TODO: Does it need to be synchronized?
     {   String FUNCTION = "alertCustomer";
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
         if(!waitingForRepair[customerId]) //if customer not yet on the outside world
         {
             try {
                 customersNotYetAtOutsideWorld.write(customerId);
                 Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer "+customerId+" not yet at the outside world",0, Logger.WARNING);
-                return;
+                //return;
             } catch (MemException e) {
                 Logger.logException(e);
                 System.exit(1);
             }
         }
-        //else
-        //{
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
-        waitingForRepair[customerId]=false;
-        //}
+        else
+        {
+            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, Logger.WARNING);
+            waitingForRepair[customerId]=false;
+        }
         //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, Logger.WARNING);
         notifyAll();
     }
@@ -99,17 +99,17 @@ public class OutsideWorld {
                 int tmpCustomerId =customersNotYetAtOutsideWorld.read();
                 if(waitingForRepair[tmpCustomerId])
                 {
-                    Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+tmpCustomerId+" about fixed car",0, Logger.WARNING);
+                    Logger.log(MANAGER,LOCAL,FUNCTION,"Notifying customer "+tmpCustomerId+" about fixed car",0, Logger.WARNING);
                     waitingForRepair[tmpCustomerId] = false;
                     continue;
                 }
-                Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer "+tmpCustomerId+" not yet at the outside world",0, Logger.WARNING);
+                Logger.log(MANAGER,LOCAL,FUNCTION,"Customer "+tmpCustomerId+" not yet at the outside world",0, Logger.WARNING);
                 customersNotYetAtOutsideWorld.write(tmpCustomerId);
             } catch (MemException e) {
                 Logger.logException(e);
             }
         }
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, Logger.WARNING);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, Logger.WARNING);
         notifyAll();
     }
     public synchronized boolean customersNotYetAtOutsideWorldisEmpty()
