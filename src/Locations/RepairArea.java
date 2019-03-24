@@ -26,6 +26,12 @@ public class RepairArea
                         WAITING_PARTS = 2,
                         ON_REPAIR = 3,
                         REPAIRED = 4;
+
+    /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
+
     /**
      *      Cars waiting for parts
      *
@@ -81,8 +87,10 @@ public class RepairArea
     /**
      *
      * */
-    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts)
+    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GeneralRepInformation gri)
     {
+        this.gri = gri;
+
         this.rangeCarPartTypes = rangeCarPartTypes;
         this.carParts = carParts;
         this.statusOfCars = new int[totalNumCars];
@@ -203,6 +211,10 @@ public class RepairArea
                     Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
                             "Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],
                             mechanicId,Logger.SUCCESS);
+
+                    gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);  // Log minus one car needs the part
+                    gri.setNumPartAvailable(reserveCarPart[tmp], -1);   // Log minus one car part available in stock
+
                     reserveCarPart[tmp] = -1; //part car taken
                     continue; //does not put back
                 }
@@ -235,6 +247,7 @@ public class RepairArea
         Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area"
                 ,mechanicId,Logger.SUCCESS);
         statusOfCars[idCar] = REPAIRED;
+        gri.setNumCarsRepaired();                                               // Log additional car repaired
     }
 
     /**
@@ -252,6 +265,7 @@ public class RepairArea
         if(carParts[idPart] == 0) {
             carParts[idPart] = quantity;
             workToDo = true;
+            gri.setNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
             Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",
                     0,Logger.SUCCESS);
             notifyAll();        //notify sleeping mechanics
@@ -342,6 +356,7 @@ public class RepairArea
      * */
     public synchronized void postJob(int carID)
     {   String FUNCTION = "postJob";
+        gri.setNumPostJobs();           // Log additional job posted
         Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"New car needs to be checked. Notifying managers",
                 0,Logger.WARNING);
         carsNeedsCheck[carID] = true;

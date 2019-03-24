@@ -4,12 +4,18 @@ import Locations.Lounge;
 import Locations.OutsideWorld;
 import Locations.RepairArea;
 import Locations.SupplierSite;
+import Locations.GeneralRepInformation;
 import Loggers.Logger;
 
 public class Manager extends Thread
 {
-    public String   MANAGER = "Manager",
+    private String  MANAGER = "Manager",
                     RUN     = "Run";
+    /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
+
     /**
      *  Manager identification
      *
@@ -52,13 +58,14 @@ public class Manager extends Thread
      *      @param lounge used lounge.
      *      @param supplierSite used supplier site.
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea)
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea, GeneralRepInformation gri)
     {
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
         this.outsideWorld = outsideWorld;
         this.repairArea = repairArea;
+        this.gri = gri;
     }
 
     /**
@@ -81,6 +88,8 @@ public class Manager extends Thread
             {
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
                         indexPart,lounge.requestedNumberPart(indexPart));
+                gri.setNumBoughtPart(indexPart, numberParts);               // Log added number of specific car part restocked
+                gri.setFlagMissingPart(indexPart, "F");                // Log part is no longer needed for restock
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
                 lounge.registerStockRefill(indexPart);
                 continue;                                                   //Refills all the asked stock
@@ -95,7 +104,7 @@ public class Manager extends Thread
                 outsideWorld.alertRemainingCustomers();
             }
             /**
-             *      Alert Currrent Customer.
+             *      Alert Current Customer.
              * */
             if(!lounge.isCustomerFixedCarKeysEmpty())                  // Checks if there are car fixed
             {

@@ -1,5 +1,6 @@
 package Entities;
 
+import Locations.GeneralRepInformation;
 import Locations.Lounge;
 import Locations.OutsideWorld;
 import Locations.Park;
@@ -10,6 +11,11 @@ public class Customer extends Thread{
 
     private static final String CLASS       = "Customer";
     private static final String NONE        = "None";
+
+    /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
 
     /**
      *  Customer identification.
@@ -93,16 +99,19 @@ public class Customer extends Thread{
      *      @param requiresCar customer needs car.
      *
      * */
-    public Customer(int customerId, boolean requiresCar, int car, Lounge lounge, Park park, OutsideWorld outsideWorld)
+    public Customer(int customerId, boolean requiresCar, int car, Lounge lounge, Park park, OutsideWorld outsideWorld, GeneralRepInformation gri)
     {
         this.customerId = customerId;
         this.requiresCar = requiresCar;
+        if(requiresCar)
+            gri.setCustomerNeedsReplacement(customerId);            //Logs Customer needs a replacement vehicle
         this.hasCar = true;
         this.lounge = lounge;
         this.park = park;
         this.car = car;
         this.outsideWorld = outsideWorld;
         this.repCar = -1;
+        this.gri = gri;
     }
 
     /**
@@ -139,7 +148,9 @@ public class Customer extends Thread{
         //park.parkCar(key.getKeyValue(),car);                      //Customer parks his/her car.
         Logger.log(CLASS,CLASS,FUNCTION,"Parking car: "+car,customerId,10);
         park.parkCar(car,customerId);
+        gri.setNumCarsParked(1);                                    //Logs Customer parked his car
         car = null;                                                 //Customer does not have a car anymore.
+        gri.setCustomerVehicle(customerId, "-");             //Logs Customer doesn't have their car anymore
         Logger.log(CLASS,CLASS,FUNCTION,"Entering queue",customerId,10);
         lounge.enterCustomerQueue(customerId,false);        //Customer wants to request repair, so it
                                                                     //waits for attendance.
@@ -156,17 +167,24 @@ public class Customer extends Thread{
             Logger.log(CLASS,CLASS,FUNCTION,"Given rental key "+repKey,customerId,10);
             repCar = park.getCar(repKey,customerId);                //Gets replacement car in the park.
             repKey = repCar;
+            gri.setNumReplacementParked(-1);                        //Logs replacement car removed from park
+            gri.setCustomerVehicle(customerId,                      //Logs Customer changing cars to a replacement car
+                    "R"+String.valueOf(repKey-lounge.customerCarKeysSize()));
             Logger.log(CLASS,CLASS,FUNCTION,"Got rental car "+repCar,customerId,10);
         }
         else lounge.exitLounge(customerId);                         //...else, the Customer just leaves the Lounge.
         Logger.log(CLASS,CLASS,FUNCTION,"Waiting for repair ",customerId,Logger.WARNING);
         outsideWorld.waitForRepair(customerId);                     //Customer waits in the outside world until the
                                                                     //his/her car is fixed.
+        gri.setCustomerCarRepaired(customerId);                     //Log Customer car has been fixed
+
         Logger.log(CLASS,CLASS,FUNCTION,"repair done getting to office ",customerId,10);
         if(repCar != -1)                                            //If customer has a replacement car...
         {   Logger.log(CLASS,CLASS,FUNCTION,"Parking replacement car "+repCar,customerId,10);
             park.parkCar(repCar,customerId);                        //After the customer is alerted, the customer
-            repCar = -1;                                          //parks the replacement car.
+            gri.setNumReplacementParked(1);                         //Logs replacement car parking in park
+            repCar = -1;                                            //parks the replacement car.
+            gri.setCustomerVehicle(customerId, "-");         //Logs Customer doesn't have replacement car anymore
         }
         Logger.log(CLASS,CLASS,FUNCTION,"Enter queue to pay ",customerId,10);
         lounge.enterCustomerQueue(customerId,true);         //After the customer is alerted, he/she goes to
@@ -183,6 +201,8 @@ public class Customer extends Thread{
                                                                     //of his/her car.
         Logger.log(CLASS,CLASS,FUNCTION,"Got back car Key "+key,customerId,10);
         car = park.getCar(key,customerId);                          //Customer gets his/her car from the park.
+        gri.setNumCarsParked(-1);                                   //Logs Customer removed their car from park
+        gri.setCustomerVehicle(customerId, String.valueOf(customerId)); //Logs Customer has their own car again
         Logger.log(CLASS,CLASS,FUNCTION,"Got back car "+car,customerId,10);
         Logger.log(CLASS,NONE,"Operation finished!",0,
                 Logger.SUCCESS);

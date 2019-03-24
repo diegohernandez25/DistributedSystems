@@ -45,6 +45,11 @@ public class Lounge {
                                 ALERTING_MANAGER = 3;
 
     /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
+
+    /**
      *  Current state of Manager
      *
      *      @serialField stateManager
@@ -158,8 +163,11 @@ public class Lounge {
     /**
      *
      * */
-    public Lounge(int numCustomers, int numMechanics,int replacementKeys[], int numTypes)
+    public Lounge(int numCustomers, int numMechanics,int replacementKeys[], int numTypes, GeneralRepInformation gri)
     {
+        this.gri = gri;
+        gri.setNumReplacementParked(replacementKeys.length);
+
         this.stateManager = READ_PAPER;
         this.numTypes = numTypes;
         this.stateCustomers = new int[numCustomers];
@@ -219,6 +227,7 @@ public class Lounge {
      * */
     public synchronized boolean enterCustomerQueue(int customerId, boolean payment)
     {   String FUNCTION = "enterCustomerQueue";
+        gri.addCustomersQueue();                                    //Logs Customer entering queue
         if(payment)
         {   try {
             paymentQueue.write(customerId);
@@ -249,7 +258,7 @@ public class Lounge {
         Logger.log(CUSTOMER, LOCAL, FUNCTION,
                 "Customer Attended", customerId, Logger.SUCCESS);
         stateCustomers[customerId] = ATTENDED;
-
+        gri.removeCustomersQueue();                                 //Logs Customer exists queue
         return true;
     }
 
@@ -374,6 +383,7 @@ public class Lounge {
     public synchronized int getReplacementCarKey(int customerId)
     {   //  If there are keys available, the customer will take one.
         String FUNCTION = "getReplacementCarKey";
+        gri.addCustomersReplacementQueue();                     //Logs Customer enters replacement car queue
         if(!replacementCarKeys.isEmpty())
         {   Logger.log(CUSTOMER,LOCAL,FUNCTION,"Replacement Car keys is not empty",customerId,10);
             try
@@ -417,6 +427,7 @@ public class Lounge {
         }
         Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer waken & getting replacement car",customerId,Logger.WARNING);
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+        gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
         try {
             int tmp = replacementCarKeys.read();
             //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
@@ -510,6 +521,13 @@ public class Lounge {
      * */
     public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
+    /**
+     *  Checks the size of Customer Car Keys
+     *
+     *      @return int size of the array, useful to check the total number of clients
+     *
+     * */
+    public int customerCarKeysSize() { return customerCarKeys.length; }
 
     /**
      *  Checks if queue of keys of cars to be repaired is empty
@@ -599,6 +617,7 @@ public class Lounge {
         Logger.log(MECHANIC,LOCAL,FUNCTION,"Requesting car parts of type "+idType,mechanicId,10);
        if(carPartsToRefill[idType] == 0)
        {    Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
+           gri.setFlagMissingPart(idType, "T");                          // Log Manager has been advised for missing part
             //carPartsToRefill[idType] = number;
             carPartsToRefill[idType] += number;
             return true;
