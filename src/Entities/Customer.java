@@ -145,9 +145,9 @@ public class Customer extends Thread{
         int key = car;
         livingNormalLife();                                         //Customers waits until car needs a fix.
         //park.parkCar(key.getKeyValue(),car);                      //Customer parks his/her car.
-        park.parkCar(car);
+        park.parkCar(car,customerId);
         car = null;                                                 //Customer does not have a car anymore.
-        lounge.enterCustomerQueue(customerId,false);                //Customer wants to request repair, so it
+        lounge.enterCustomerQueue(customerId,false);        //Customer wants to request repair, so it
                                                                     //waits for attendance.
         lounge.giveManagerCarKey(key, customerId);                  //Customer gives key to manager.
         key = -1;
@@ -157,7 +157,7 @@ public class Customer extends Thread{
             repKey = lounge.getReplacementCarKey(customerId);       //Customer waits for a key of a replacement car
                                                                     //and grabs it from the lounge.
 
-            repCar = park.getCar(key);                //Gets replacement car in the park.
+            repCar = park.getCar(repKey,customerId);                //Gets replacement car in the park.
         }
         else lounge.exitLounge(customerId);                         //...else, the Customer just leaves the Lounge.
         outsideWorld.waitForRepair(customerId);                     //Customer waits in the outside world until the
@@ -165,7 +165,7 @@ public class Customer extends Thread{
 
         if(repKey != -1)                                            //If customer has a replacement car...
         {
-            park.parkCar(repKey);                                   //After the customer is alerted, the customer
+            park.parkCar(repKey,customerId);                        //After the customer is alerted, the customer
             repCar = null;                                          //parks the replacement car.
         }
         lounge.enterCustomerQueue(customerId,true);         //After the customer is alerted, he/she goes to
@@ -173,12 +173,12 @@ public class Customer extends Thread{
                                                                     //for the service.
         if(repKey != -1)
         {
-            lounge.returnReplacementCarKey(repKey);
+            lounge.returnReplacementCarKey(repKey,customerId);
                                                                     //Customer returns the key of the replacement
         }
         key = lounge.payForTheService(customerId);                  //Customer pays the service and gets the keys
                                                                     //of his/her car.
-        car = park.getCar(key);                                     //Customer gets his/her car from the park.
+        car = park.getCar(key,customerId);                          //Customer gets his/her car from the park.
         Logger.log(CLASS,NONE,"Operation finished!",0,
                 Logger.SUCCESS);
 

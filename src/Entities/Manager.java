@@ -80,12 +80,18 @@ public class Manager extends Thread
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
                         indexPart,lounge.requestedNumberPart(indexPart));
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
-                lounge.alertStockRefill(indexPart);                         // Alert mechanics that stock has been
-                                                                            // renewed
+                lounge.registerStockRefill(indexPart);
             }
 
             /**
-             *      Alert customers to get their fixed cars
+             *      Alert remaining customers to get their fixed cars
+             * */
+            else if(!outsideWorld.customersNotYetAtOutsideWorldisEmpty())
+            {
+                outsideWorld.alertRemainingCustomers();
+            }
+            /**
+             *      Alert Currrent Customer.
              * */
             else if(!lounge.isCustomerFixedCarKeysEmpty())                  // Checks if there are car fixed
             {
@@ -108,8 +114,6 @@ public class Manager extends Thread
                     repairArea.postJob(val);
                 }
             }
-
-
         }
     }
 

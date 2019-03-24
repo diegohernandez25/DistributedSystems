@@ -3,6 +3,8 @@ package Locations;
 import Loggers.Logger;
 import Resources.MemException;
 import Resources.MemFIFO;
+import sun.rmi.runtime.Log;
+
 import java.util.Random;
 
 public class RepairArea
@@ -14,7 +16,6 @@ public class RepairArea
     private static String   MANAGER     = "Manager",
                             MECHANIC    = "Mechanic",
                             REPAIR_AREA = "Repair Area";
-
 
     /**
      *      States of the cars.
@@ -110,12 +111,14 @@ public class RepairArea
      *
      *      @return the id of the part needed for repair
      * */
-    public int checkCar(int idCar)
-    {   Random rand = null;
+    public int checkCar(int idCar, int mechanicId)
+    {   String FUNCTION = "checkCar";
+        Random rand = null;
         int randomNum = rand.nextInt(rangeCarPartTypes)+1;
         assert (randomNum <= rangeCarPartTypes && randomNum >= 0);
         statusOfCars[idCar] = CHECKED;
         carNeededPart[idCar] = randomNum; //FIXME: Needed??
+        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car "+idCar+" needs partType "+randomNum,mechanicId,10);
         return randomNum;
     }
 
@@ -139,21 +142,24 @@ public class RepairArea
      *
      *      @return true ready for repair. False otherwise
      * */
-    public synchronized boolean repairCar(int carId, int partId)
-    {
+    public synchronized boolean repairCar(int carId, int partId, int mechanicId)
+    {   String FUNCTION = "repairCar";
         assert (partId <= rangeCarPartTypes);
         if(carParts[carId]>0)
-        {
+        {   Logger.log(MECHANIC,REPAIR_AREA,"Car is ready for repair. Parts available",mechanicId,Logger.SUCCESS);
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
             carParts[partId]--;
             return true;
         }
-        statusOfCars[carId] = WAITING_PARTS;    //else
+        Logger.log(MECHANIC,REPAIR_AREA,"Car part "+carId+" not available. Requesting part",
+                mechanicId,Logger.WARNING);
+        statusOfCars[carId] = WAITING_PARTS;
         try {
             carsWaitingForParts.write(carId);
         } catch (MemException e) {
             Logger.logException(e);
+            System.exit(1);
         }
         return false;
     }
@@ -174,10 +180,10 @@ public class RepairArea
      *
      *      @return id of the car ready for repair.
      * */
-    public synchronized int repairWaitingCarWithPartsAvailable()
-    {   String REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE = "repairWaitingCarWithPartsAvailable";
+    public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId)
+    {   String FUNCTION = "repairWaitingCarWithPartsAvailable";
         int length = carsWaitingForParts.numElements();
-        Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+        Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
                 "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
         int tmp = -1;
         while (length >= 0)
@@ -186,19 +192,23 @@ public class RepairArea
             {   tmp = carsWaitingForParts.read();
                 if(reserveCarPart[tmp] != -1)
                 {   statusOfCars[tmp] = ON_REPAIR;
-                    reserveCarPart[tmp] = -1;
+                    Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
+                            "Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],
+                            mechanicId,Logger.SUCCESS);
+                    reserveCarPart[tmp] = -1; //part car taken
                     continue;
                 }
                 carsWaitingForParts.write(tmp);
             } catch (MemException e) { Logger.logException(e); }
         }
         if(length == -1)
-        {   Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
-                    "There was no parts reserved",0,Logger.WARNING);
+        {   Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
+                    "There was no parts reserved",0,Logger.ERROR);
+            System.exit(1);
         }
-        Logger.log(REPAIR_AREA,MECHANIC,REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+        Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
                 "Queue: "+carsWaitingForParts.toString(),0,Logger.WARNING);
-        return tmp;                                                         //returns the id of the car which got repaired.
+        return tmp;
     }
 
     /**
@@ -206,14 +216,17 @@ public class RepairArea
      *
      *      @param idCar    - Id of the car.
      * */
-    public void concludeCarRepair(int idCar) {
-        String CONCLUDE_CAR_REPAIR = "Conclude Car Repair";
+    public void concludeCarRepair(int idCar, int mechanicId) {
+        String FUNCTION = "ConcludeCarRepair";
         if (statusOfCars[idCar] == REPAIRED)
         {
-            Logger.log(REPAIR_AREA,MECHANIC,CONCLUDE_CAR_REPAIR,
-                    "Error: Car was registeres as repaired before, this should not happen",0,Logger.ERROR);
+            Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
+                    "Error: Car was registered as repaired before, this should not happen"
+                    ,mechanicId,Logger.ERROR);
             System.exit(1);
         }
+        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area"
+                ,mechanicId,Logger.SUCCESS);
         statusOfCars[idCar] = REPAIRED;
     }
 
@@ -226,11 +239,14 @@ public class RepairArea
      *      @return true - refill done to accordance. false - There shouldn't be a refill.
      * */
     public boolean refillCarPartStock(int idPart, int quantity)
-    {
+    {   String FUNCTION = "refillCarPartStock";
         assert idPart <= rangeCarPartTypes;
+        Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Refilling part: "+idPart+". number: "+quantity,0,10);
         if(carParts[idPart] == 0) {
             carParts[idPart] = quantity;
             workToDo = true;
+            Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics"+quantity,
+                    0,Logger.SUCCESS);
             notifyAll();        //notify sleeping mechanics
             return true;
         }
@@ -245,70 +261,60 @@ public class RepairArea
      * @return the maximum number of storage for the part
      * */
     public int getMaxPartStock(int partId)
-    {
-        assert (partId <= rangeCarPartTypes);
+    {   assert (partId <= rangeCarPartTypes);
         return maxCarPartsNumber[partId];
     }
 
-    /**
-     * Mechanic sleeps until a new car is in need for repair or when a car part arrived.
-     * */
-    public synchronized void readPaper(int mechanicId) {
-        String READ_PAPER = "readPaper";
-        //FIXME when to put workToDo= false?? THIS IS A CASE OF DEADLOCK!
-
-        while (!workToDo) {
-            try {
+    public synchronized int findNextTask(int mechanicId)
+    {   String FUNCTION = "findNextTask";
+        int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3;
+        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"finding next task",mechanicId,10);
+        if(workToDo)
+        {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
+            int[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
+            for(int i: tmpWaitPartCarts)
+            {
+                int tmpPart;
+                if((tmpPart = carNeededPart[i]) != -1)
+                {   if(carParts[tmpPart] != 0) {
+                        carNeededPart[i] = -1;
+                        reserveCarPart[i] = tmpPart; //Reserve part for the car;
+                        carParts[tmpPart]-=1;
+                        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Continue repair car",mechanicId,Logger.SUCCESS);
+                        return CONTINUE_REPAIR_CAR;
+                    }
+                }
+            }
+            for(int i = 0; i< carsNeedsCheck.length; i++)
+            {   if(carsNeedsCheck[i])
+                {   carsNeedsCheck[i] =false;
+                    Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Check a car and repair it",
+                            mechanicId,Logger.SUCCESS);
+                    return REPAIR_NEW_CAR;
+                }
+            }
+            workToDo = false;
+        }
+        while (!workToDo)
+        {   try {
+                Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic is sleeping",mechanicId,Logger.WARNING);
                 wait();
             } catch (InterruptedException e) {
                 Logger.logException(e);
             }
         }
-        Logger.log(MECHANIC, REPAIR_AREA, READ_PAPER, "Mechanic " + mechanicId + " has waken.", mechanicId, Logger.SUCCESS);
-    }
-
-
-    public synchronized int findNextTask()
-    {   int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3;
-        String FIND_NEXT_TASK = "findNextTask";
-        if(!workToDo) {
-            {   int[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
-                for(int i: tmpWaitPartCarts)
-                {
-                    int tmpPart;
-                    if((tmpPart = carNeededPart[i]) != -1)
-                    {   if(carParts[tmpPart] != 0) {
-                            carNeededPart[i] = -1;
-                            reserveCarPart[i] = tmpPart; //Reserve part for the car;
-                            carParts[tmpPart]-=1;
-                            return CONTINUE_REPAIR_CAR;
-                        }
-                    }
-                }
-                for(int i = 0; i< carsNeedsCheck.length; i++)
-                {   if(carsNeedsCheck[i])
-                    {   carsNeedsCheck[i] =false;
-                        return REPAIR_NEW_CAR;
-                    }
-                }
-                workToDo = false;
-            }
-            while (!workToDo)
-            {   try {
-                    Logger.log(MECHANIC,REPAIR_AREA,FIND_NEXT_TASK,"Mechanic is sleeping",0,Logger.WARNING);
-                    wait();
-                } catch (InterruptedException e) {
-                    Logger.logException(e);
-                }
-            }
-        }
-        Logger.log(MECHANIC,REPAIR_AREA,FIND_NEXT_TASK,"Mechanic has woken",0,Logger.SUCCESS);
+        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic has woken",mechanicId,Logger.SUCCESS);
         return WAKEN;
     }
 
-
+    /**
+     * Alerts that a new car needs to be checked.
+     * */
     public synchronized void postJob(int carID)
-    {   carsNeedsCheck[carID] = true;
+    {   String FUNCTION = "postJob";
+        Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"New car needs to be checked. Notifying managers",
+                0,Logger.WARNING);
+        carsNeedsCheck[carID] = true;
         workToDo = true;                        //notify sleeping mechanics
         notifyAll();
     }

@@ -1,8 +1,12 @@
 package Locations;
 
+import Loggers.Logger;
+
 import java.util.HashMap;
 
 public class Park {
+    public static String    LOCAL       = "Park";
+
 
     private static boolean[] cars;
     /**
@@ -17,10 +21,17 @@ public class Park {
      *Park Car.
      *@return Operation status.
      * */
-    public synchronized boolean parkCar(Integer carId)
-    {
+    public synchronized boolean parkCar(Integer carId, int id)
+    {   String FUNCTION = "parkCar";
         assert(carId < cars.length);
-        if(cars[carId]) return false;
+        Logger.log(LOCAL,LOCAL,FUNCTION,"Parking car",id,10);
+        if(cars[carId])
+        {
+            Logger.log(LOCAL,LOCAL,FUNCTION,"Car is already parked. This should not happend",id,Logger.ERROR);
+            System.exit(1);
+            return false;
+        }
+        Logger.log(LOCAL,LOCAL,FUNCTION,"Car parked.",id,Logger.SUCCESS);
         cars[carId] = true;
         return true;
     }
@@ -28,10 +39,15 @@ public class Park {
      *Gets Car.
      *@return the car.
      * */
-    public synchronized Integer getCar(Integer carId)
-    {
+    public synchronized Integer getCar(Integer carId, int id)
+    {   String FUNCTION = "getCar";
         assert(carId < cars.length);
-        if(!cars[carId]) return -1;
+        Logger.log(LOCAL,LOCAL,FUNCTION,"Getting Car",id,10);
+        if(!cars[carId])
+        {   Logger.log(LOCAL,LOCAL,FUNCTION,"Car is not parked. This should not happend",id,Logger.ERROR);
+            System.exit(1);
+            return -1;
+        }
         cars[carId] = false;
         return carId;
     }
