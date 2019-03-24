@@ -55,21 +55,21 @@ public class Lounge {
      *      @serialField stateManager
      *
      * */
-    private int stateManager;
+    private volatile int stateManager;
 
     /**
      *  Current states of customers.
      *
      *      @serialField stateCustomers
      * */
-    private int[] stateCustomers;
+    private volatile int[] stateCustomers;
 
     /**
      *  Current states of mechanics.
      *
      *      @serialField stateMechanics
      * */
-    private int[] stateMechanics;
+    private volatile int[] stateMechanics;
 
     /**
      *  All the Keys of Replacement Cars
@@ -83,7 +83,7 @@ public class Lounge {
      *
      *      @serialField  usedReplacementCarKeys
      * */
-    private int[] usedReplacementCarKeys;
+    private volatile int[] usedReplacementCarKeys;
 
     /**
      *  All the Keys of Customer Cars
@@ -92,7 +92,7 @@ public class Lounge {
      *
      * */
 
-    private int[] customerCarKeys; //TODO Should have the length of total users
+    private volatile int[] customerCarKeys; //TODO Should have the length of total users
 
     /**
      *  Queue of Car Keys to be repaired
@@ -101,14 +101,14 @@ public class Lounge {
      *
      * */
 
-    private MemFIFO<Integer> carKeysToRepairQueue;
+    private volatile MemFIFO<Integer> carKeysToRepairQueue;
     /**
      *  Queue of car parts needed to be replenished
      *
      *      @serialField carPartsQueue
      *
      * */
-    private int numTypes;
+    private volatile int numTypes;
 
     /**
      *      All the Keys of Customer Fixed Cars
@@ -116,7 +116,7 @@ public class Lounge {
      *      @serialField customerFixedCarKeys
      *
      * */
-    private MemFIFO<Integer> customerFixedCarKeys;
+    private volatile MemFIFO<Integer> customerFixedCarKeys;
     /**
      *      Queue of ids of waiting customers
      *
@@ -131,14 +131,14 @@ public class Lounge {
      *          @serialField waitingReplacementKey
      *
      * */
-    private MemFIFO<Integer> waitingReplacementKey;
+    private volatile MemFIFO<Integer> waitingReplacementKey;
 
 
     /**
      *      Stack of clients which are waiting for payment
      *      @serialField paymentQueue
      * */
-    private MemFIFO<Integer> paymentQueue;
+    private volatile MemFIFO<Integer> paymentQueue;
 
     /**
      * Array of car parts that needs to be refilled.
@@ -147,19 +147,26 @@ public class Lounge {
      * Alert: Be careful with concurrency.
      * @serialField carPartsToRefill
      * */
-    private int[] carPartsToRefill;
+    private volatile int[] carPartsToRefill;
 
 
     /**
      * Array with the purpose of getting the id of the customer with the car Key id as an index
      * @serialField memKeyCustomers
      * */
-    private int[] memKeysCustomers;
+    private volatile int[] memKeysCustomers;
 
     /**
      * Header of the headReplacementKeys.
      * */
-    private int headReplacementKeys;
+    private volatile int headReplacementKeys;
+
+    /**
+     *
+     * */
+    private volatile boolean[] customerFinished;
+
+
     /**
      *
      * */
@@ -173,10 +180,12 @@ public class Lounge {
         this.stateCustomers = new int[numCustomers];
         this.customerCarKeys = new int[numCustomers];
         this.memKeysCustomers = new int[numCustomers];
+        this.customerFinished = new boolean[numCustomers];
         for (int i = 0; i<stateCustomers.length; i++) {
             this.stateCustomers[i] = NORMAL_LIFE;
             this.customerCarKeys[i] = -1;
             this.memKeysCustomers[i] = -1;
+            this.customerFinished[i] = false;
         }
 
         this.stateMechanics = new int[numMechanics];
@@ -214,7 +223,6 @@ public class Lounge {
 
     }
 
-
     /**
      *  Customer enters queue to be attended by the Manager.
      *
@@ -231,8 +239,7 @@ public class Lounge {
         if(payment)
         {   try {
             paymentQueue.write(customerId);
-            Logger.log(CUSTOMER, LOCAL, FUNCTION,
-                    "Customer Entered waiting queue for payment", customerId, 10);
+            //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Entered waiting queue for payment", customerId, 10);
 
             }
             catch (MemException e) { Logger.logException(e); }
@@ -240,8 +247,7 @@ public class Lounge {
         try {
             stateCustomers[customerId] = WAITING_ATTENDENCE;
             customerQueue.write(customerId);
-            Logger.log(CUSTOMER, LOCAL, FUNCTION,
-                    "Customer Entered waiting queue for attendance", customerId, 10);
+            //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Entered waiting queue for attendance", customerId, 10);
         } catch (MemException e) {
             Logger.logException(e);
             return false;
@@ -249,14 +255,12 @@ public class Lounge {
 
         while (stateCustomers[customerId] != ATTENDING)
         {
-            Logger.log(CUSTOMER, LOCAL, FUNCTION,
-                    "Customer Waiting for its turn", customerId, Logger.WARNING);
+            //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Waiting for its turn", customerId, Logger.WARNING);
 
             try { wait();}
             catch(InterruptedException e){ }
         }
-        Logger.log(CUSTOMER, LOCAL, FUNCTION,
-                "Customer Attended", customerId, Logger.SUCCESS);
+        //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Attended", customerId, Logger.SUCCESS);
         stateCustomers[customerId] = ATTENDED;
         gri.removeCustomersQueue();                                 //Logs Customer exists queue
         return true;
@@ -272,7 +276,7 @@ public class Lounge {
     public synchronized int attendCustomer()
     {   String FUNCTION = "attendCustomer";
         if (customerQueue.isEmpty()) {
-            Logger.log(MANAGER, LOCAL,FUNCTION,"There are no clients on queue",0,10);
+            //Logger.log(MANAGER, LOCAL,FUNCTION,"There are no clients on queue",0,10);
             if(!paymentQueue.isEmpty())
             {
                 Logger.log(MANAGER, LOCAL,FUNCTION,"Payment queue should be empty",0,Logger.ERROR);
@@ -283,42 +287,34 @@ public class Lounge {
         try {
             int customerId = customerQueue.read();
             stateCustomers[customerId] = ATTENDING;
-            Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" getting attended. Notifying all"
-                    ,0,Logger.WARNING);
+            //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" getting attended. Notifying all",0,Logger.WARNING);
             notifyAll();
-            Logger.log(MANAGER, LOCAL,FUNCTION,"Moves on"
-                    ,0,Logger.SUCCESS);
+            Logger.log(MANAGER, LOCAL,FUNCTION,"Moves on",0,Logger.SUCCESS);
             if(!paymentQueue.isEmpty() && paymentQueue.peek() == customerId){                          //Customer wants to make payment
-                Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" wants to make payment"
-                        ,0,10);
+                //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" wants to make payment",0,10);
                 if(paymentQueue.read()!=customerId)
                 {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,
-                            "Customer to be attended should be the same customer to receive payment"
-                            ,0,Logger.ERROR);
+                    Logger.log(MANAGER, LOCAL,FUNCTION,"Customer to be attended should be the same customer to receive payment",0,Logger.ERROR);
                     System.exit(1);
                 }
                 int i = 0;
+                boolean flag = false;
                 for(;i<usedReplacementCarKeys.length;i++) {
                     if (usedReplacementCarKeys[i] == customerId)
+                    {   flag = true;
                         break;
+                    }
                 }
-                if(i == usedReplacementCarKeys.length)
+                /*if(i == usedReplacementCarKeys.length)
                 {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,
-                            "Customer "+customerId+" did not request a replacement car"
-                            ,0,Logger.WARNING);
+                    Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" did not request a replacement car",0,Logger.WARNING);
                     i--;                 //FIXME: Fita cola
-                }
-                else {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,
-                            "Manager is waiting for the replacement key taken by customer "+customerId
-                            ,0,Logger.WARNING);
-                }
-                Logger.log(MANAGER, LOCAL,FUNCTION,
-                        "Manager is waiting for the payment by customer "+customerId
-                        ,0,Logger.WARNING);
-                while (usedReplacementCarKeys[i] == customerId
+                }*/
+                /*else {
+                    Logger.log(MANAGER, LOCAL,FUNCTION,"Manager is waiting for the replacement key taken by customer "+customerId  ,0,Logger.WARNING);
+                }*/
+                Logger.log(MANAGER, LOCAL,FUNCTION,"Manager is waiting for the payment by customer "+customerId,0,Logger.WARNING);
+                /*while (usedReplacementCarKeys[i] == customerId
                         || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
                                                                             // replacement key and the client to
                                                                             // retrieve his/her keys
@@ -330,44 +326,59 @@ public class Lounge {
                     } catch (InterruptedException e) {
                         Logger.logException(e);
                     }
+                }*/
+                if(flag)//TODO
+                {
+                    while (usedReplacementCarKeys[i] == customerId
+                            || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
+                                                                                // replacement key and the client to
+                                                                                // retrieve his/her keys
+                    { try {
+                        Logger.log(MANAGER, LOCAL,FUNCTION,"Manager waiting...",0,Logger.WARNING);
+                            wait();
+                        } catch (InterruptedException e) {
+                            Logger.logException(e);
+                        }
+                    }
                 }
-                Logger.log(MANAGER, LOCAL,FUNCTION,
-                        "Manager waked up. Payment from"+customerId+"was successful!"
-                        ,0,Logger.SUCCESS);
+                else{
+                  while(customerCarKeys[customerId] != -1)
+                  {
+                    try {
+                        //Logger.log(MANAGER, LOCAL,FUNCTION,"Manager waiting...",0,Logger.WARNING);
+                            wait();
+                        } catch (InterruptedException e) {
+                            Logger.logException(e);
+                        }
+                  }
+                }
+                //Logger.log(MANAGER, LOCAL,FUNCTION,"Manager waked up. Payment from"+customerId+"was successful!",0,Logger.SUCCESS);
             }
             else
             {
-                Logger.log(MANAGER, LOCAL,FUNCTION,
-                        "Customer "+customerId+" wants its car to get repaired"
-                        ,0,Logger.SUCCESS);
+                //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" wants its car to get repaired",0,Logger.SUCCESS);
                 int toRepairCarKey;
                 while((toRepairCarKey = customerCarKeys[customerId])==-1)
                 {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,
-                            "Manager is waiting for Customer "+customerId+" to give his keys"
-                            ,0,Logger.WARNING);
+                    //Logger.log(MANAGER, LOCAL,FUNCTION,"Manager is waiting for Customer "+customerId+" to give his keys",0,Logger.WARNING);
                     try {
                         wait();
                     } catch (InterruptedException e) {
                         Logger.logException(e);
                     }
                 }
-                Logger.log(MANAGER, LOCAL,FUNCTION,
-                        "Manager waken and received key of Customer "+customerId
-                        ,0,Logger.SUCCESS);
+                //Logger.log(MANAGER, LOCAL,FUNCTION, "Manager waken and received key of Customer "+customerId,0,Logger.SUCCESS);
 
                 carKeysToRepairQueue.write(toRepairCarKey);                 // add car keys to repair queue
                 customerCarKeys[customerId] = -1;                           // removes customers keys
-                Logger.log(MANAGER, LOCAL,FUNCTION,
-                        "Got customer key "+toRepairCarKey+ "for post job"
-                        ,0,10);
+                //Logger.log(MANAGER, LOCAL,FUNCTION, "Got customer key "+toRepairCarKey+ "for post job",0,10);
                 return toRepairCarKey;
 
             }
 
         }
         catch (MemException e) { Logger.logException(e); }
-        Logger.log(MANAGER, LOCAL,FUNCTION, "Ended payment operation",0,10);
+        //Logger.log(MANAGER, LOCAL,FUNCTION, "Ended payment operation",0,10);
         return -2;
     }
 
@@ -388,7 +399,7 @@ public class Lounge {
         {   Logger.log(CUSTOMER,LOCAL,FUNCTION,"Replacement Car keys is not empty",customerId,10);
             try
             {   int tmp = replacementCarKeys.read();
-                Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
+                //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
 
                 //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
                 if(tmp - headReplacementKeys < 0)
@@ -408,9 +419,9 @@ public class Lounge {
         }
         //  Else the customer waits for a key.
         try
-        {   Logger.log(CUSTOMER,LOCAL,FUNCTION,"No replacement Car keys available",customerId,10);
+        {   //Logger.log(CUSTOMER,LOCAL,FUNCTION,"No replacement Car keys available",customerId,10);
             stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Enter queue for replacement Car",customerId,Logger.WARNING);
+            //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Enter queue for replacement Car",customerId,Logger.WARNING);
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
@@ -438,7 +449,7 @@ public class Lounge {
                 System.exit(1);
             }
             this.usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
+            //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
             return tmp;
         } catch (MemException e){
             Logger.logException(e);
@@ -459,26 +470,27 @@ public class Lounge {
     public synchronized boolean returnReplacementCarKey(int key, int customerId)
     {
         String FUNCTION = "returnReplacementCarKey";
+
+        System.out.println("DEBUG\n");
+        System.out.println("AvailableReplacementCarKeys: "+replacementCarKeys.toString());
+        System.out.println();
+
         if(replacementCarKeys.containsValue(key))
         {
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Error: replacement car key is already available. " +
-                    "This should not happen",customerId,Logger.ERROR);
+            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Error: replacement car key is already available. " +"This should not happen",customerId,Logger.ERROR);
             System.exit(1);
         }
         try {
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer returns replacement key",
-                    0,Logger.SUCCESS);
+            //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer returns replacement key", 0,Logger.SUCCESS);
             replacementCarKeys.write(key);
             //FIXME usedReplacementCarKeys[key] = -1;       //unregistered loan
             usedReplacementCarKeys[key - headReplacementKeys] = -1;
             if(!waitingReplacementKey.isEmpty())    //alert thread waiting for a key
             {   int waitingCustomerId = waitingReplacementKey.read();
-                Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer alerts "+waitingCustomerId+" return replacement key",
-                        0,Logger.SUCCESS);
+                //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer alerts "+waitingCustomerId+" return replacement key",0,Logger.SUCCESS);
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
             }
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Manager and Customer waiting for replacement car Key alerted",
-                    0,Logger.SUCCESS);
+            //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Manager and Customer waiting for replacement car Key alerted",0,Logger.SUCCESS);
             notifyAll();    //Notifies manager and Customer!!!
         } catch (MemException e) {
             Logger.logException(e);
@@ -543,10 +555,10 @@ public class Lounge {
      */
     public synchronized void giveManagerCarKey(int key, int customerId)
     {   String FUNCTION = "giveManagerCarKey";
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer gives car key"+key+" to manager",customerId,10);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer gives car key"+key+" to manager",customerId,10);
         customerCarKeys[customerId] = key;
         memKeysCustomers[key] = customerId; //TODO: Should be unregistered at checkout
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer notifies that he/she gave the key to manager",customerId,10);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer notifies that he/she gave the key to manager",customerId,10);
         notifyAll();
     }
 
@@ -561,12 +573,13 @@ public class Lounge {
 
     public synchronized int payForTheService(int customerId)
     {   String FUNCTION = "payForTheService";
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Payment given.",customerId,Logger.SUCCESS);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Payment given.",customerId,Logger.SUCCESS);
         int key = customerCarKeys[customerId];
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got key "+key,customerId,Logger.SUCCESS);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got key "+key,customerId,Logger.SUCCESS);
         customerCarKeys[customerId] = -1;
-        Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying manager that the customer has taken the key",customerId,Logger.WARNING);
+        //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying manager that the customer has taken the key",customerId,Logger.WARNING);
         notifyAll();
+        customerFinished[customerId] = true;
         return key;
     }
     /**
@@ -590,8 +603,7 @@ public class Lounge {
         {
             stateMechanics[mechanicId] = FIXING_THE_CAR;
             int tmpKey = carKeysToRepairQueue.read();
-            Logger.log(MECHANIC,LOCAL,FUNCTION,"Got the keys "+tmpKey
-                    +" to fix correspondent car",mechanicId,Logger.SUCCESS);
+            //Logger.log(MECHANIC,LOCAL,FUNCTION,"Got the keys "+tmpKey+" to fix correspondent car",mechanicId,Logger.SUCCESS);
             return tmpKey;
         }
         catch (Exception e){
@@ -616,8 +628,8 @@ public class Lounge {
    {   String FUNCTION = "requestPart";
         Logger.log(MECHANIC,LOCAL,FUNCTION,"Requesting car parts of type "+idType,mechanicId,10);
        if(carPartsToRefill[idType] == 0)
-       {    Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
-           gri.setFlagMissingPart(idType, "T");                          // Log Manager has been advised for missing part
+       {    //Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
+            gri.setFlagMissingPart(idType, "T");                          // Log Manager has been advised for missing part
             //carPartsToRefill[idType] = number;
             carPartsToRefill[idType] += number;
             return true;
@@ -631,7 +643,7 @@ public class Lounge {
        if(carPartsToRefill[idType] != 0)
        {    Logger.log(MANAGER,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
             carPartsToRefill[idType] = 0;
-           //carPartsToRefill[idType] -=number;
+
             return true;
        }
        Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
@@ -677,15 +689,13 @@ public class Lounge {
         if(!customerFixedCarKeys.isEmpty())
         {
             if(customerFixedCarKeys.containsValue(idKey)) {
-                Logger.log(MECHANIC, LOCAL, FUNCTION,
-                        "Car was already registered as repaired. This should not happen", mechanicId, Logger.ERROR);
+                Logger.log(MECHANIC, LOCAL, FUNCTION,"Car was already registered as repaired. This should not happen", mechanicId, Logger.ERROR);
                 System.exit(1);
             }
         }
         try {
             customerFixedCarKeys.write(idKey);
-            Logger.log(MECHANIC,LOCAL,FUNCTION,
-                    "Car registered as fixed. alert to customer need to be done",mechanicId,10);
+            //Logger.log(MECHANIC,LOCAL,FUNCTION,"Car registered as fixed. alert to customer need to be done",mechanicId,10);
 
         } catch (MemException e) {
             Logger.logException(e);
@@ -696,14 +706,14 @@ public class Lounge {
     /**
      *Checks if there are cars repaired
      * */
-    public boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
+    public synchronized boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
 
 
 
     public synchronized int getFixedCarKey()
     {   String FUNCTION = "getFixedCarKey";
         if(!isCustomerCarKeysEmpty())
-        {   Logger.log(MANAGER,LOCAL,FUNCTION,"getting car key of repaired car",0,10);
+        {   //Logger.log(MANAGER,LOCAL,FUNCTION,"getting car key of repaired car",0,10);
             try {
                 return customerFixedCarKeys.read();
             } catch (MemException e) {
@@ -711,7 +721,7 @@ public class Lounge {
                 System.exit(1);
             }
         }
-        Logger.log(MANAGER,LOCAL,FUNCTION,"There are no repaired cars registered",0, Logger.WARNING);
+        //Logger.log(MANAGER,LOCAL,FUNCTION,"There are no repaired cars registered",0, Logger.WARNING);
         return -1;
     }
 
@@ -720,31 +730,38 @@ public class Lounge {
         String FUNCTION = "getCustomerFromKey";
         if(memKeysCustomers[idKey] == -1)
         {
-            Logger.log(MANAGER,LOCAL,FUNCTION,
-                    "Error: Key does not have a customer registered!. This should no happend",
-                    0,Logger.ERROR);
+            Logger.log(MANAGER,LOCAL,FUNCTION,"Error: Key does not have a customer registered!. This should no happend",0,Logger.ERROR);
             System.exit(1);
         }
         int customerId = memKeysCustomers[idKey];
-        Logger.log(MANAGER, LOCAL,FUNCTION,"Key "+idKey+" belongs to "+customerId,0,10);
+        //Logger.log(MANAGER, LOCAL,FUNCTION,"Key "+idKey+" belongs to "+customerId,0,10);
         memKeysCustomers[idKey] = -1;
         return customerId;
     }
 
     public synchronized void readyToDeliverKey(int idCustomer, int idKey)
     {   String FUNCTION= "readyToDeliverKey";
-        Logger.log(MANAGER, LOCAL,FUNCTION,"Ready to deliver key "+idKey+" to customer "+idCustomer,0,10);
+        //Logger.log(MANAGER, LOCAL,FUNCTION,"Ready to deliver key "+idKey+" to customer "+idCustomer,0,10);
         customerCarKeys[idCustomer] = idKey;
     }
     /**
      * Get the number of existing part car types.
      * @return number of type parts.
      * */
-    public int getNumberOfPartTypes(){ return numTypes;}
+    public synchronized int getNumberOfPartTypes(){ return numTypes;}
 
     /**
      *  Get the requested number of a part
      * */
-    public int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
+    public synchronized int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
 
+
+    /**
+     * Checks if all customer have been attended.
+     * */
+    public synchronized boolean allDone()
+    {
+        for(int i = 0; i<customerFinished.length;i++) {if(!customerFinished[i]) return false; }
+        return true;
+    }
 }

@@ -75,7 +75,8 @@ public class Manager extends Thread
      *  */
     @Override
     public void run()
-    {   while (true)
+    {
+        while (true)
         {
             /**
              *      Refill car parts stock
@@ -122,12 +123,19 @@ public class Manager extends Thread
                 if(val == -2)
                 {
                     Logger.log(MANAGER,MANAGER,RUN,"Payment received",0,Logger.SUCCESS);
+                    if(lounge.allDone())
+                    {
+                        repairArea.sendHome();
+                        Logger.log(MANAGER,MANAGER,RUN,"Manager done.",0,Logger.SUCCESS);
+                        break;
+                    }
                 }
                 else {
                     repairArea.postJob(val);
                 }
             }
         }
+
     }
 
     private void readPaper()

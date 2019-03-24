@@ -21,11 +21,11 @@ public class RepairArea
      *      States of the cars.
      *
      * */
-    private static int  NOT_REGISTERED = 0,
-                        CHECKED = 1,
-                        WAITING_PARTS = 2,
-                        ON_REPAIR = 3,
-                        REPAIRED = 4;
+    private static int  NOT_REGISTERED  = 0,
+                        CHECKED         = 1,
+                        WAITING_PARTS   = 2,
+                        ON_REPAIR       = 3,
+                        REPAIRED        = 4;
 
     /**
      *  Initialize GeneralRepInformation
@@ -52,7 +52,7 @@ public class RepairArea
      *
      *      @serialField statusOfCars
      * */
-    private int[] statusOfCars;
+    private volatile int[] statusOfCars;
 
     /**
      *      Array of number of carParts to be used.
@@ -68,20 +68,22 @@ public class RepairArea
      * Index represents the id of the part
      * @serialField maxCarParts;
      * */
-    private int[] maxCarPartsNumber;
+    private volatile int[] maxCarPartsNumber;
 
     /**
      *      Array with the id part type.
      *      Index represents the id of the car.
      *      Value the needed part for the repair.
      * */
-    private int[] carNeededPart;
+    private volatile int[] carNeededPart;
 
-    private boolean workToDo = false;
+    private volatile boolean workToDo = false;
 
-    private boolean[] carsNeedsCheck;
+    private volatile boolean[] carsNeedsCheck;
 
-    private int[] reserveCarPart;
+    private volatile int[] reserveCarPart;
+
+    private boolean allDone;
 
 
     /**
@@ -91,6 +93,7 @@ public class RepairArea
     {
         this.gri = gri;
 
+        this.allDone = false;
         this.rangeCarPartTypes = rangeCarPartTypes;
         this.carParts = carParts;
         this.statusOfCars = new int[totalNumCars];
@@ -152,8 +155,6 @@ public class RepairArea
     public synchronized boolean repairCar(int carId, int partId, int mechanicId)
     {   String FUNCTION = "repairCar";
         assert (partId <= rangeCarPartTypes);
-        System.out.println("cardId: "+carId);
-        System.out.println("carParts length: "+carParts.length);
         //if(carParts[carId]>0) FIXME
         if(carParts[partId]>0)
         {   Logger.log(MECHANIC,REPAIR_AREA,"Car is ready for repair. Parts available",mechanicId,Logger.SUCCESS);
@@ -201,33 +202,34 @@ public class RepairArea
     {   String FUNCTION = "repairWaitingCarWithPartsAvailable";
         int length = carsWaitingForParts.numElements();
         int tmp = -1;
+        int res = -1;
+        boolean flag = false;
         while (length > 0)
         {   length--;
             try
             {   tmp = carsWaitingForParts.read();//gets
 
-                if(reserveCarPart[tmp] != -1)
-                {   statusOfCars[tmp] = ON_REPAIR;
-                    Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
-                            "Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],
-                            mechanicId,Logger.SUCCESS);
+                if(reserveCarPart[tmp] != -1 && !flag)
+                {   res = tmp;
+                    statusOfCars[tmp] = ON_REPAIR;
+                    Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,"Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],mechanicId,Logger.SUCCESS);
 
                     gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);  // Log minus one car needs the part
                     gri.setNumPartAvailable(reserveCarPart[tmp], -1);   // Log minus one car part available in stock
 
                     reserveCarPart[tmp] = -1; //part car taken
+                    flag=true;
                     continue; //does not put back
                 }
                 carsWaitingForParts.write(tmp);//put back
 
             } catch (MemException e) { Logger.logException(e); }
         }
-        if(length == -1)
-        {   Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
-                    "There was no parts reserved",0,Logger.ERROR);
+        if(length == 0 && !flag)
+        {   Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,"There was no parts reserved",0,Logger.ERROR);
             System.exit(1);
         }
-        return tmp;
+        return res;
     }
 
     /**
@@ -239,41 +241,29 @@ public class RepairArea
         String FUNCTION = "ConcludeCarRepair";
         if (statusOfCars[idCar] == REPAIRED)
         {
-            Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,
-                    "Error: Car was registered as repaired before, this should not happen"
-                    ,mechanicId,Logger.ERROR);
+            Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,"Error: Car was registered as repaired before, this should not happen",mechanicId,Logger.ERROR);
             System.exit(1);
         }
-        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area"
-                ,mechanicId,Logger.SUCCESS);
+        //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area",mechanicId,Logger.SUCCESS);
         statusOfCars[idCar] = REPAIRED;
         gri.setNumCarsRepaired();                                               // Log additional car repaired
     }
 
     /**
      *      Refill car Part stock
-     *
      *      @param idPart   - ID of car part.
      *      @param quantity - number of car parts to refill
-     *
      *      @return true - refill done to accordance. false - There shouldn't be a refill.
      * */
-    public synchronized  boolean  refillCarPartStock(int idPart, int quantity)
+    public synchronized  void  refillCarPartStock(int idPart, int quantity)
     {   String FUNCTION = "refillCarPartStock";
         assert idPart <= rangeCarPartTypes;
-        Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Refilling part: "+idPart+". number: "+quantity,0,10);
-        if(carParts[idPart] == 0) {
-            carParts[idPart] = quantity;
-            workToDo = true;
-            gri.setNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
-            Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",
-                    0,Logger.SUCCESS);
-            notifyAll();        //notify sleeping mechanics
-            return true;
-        }
-        Logger.log(MANAGER,REPAIR_AREA,"Error: Car parts is not empty!",0,Logger.ERROR);
-        System.exit(1);
-        return false;
+
+        carParts[idPart] = quantity;
+        workToDo = true;
+        gri.setNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
+       // Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",0,Logger.SUCCESS);
+        notifyAll();        //notify sleeping mechanics
     }
 
     /**
@@ -288,10 +278,10 @@ public class RepairArea
 
     public synchronized int findNextTask(int mechanicId)
     {   String FUNCTION = "findNextTask";
-        int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3;
-        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"finding next task",mechanicId,10);
-        if(workToDo)
-        {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
+        int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3, GO_HOME =4;
+        //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"finding next task",mechanicId,10);
+        if(workToDo || allDone)
+        {   //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
             int size = carsWaitingForParts.numElements();
             boolean flag = false;
             while(size-- >0)
@@ -303,8 +293,7 @@ public class RepairArea
                     {
                         if(carParts[tmpPart] != 0) {
                             carNeededPart[tmpCar] = -1;
-                            Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,
-                                    "Reserving part "+tmpPart,mechanicId,10);
+                            Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Reserving part "+tmpPart,mechanicId,10);
                             reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
                             carParts[tmpPart]-=1;
                             flag = true;
@@ -315,39 +304,42 @@ public class RepairArea
                     carsWaitingForParts.write(tmpCar);
                     if(carsWaitingForParts.numElements() == 0)
                     {
-                        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,
-                                "Car Waiting For Parts is empty. Should not happen "
-                                        +tmpPart,mechanicId,Logger.ERROR);
+                        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car Waiting For Parts is empty. Should not happen "+tmpPart,mechanicId,Logger.ERROR);
                         System.exit(1);
                     }
                 } catch (MemException e) {
-                    Logger.logException(e);
+                    //Logger.logException(e);
                     System.exit(1);
                 }
             }
             if(flag)
-            {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Continue repair car",mechanicId,Logger.SUCCESS);
+            {   //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Continue repair car",mechanicId,Logger.SUCCESS);
                 return CONTINUE_REPAIR_CAR;
             }
             for(int i = 0; i< carsNeedsCheck.length; i++)
             {   if(carsNeedsCheck[i])
                 {   carsNeedsCheck[i] =false;
-                    Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Check a car and repair it",
-                            mechanicId,Logger.SUCCESS);
+                    //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"TODO: Check a car and repair it",mechanicId,Logger.SUCCESS);
                     return REPAIR_NEW_CAR;
                 }
             }
+            if(allDone)
+            {
+                System.out.println("RETURNING TO HOME");
+                return GO_HOME;
+            }
+
             workToDo = false;
         }
         while (!workToDo)
         {   try {
-                Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic is sleeping",mechanicId,Logger.WARNING);
+                //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic is sleeping",mechanicId,Logger.WARNING);
                 wait();
             } catch (InterruptedException e) {
                 Logger.logException(e);
             }
         }
-        Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic has woken",mechanicId,Logger.SUCCESS);
+        //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Mechanic has woken",mechanicId,Logger.SUCCESS);
         return WAKEN;
     }
 
@@ -357,11 +349,18 @@ public class RepairArea
     public synchronized void postJob(int carID)
     {   String FUNCTION = "postJob";
         gri.setNumPostJobs();           // Log additional job posted
-        Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"New car needs to be checked. Notifying managers",
-                0,Logger.WARNING);
+        //Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"New car needs to be checked. Notifying managers",0,Logger.WARNING);
         carsNeedsCheck[carID] = true;
         workToDo = true;                        //notify sleeping mechanics
         notifyAll();
     }
+
+    public synchronized void sendHome()
+    {
+        allDone = true;
+        workToDo = true;
+        notifyAll();
+    }
+
 
 }

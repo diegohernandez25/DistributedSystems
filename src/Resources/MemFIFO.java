@@ -86,6 +86,7 @@ public class MemFIFO<R> extends MemObject<R>
 
      if (!empty)
         { val = mem[outPnt];
+            mem[outPnt]=null;
           outPnt = (outPnt + 1) % mem.length;
           if(mem.length==1) empty = true;
           else empty = (inPnt == outPnt);

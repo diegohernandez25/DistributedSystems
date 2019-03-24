@@ -163,16 +163,16 @@ public class Customer extends Thread{
             Logger.log(CLASS,CLASS,FUNCTION,"Customer wants rental key",customerId,10);
             repKey = lounge.getReplacementCarKey(customerId);       //Customer waits for a key of a replacement car
                                                                     //and grabs it from the lounge.
-
             Logger.log(CLASS,CLASS,FUNCTION,"Given rental key "+repKey,customerId,10);
             repCar = park.getCar(repKey,customerId);                //Gets replacement car in the park.
-            repKey = repCar;
+            //repKey = repCar;
             gri.setNumReplacementParked(-1);                        //Logs replacement car removed from park
             gri.setCustomerVehicle(customerId,                      //Logs Customer changing cars to a replacement car
                     "R"+String.valueOf(repKey-lounge.customerCarKeysSize()));
             Logger.log(CLASS,CLASS,FUNCTION,"Got rental car "+repCar,customerId,10);
         }
         else lounge.exitLounge(customerId);                         //...else, the Customer just leaves the Lounge.
+
         Logger.log(CLASS,CLASS,FUNCTION,"Waiting for repair ",customerId,Logger.WARNING);
         outsideWorld.waitForRepair(customerId);                     //Customer waits in the outside world until the
                                                                     //his/her car is fixed.
@@ -207,6 +207,7 @@ public class Customer extends Thread{
         Logger.log(CLASS,NONE,"Operation finished!",0,
                 Logger.SUCCESS);
         //System.exit(1); //FIXME: DELETE
+        Logger.log(CLASS,CLASS,"run","Customer done.",customerId,Logger.SUCCESS);
 
     }
 

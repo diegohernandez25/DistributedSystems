@@ -75,7 +75,8 @@ public class Mechanic extends Thread {
     {   String FUNCTION = "run";
         int idCurrentCar;
         int idCurrentKey;
-        while(true)
+        boolean WORK = true;
+        while(WORK)
         {
 
             switch (repairArea.findNextTask(mechanicId))
@@ -159,11 +160,16 @@ public class Mechanic extends Thread {
                 case 3:
                     Logger.log(MECHANIC,MECHANIC,RUN, "Mechanic has waken up",0,Logger.SUCCESS);
                     break;
+                case 4:
+                    WORK = false;
+                    Logger.log(MECHANIC,MECHANIC,RUN, "Going home",0,Logger.SUCCESS);
+                    break;
                 default:
                     Logger.log(MECHANIC,MECHANIC,RUN, "Option not registered",0,Logger.ERROR);
                     break;
             }
         }
+        Logger.log(MECHANIC,MECHANIC,RUN,"Mechanic Done",mechanicId,Logger.SUCCESS);
     }
 
     @Override

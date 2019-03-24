@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int NUM_CLIENTS = 4,
+    public static final int NUM_CLIENTS = 2,
                             NUM_MECHANICS = 1,
                             NUM_REPLACEMENT_CARS = 1,
-                            NUM_PART_TYPES = 3;
+                            NUM_PART_TYPES = 1;
 
     public static void main(String[] args)
     {
@@ -69,7 +69,6 @@ public class Main {
                 Logger.logException(e);
             }
         }
-
         try {
             manager.join();
         } catch (InterruptedException e) {
