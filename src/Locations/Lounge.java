@@ -409,6 +409,8 @@ public class Lounge {
                 }
                 usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
                 stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+                gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
+
                 return tmp;                                         //ENDS Here
             }
             catch (MemException e)

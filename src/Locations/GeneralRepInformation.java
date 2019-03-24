@@ -1,6 +1,7 @@
 package Locations;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class GeneralRepInformation {
 
@@ -391,13 +392,23 @@ public class GeneralRepInformation {
     }
 
     /**
-     *  Sets the number of parts available in stock
+     *  Adds the number of parts available in stock (restocked part)
      *  @param part the part which needs to be set
      *  @param num the number of the specified part available
      * */
-    public synchronized void setNumPartAvailable(int part, int num)
+    public synchronized void addNumPartAvailable(int part, int num)
     {
-        this.numPartAvailable[part] += num;
+        this.numPartAvailable[part] = num;
+        this.print();
+    }
+
+    /**
+     *  Removes one of the parts available in stock (used part)
+     *  @param part the part which was used
+     * */
+    public synchronized void removeNumPartAvailable(int part)
+    {
+        this.numPartAvailable[part]--;
         this.print();
     }
 

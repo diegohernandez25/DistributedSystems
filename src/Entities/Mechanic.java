@@ -140,7 +140,7 @@ public class Mechanic extends Thread {
                         Logger.log(MECHANIC,MECHANIC,RUN,"Start fixing procedure"
                                 ,mechanicId,10);
 
-                        gri.setNumPartAvailable(carPart, -1);                              // Log car part being needed
+                        gri.removeNumPartAvailable(carPart);                              // Log car part being needed
 
                         fixCar();                                                               // Mechanic starts fixing the
                                                                                                 // car

@@ -215,7 +215,6 @@ public class RepairArea
                     Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,"Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],mechanicId,Logger.SUCCESS);
 
                     gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);  // Log minus one car needs the part
-                    gri.setNumPartAvailable(reserveCarPart[tmp], -1);   // Log minus one car part available in stock
 
                     reserveCarPart[tmp] = -1; //part car taken
                     flag=true;
@@ -261,7 +260,7 @@ public class RepairArea
 
         carParts[idPart] = quantity;
         workToDo = true;
-        gri.setNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
+        gri.addNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
        // Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",0,Logger.SUCCESS);
         notifyAll();        //notify sleeping mechanics
     }

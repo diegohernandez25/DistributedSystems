@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int NUM_CLIENTS = 2,
-                            NUM_MECHANICS = 1,
-                            NUM_REPLACEMENT_CARS = 1,
-                            NUM_PART_TYPES = 1;
+    public static final int NUM_CLIENTS = 30,
+                            NUM_MECHANICS = 2,
+                            NUM_REPLACEMENT_CARS = 3,
+                            NUM_PART_TYPES = 3;
 
     public static void main(String[] args)
     {
