@@ -28,15 +28,16 @@ public class OutsideWorld {
      *      @param numClients - Number of clients
      *
      * */
-    public OutsideWorld(int numClients) throws Exception {
-        if(numClients > 0)
-        {
-            waitingForRepair = new boolean[numClients];
-            for(int i = 0; i < numClients; i++)
-            { waitingForRepair[i] = false;}   //meaning that the customerId is not waiting for the repair
+    public OutsideWorld(int numClients){
 
+        waitingForRepair = new boolean[numClients];
+        for(int i = 0; i < numClients; i++) { waitingForRepair[i] = false;}
+        try {
+            customersNotYetAtOutsideWorld = new MemFIFO<>(new Integer[numClients]);
+        } catch (MemException e) {
+            Logger.logException(e);
+            System.exit(1);
         }
-        else throw new Exception("Number of clients is inferior");
     }
 
     /**

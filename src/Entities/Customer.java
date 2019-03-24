@@ -49,12 +49,7 @@ public class Customer extends Thread{
      * */
     private int carState;
 
-    /**
-     *  Number of iteractions of the customer life cycle.
-     *
-     *      @serialField nIter
-     * */
-    private int nIter = 0;
+
 
     /**
      *  Lounge
@@ -96,16 +91,13 @@ public class Customer extends Thread{
      *
      *      @param customerId identification of customer.
      *      @param requiresCar customer needs car.
-     *      @param nIter Number of iteraction through the customer
-     *                   thread life cycle
+     *
      * */
-    public Customer(int customerId, boolean requiresCar, int nIter, Integer car, Lounge lounge, Park park,
-                    OutsideWorld outsideWorld)
+    public Customer(int customerId, boolean requiresCar, int car, Lounge lounge, Park park, OutsideWorld outsideWorld)
     {
         this.customerId = customerId;
         this.requiresCar = requiresCar;
         this.hasCar = true;
-        this.nIter = nIter;
         this.lounge = lounge;
         this.park = park;
         this.car = car;
@@ -124,7 +116,6 @@ public class Customer extends Thread{
                 ", hasCar=" + hasCar +
                 ", clientState=" + clientState +
                 ", carState=" + carState +
-                ", nIter=" + nIter +
                 ", lounge=" + lounge +
                 ", park=" + park +
                 ", outsideWorld=" + outsideWorld +

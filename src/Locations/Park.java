@@ -12,13 +12,18 @@ public class Park {
     /**
      * Instantiation of the Park.
      * */
-    public Park(int numSlots)
+    public Park(int numSlots, int[] parkCars)
     {
         cars = new boolean[numSlots]; // numSlots = numCustomerCars + numReplaceCars
+        for(int i = 0; i<parkCars.length; i++)
+        {
+            parkCar(i,-1);
+        }
     }
 
     /**
      *Park Car.
+     * @id of customer or mechanic. This is just for the logger
      *@return Operation status.
      * */
     public synchronized boolean parkCar(Integer carId, int id)

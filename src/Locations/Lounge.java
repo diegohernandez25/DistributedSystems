@@ -4,10 +4,6 @@ import Loggers.Logger;
 import Resources.MemException;
 import Resources.MemFIFO;
 
-import javax.security.auth.callback.LanguageCallback;
-import java.nio.file.Watchable;
-import java.util.function.LongUnaryOperator;
-
 public class Lounge {
 
     /**
@@ -107,7 +103,7 @@ public class Lounge {
      *      @serialField carPartsQueue
      *
      * */
-    private int[] requiredParts;
+    private int numTypes;
 
     /**
      *      All the Keys of Customer Fixed Cars
@@ -158,58 +154,52 @@ public class Lounge {
      * */
     private int[] memKeysCustomers;
 
-
+    /**
+     * Header of the headReplacementKeys.
+     * */
+    private int headReplacementKeys;
     /**
      *
-     * Instantiation of the Lounge
-     *      @param replacementKeys - Array of Key objects. NOTE: Must have the size equal
-     *                               to the total number of replacement cars.
-     *      @param clients - clients
-     *      @param mechanics - mechanics
-     *      @param customerKeys - customer's keys
      * */
-    public Lounge(Integer[] replacementKeys, int[] clients, int[] mechanics, int[] customerKeys, int[] types)
+    public Lounge(int numCustomers, int numMechanics,int replacementKeys[], int numTypes)
     {
         this.stateManager = READ_PAPER;
-
-        this.stateCustomers = new int[clients.length];
-        for (int i = 0; i<stateCustomers.length; i++)
+        this.numTypes = numTypes;
+        this.stateCustomers = new int[numCustomers];
+        this.customerCarKeys = new int[numCustomers];
+        this.memKeysCustomers = new int[numCustomers];
+        for (int i = 0; i<stateCustomers.length; i++) {
             this.stateCustomers[i] = NORMAL_LIFE;
+            this.customerCarKeys[i] = -1;
+            this.memKeysCustomers[i] = -1;
+        }
 
-        this.stateMechanics = new int[mechanics.length];
+        this.stateMechanics = new int[numMechanics];
         for (int i = 0; i<stateMechanics.length; i++)
             this.stateMechanics[i] = WAITING_FOR_WORK;
 
-        this.usedReplacementCarKeys = new int[replacementKeys.length];
-        for (int i = 0; i<usedReplacementCarKeys.length; i++)
-            this.usedReplacementCarKeys[i] = -1;
 
-        this.customerCarKeys = new int[clients.length];
-        for (int i = 0; i<customerCarKeys.length; i++)
-            this.customerCarKeys[i] = -1;
+        this.usedReplacementCarKeys = replacementKeys;
+        this.headReplacementKeys = numCustomers;
 
-        this.carPartsToRefill = new int[types.length];
+
+        this.carPartsToRefill = new int[numTypes];
         for (int i = 0; i<carPartsToRefill.length; i++)
             this.carPartsToRefill[i] = 0;
 
-        this.memKeysCustomers = new int[clients.length];
-        for(int i = 0; i<memKeysCustomers.length;i++)
-            this.memKeysCustomers[i] = -1;
 
         try {
-                this.carKeysToRepairQueue = new MemFIFO<>(new Integer[clients.length]);
-                this.customerFixedCarKeys = new MemFIFO<>(new Integer[clients.length]);
-                this.customerQueue = new MemFIFO<>(new Integer[clients.length]);
-                this.waitingReplacementKey = new MemFIFO<>(new Integer[clients.length]);
-                this.paymentQueue = new MemFIFO<>(new Integer[clients.length]);
-                this.replacementCarKeys = new MemFIFO<>(replacementKeys);
-                //this.carsToRepair = new MemFIFO<>(new Integer[clients.length]);
+                this.carKeysToRepairQueue = new MemFIFO<>(new Integer[numCustomers]);
+                this.customerFixedCarKeys = new MemFIFO<>(new Integer[numCustomers]);
+                this.customerQueue = new MemFIFO<>(new Integer[numCustomers]);
+                this.waitingReplacementKey = new MemFIFO<>(new Integer[numCustomers]);
+                this.paymentQueue = new MemFIFO<>(new Integer[numCustomers]);
+                this.replacementCarKeys = new MemFIFO<>(new Integer[replacementKeys.length]);
+
         } catch (MemException e) {
                 Logger.logException(e);
         }
 
-
-        System.out.println(this.toString());
     }
 
 
@@ -384,7 +374,13 @@ public class Lounge {
             {   int tmp = replacementCarKeys.read();
                 Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
 
-                this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+                //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+                if(tmp - headReplacementKeys < 0)
+                {
+                    Logger.log(CUSTOMER,LOCAL,FUNCTION,"Wrong replacement Key",customerId,Logger.ERROR);
+                    System.exit(1);
+                }
+                usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
                 stateCustomers[customerId] = ATTENDED_W_SUBCAR;
                 return tmp;                                         //ENDS Here
             }
@@ -398,7 +394,7 @@ public class Lounge {
         try
         {   Logger.log(CUSTOMER,LOCAL,FUNCTION,"No replacement Car keys available",customerId,10);
             stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
-            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Enter queue for replacement Car",customerId,10);
+            Logger.log(CUSTOMER,LOCAL,FUNCTION,"Enter queue for replacement Car",customerId,Logger.WARNING);
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
@@ -417,7 +413,14 @@ public class Lounge {
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
         try {
             int tmp = replacementCarKeys.read();
-            this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+            //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
+            //TODO Eliminate duplicate
+            if(tmp - headReplacementKeys < 0)
+            {
+                Logger.log(CUSTOMER,LOCAL,FUNCTION,"Wrong replacement Key",customerId,Logger.ERROR);
+                System.exit(1);
+            }
+            this.usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
             Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
             return tmp;
         } catch (MemException e){
@@ -449,7 +452,8 @@ public class Lounge {
             Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer returns replacement key",
                     0,Logger.SUCCESS);
             replacementCarKeys.write(key);
-            usedReplacementCarKeys[key] = -1;       //unregistered loan
+            //FIXME usedReplacementCarKeys[key] = -1;       //unregistered loan
+            usedReplacementCarKeys[key - headReplacementKeys] = -1;
             if(!waitingReplacementKey.isEmpty())    //alert thread waiting for a key
             {   int waitingCustomerId = waitingReplacementKey.read();
                 Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer alerts "+waitingCustomerId+" return replacement key",
@@ -458,7 +462,7 @@ public class Lounge {
             }
             Logger.log(CUSTOMER,LOCAL,FUNCTION,"Manager and Customer waiting for replacement car Key alerted",
                     0,Logger.SUCCESS);
-            notifyAll();    //Notifies manager and Customer!
+            notifyAll();    //Notifies manager and Customer!!!
         } catch (MemException e) {
             Logger.logException(e);
             return false;
@@ -706,7 +710,7 @@ public class Lounge {
      * Get the number of existing part car types.
      * @return number of type parts.
      * */
-    public int getNumberOfPartTypes(){ return requiredParts.length;}
+    public int getNumberOfPartTypes(){ return numTypes;}
 
     /**
      *  Get the requested number of a part

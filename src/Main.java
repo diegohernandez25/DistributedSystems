@@ -15,83 +15,54 @@ public class Main {
 
     public static void main(String[] args)
     {
-        OutsideWorld outsideWorld;
-        Lounge lounge;
-        Park park;
-        RepairArea repairArea;
-        SupplierSite supplierSite;
 
-        Scanner sc = new Scanner(System.in);
+        OutsideWorld outsideWorld = new OutsideWorld(NUM_CLIENTS);
 
-
-        int numClients = NUM_CLIENTS;
-        int numMechanics = NUM_MECHANICS;
-        int numReplacementCars = NUM_REPLACEMENT_CARS;
-        int stockLength = NUM_PART_TYPES;
-
-        /**
-         *      Cars initiation.
-         * */
-        int totalCars = numClients + numReplacementCars;
-        int i = 0;
-        Integer[] arrayCustomerCars = new Integer[numClients];
-        Integer[] arrayReplacementCars = new Integer[numReplacementCars];
-        Integer[] arrayAllCars = new Integer[totalCars];
-        for(;i < numClients; i++) {
-            arrayCustomerCars[i] = i;
-            arrayAllCars[i] = i;
-        }
-        for(;i < totalCars; i++) {
-            arrayReplacementCars[i - numClients] = i;
-            arrayAllCars[i] = i;
+        int[] replacementCarKeys = new int[NUM_REPLACEMENT_CARS];
+        for(int i = NUM_CLIENTS; i< NUM_CLIENTS + NUM_REPLACEMENT_CARS; i++)
+        {
+            replacementCarKeys[i-NUM_CLIENTS] = i;
         }
 
+        Lounge lounge = new Lounge(NUM_CLIENTS, NUM_MECHANICS,replacementCarKeys,NUM_PART_TYPES);
 
+        Park park = new Park(NUM_REPLACEMENT_CARS+NUM_CLIENTS, replacementCarKeys);
 
-        //lounge = new Lounge(arrayReplacementCars,)
+        int[] carParts = {3,3,3};
+        int[] maxCarParts = {3,3,3};
+        RepairArea repairArea = new RepairArea(NUM_CLIENTS, NUM_PART_TYPES, carParts, maxCarParts);
 
-        Customer[] customer = new Customer[numClients];
+        SupplierSite supplierSite = new SupplierSite(NUM_PART_TYPES);
 
-        Mechanic[] mechanic = new Mechanic[numMechanics];
+        Customer[] customer = new Customer[NUM_CLIENTS];
+        for(int i =0 ; i<NUM_CLIENTS; i++)
+            customer[i] = new Customer(i,Math.random() < 0.5,i,lounge,park,outsideWorld);
+
+        Mechanic[] mechanic = new Mechanic[NUM_MECHANICS];
+        for(int i = 0; i<NUM_MECHANICS;i++)
+            mechanic[i] = new Mechanic(i,lounge,park,repairArea);
 
         Manager manager = new Manager(0,lounge, supplierSite);
 
-        /**
-         *      Create Customers
-         * */
-        for(; i<numClients; i++)
-            customer[i] = new Customer(i,Math.random() < 0.5, numIter,i,lounge,park,outsideWorld);
+        manager.start();
 
-        /**
-         *      Create Mechanics
-         * */
-        i = 0;
-        for(; i<numMechanics; i++)
-            mechanic[i] = new Mechanic(i,lounge,park,repairArea);
+        for(int i = 0;i<NUM_MECHANICS; i++)
+            mechanic[i].start();
 
-        /**
-         *      Deploy Customer Simulation
-         * */
-        i = 0;
-        for(;i<numClients; i++)
+        for(int i = 0;i<NUM_CLIENTS; i++)
             customer[i].start();
 
-        /**
-         *      Deploy Mechanic Simulation
-         * */
-        i = 0;
-        for(;i<numMechanics; i++)
-        {
-            mechanic[i].start();
-        }
 
-        /**
-         *      Waiting for the simulation to end
-         * */
-        i = 0;
-        for(;i<numClients; i++) {
+        for(int i = 0;i<NUM_CLIENTS; i++) {
             try {
                 customer[i].join();
+            } catch (InterruptedException e) {
+                Logger.logException(e);
+            }
+        }
+        for(int i = 0; i<NUM_MECHANICS; i++)
+        {
+            try {
                 mechanic[i].join();
             } catch (InterruptedException e) {
                 Logger.logException(e);
@@ -99,12 +70,9 @@ public class Main {
         }
 
         try {
-            outsideWorld = new OutsideWorld(numClients);
-        } catch (Exception e) {
+            manager.join();
+        } catch (InterruptedException e) {
             Logger.logException(e);
         }
-
-
-
     }
 }

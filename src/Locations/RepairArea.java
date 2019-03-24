@@ -80,17 +80,14 @@ public class RepairArea
 
     /**
      *
-     * Instantiation of the Lounge
-     *      @param rangeCarPartTypes - Range of car types.
-     *      @param totalNumCars - total number of cars
      * */
-    public RepairArea(int rangeCarPartTypes, int totalNumCars, int[] carParts, int[] maxCarPartsNumber)
+    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts)
     {
         this.rangeCarPartTypes = rangeCarPartTypes;
         this.carParts = carParts;
         this.statusOfCars = new int[totalNumCars];
         this.carNeededPart = new int[totalNumCars];
-        this.maxCarPartsNumber = maxCarPartsNumber;
+        this.maxCarPartsNumber = maxCarParts;
         this.carsNeedsCheck = new boolean[totalNumCars];
         for(int i = 0; i<totalNumCars; i++){
             this.statusOfCars[i] = NOT_REGISTERED;

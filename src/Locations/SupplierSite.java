@@ -5,12 +5,7 @@ import Loggers.Logger;
 public class SupplierSite<R> {
     public static String    LOCAL   = "Supplier Site",
                             MANAGER = "Manager";
-    /**
-     *  Repair Area
-     *
-     *      @serialField repairArea
-     * */
-    private RepairArea repairArea;
+
 
     /**
      *      Stock
@@ -21,14 +16,11 @@ public class SupplierSite<R> {
 
     /**
      *
-     * Instantiation of the Supplier Site
-     *      @param repairArea used repair area
-     *
      * */
-    public SupplierSite(RepairArea repairArea, int[] typeParts)
+    public SupplierSite(int stockType)
     {
-        this.repairArea = repairArea;
-        this.stockType = typeParts.length;
+
+        this.stockType = stockType;
 
     }
 
