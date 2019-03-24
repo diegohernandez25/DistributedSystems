@@ -1,25 +1,20 @@
 package Entities;
 
+import Locations.GeneralRepInformation;
 import Locations.Lounge;
 import Locations.Park;
 import Locations.RepairArea;
 import Loggers.Logger;
 
 public class Mechanic extends Thread {
-    public static int   CONTINUE_REPAIR_CAR = 1,
-                        REPAIR_NEW_CAR = 2,
-                        WAKEN =3;
-
-    /**
-     *      Mechanic Tasks
-     * */
-    public static int   CONTINUE_REPAIR_CAR = 1,
-                        REPAIR_NEW_CAR = 2,
-                        SLEEP =3;
-
-
     public String   MECHANIC = "Mechanic",
                     RUN = "run";
+
+    /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
+
     /**
      *  Mechanic identification
      *
@@ -59,12 +54,13 @@ public class Mechanic extends Thread {
      * */
 
 
-    public Mechanic(int mechanicId, Lounge lounge, Park park, RepairArea repairArea)
+    public Mechanic(int mechanicId, Lounge lounge, Park park, RepairArea repairArea, GeneralRepInformation gri)
     {
         this.mechanicId = mechanicId;
         this.lounge = lounge;
         this.park = park;
         this.repairArea = repairArea;
+        this.gri = gri;
     }
 
     /**

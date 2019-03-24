@@ -1,15 +1,18 @@
 package Entities;
 
-import Locations.Lounge;
-import Locations.OutsideWorld;
-import Locations.RepairArea;
-import Locations.SupplierSite;
+import Locations.*;
 import Loggers.Logger;
 
 public class Manager extends Thread
 {
     public String   MANAGER = "Manager",
                     RUN     = "Run";
+
+    /**
+     *  Initialize GeneralRepInformation
+     * */
+    private GeneralRepInformation gri;
+
     /**
      *  Manager identification
      *
@@ -52,12 +55,12 @@ public class Manager extends Thread
      *      @param lounge used lounge.
      *      @param supplierSite used supplier site.
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite)
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, GeneralRepInformation gri)
     {
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
-
+        this.gri = gri;
     }
 
     /**
@@ -74,7 +77,7 @@ public class Manager extends Thread
              * */
             int indexPart = 0;
             int val = -1;
-            if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)    // First checks if there is a need to refill
+            if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)       // First checks if there is a need to refill
                                                                             // the stock
             {
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site

@@ -73,6 +73,7 @@ public class Lounge {
      *
      * */
     private MemFIFO<Integer> replacementCarKeys; //Car key id == key id
+
     /**
      *  Record all replacement Keys used by a Customer ID
      *
@@ -112,15 +113,13 @@ public class Lounge {
      *
      * */
     private MemFIFO<Integer> customerFixedCarKeys;
+
     /**
      *      Queue of ids of waiting customers
      *
-     *      @serialField replacementCarKeys
+     *      @serialField customerQueue
      *
      * */
-
-
-
     private MemFIFO<Integer> customerQueue;
 
     /**
@@ -396,6 +395,14 @@ public class Lounge {
      *
      * */
     public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
+
+    /**
+     *  Checks the size of Replacement Car Keys
+     *
+     *      @return int size of the FIFO.
+     *
+     * */
+    public int replacementCarKeysSize() { return replacementCarKeys.numElements(); }
 
     /**
      *  Checks if Customer car keys are empty

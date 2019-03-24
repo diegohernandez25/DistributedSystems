@@ -9,6 +9,7 @@ public class OutsideWorld {
      *
      *      @serialField waitingForRepair.
      * */
+    //FIXME should be private?
     boolean[] waitingForRepair;
 
     /**

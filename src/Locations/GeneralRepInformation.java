@@ -2,7 +2,7 @@ package Locations;
 
 import java.io.*;
 
-public class GeneralRepInformation {
+public class GeneralRepInformation extends Thread {
 
     /**
      *  Manager state abbreviation (each index is the corresponding state in integer). 4 chars max
@@ -27,7 +27,7 @@ public class GeneralRepInformation {
      *                                 GETTING_REPLACEMENT_CAR = 9,
      *                                 WAITING_ATTENDENCE = 10;
      * */
-    private static final String[] customerStates = {"NOR", "WRR", "WRC", "GRC", "AWS", "AOS", "ATD", "ATG". "CFX", "GGR", "WGA"};
+    private static final String[] customerStates = {"NOR", "WRR", "WRC", "GRC", "AWS", "AOS", "ATD", "ATG", "CFX", "GGR", "WGA"};
 
     /**
      *  Mechanic state abbreviation (each index is the corresponding state in integer). 3 chars max
@@ -151,7 +151,7 @@ public class GeneralRepInformation {
         this.stateManager = 0;
         this.stateCustomer = new int[numCustomers];
         for(int i = 0; i < stateCustomer.length; i++)
-            this.stateCustomer = 0;
+            this.stateCustomer[i] = 0;
         this.stateMechanic = new int[numMechanics];
         for(int i = 0; i < stateMechanic.length; i++)
             this.stateMechanic[i] = 0;
@@ -269,22 +269,54 @@ public class GeneralRepInformation {
         this.customerCarRepaired[customer] = "T";
     }
 
+//    /**
+//     *  Set the number of Customers in queue. It's the length of the queue
+//     *  @param num the number of Customers in queue
+//     * */
+//    public synchronized void setNumCustomersQueue(int num)
+//    {
+//        this.numCustomersQueue = num;
+//    }
+
     /**
-     *  Set the number of Customers in queue. It's the length of the queue
-     *  @param num the number of Customers in queue
+     *  Adds a Customer to the queue
      * */
-    public synchronized void setNumCustomersQueue(int num)
+    public synchronized void addCustomersQueue()
     {
-        this.numCustomersQueue = num;
+        this.numCustomersQueue++;
     }
 
     /**
-     *  Set the number of Customers waiting in queue for a replacement car. It's the length of the queue
-     *  @param num the number of Customers in queue
+     *  Removes a Customer from the queue
      * */
-    public synchronized void setNumCustomersReplacementQueue(int num)
+    public synchronized void removeCustomersQueue()
     {
-        this.numCustomersReplacementQueue = num;
+        this.numCustomersQueue--;
+    }
+
+//    /**
+//     *  Set the number of Customers waiting in queue for a replacement car. It's the length of the queue
+//     *  @param num the number of Customers in queue
+//     * */
+//    public synchronized void setNumCustomersReplacementQueue(int num)
+//    {
+//        this.numCustomersReplacementQueue = num;
+//    }
+
+    /**
+     *  Adds a Customer to the replacement car queue
+     * */
+    public synchronized void addCustomersReplacementQueue()
+    {
+        this.numCustomersReplacementQueue++;
+    }
+
+    /**
+     *  Removes a Customer from the replacement car queue
+     * */
+    public synchronized void removeCustomersReplacementQueue()
+    {
+        this.numCustomersReplacementQueue--;
     }
 
     /**
@@ -367,26 +399,26 @@ public class GeneralRepInformation {
     @Override
     public void run()
     {
-        /**
+        /*
          *  Initialize temporary string
          * */
-        String s = "";
+        String s;
 
-        /**
+        /*
          *  Initialize file, with the name "log.txt"
          * */
         try
         {
             File f = new File("log.txt");
 
-            /**
+            /*
              *  Initialize PrintWriter to write on file
              *  If file does not exist, creates a new one
              *  If it exists, append to the existing file
              * */
             PrintWriter pw = new PrintWriter(new FileOutputStream(f,true));
 
-            /**
+            /*
              *
              *  Clear console
              *
@@ -394,7 +426,7 @@ public class GeneralRepInformation {
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
-            /**
+            /*
              *
              *  Print Static content
              *
@@ -405,30 +437,30 @@ public class GeneralRepInformation {
                     "               S20 C20 P20 R20 S21 C21 P21 R21 S22 C22 P22 R22 S23 C23 P23 R23 S24 C24 P24 R24 S25 C25 P25 R25 S26 C26 P26 R26 S27 C27 P27 R27 S28 C28 P28 R28 S29 C29 P29 R29%n" +
                     "                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n" +
                     "               InQ WtK NRV    NCV  NPV       NSRQ   Prt0  NV0  S0 Prt1  NV1  S1 Prt2  NV1  S1                         PP0   PP1   PP2                                         %n");
-            System.out.printf(s);
+            System.out.print(s);
             pw.append(s);
 
-            /**
+            /*
              *
              *  Print Manager states
              *
              */
             s = String.format("%4s ", managerStates[stateManager]);
-            System.out.printf(s);
+            System.out.print(s);
             pw.append(s);
 
-            /**
+            /*
              *
              *  For every Mechanic, print its state
              *
              */
             for(int i = 0; i < numMechanics; i++) {
                 s = String.format(" %3s", mechanicStates[stateMechanic[i]]);
-                System.out.printf(s);
+                System.out.print(s);
                 pw.append(s);
             }
 
-            /**
+            /*
              *
              *  For every Customer, print its
              *      state - current state of Customer
@@ -446,22 +478,22 @@ public class GeneralRepInformation {
             for(int i = 0; i < numCustomers; i++) {
                 if(i % 10 == 0 && i != 0){
                     s = String.format("%n             ");
-                    System.out.printf(s);
+                    System.out.print(s);
                     pw.append(s);
                 }
 
                 s = String.format("  %3s  %2s  %1s   %1s", customerStates[stateCustomer[i]], customerVehicle[i], customerNeedsReplacement[i], customerCarRepaired[i]);
-                System.out.printf(s);
+                System.out.print(s);
                 pw.append(s);
             }
 
-            /**
+            /*
              *
              *  Print Locations description
              *
              */
 
-            /**
+            /*
              *
              *      Lounge:
              *          InQ - number of Customers in queue
@@ -470,10 +502,10 @@ public class GeneralRepInformation {
              *
              */
             s = String.format("%n                %02d  %02d  %02d", numCustomersQueue, numCustomersReplacementQueue, numCarsRepaired);
-            System.out.printf(s);
+            System.out.print(s);
             pw.append(s);
 
-            /**
+            /*
              *
              *     Park:
              *          NCV - number of Customer cars parked
@@ -481,10 +513,10 @@ public class GeneralRepInformation {
              *
              */
             s = String.format("     %02d   %02d", numCarsParked, numReplacementParked);
-            System.out.printf(s);
+            System.out.print(s);
             pw.append(s);
 
-            /**
+            /*
              *
              *     Repair Area:
              *         NSRQ - number of requests made by Manager to Repair Area
@@ -494,30 +526,30 @@ public class GeneralRepInformation {
              *
              * */
             s = String.format("        %02d   ", numPostJobs);
-            System.out.printf(s);
+            System.out.print(s);
             pw.append(s);
             for(int i = 0; i < numParts; i++) {
                 s = String.format("  %02d    %02d   %1s", numPartAvailable[i], numCarWaitingPart[i], flagMissingPart[i]);
-                System.out.printf(s);
+                System.out.print(s);
                 pw.append(s);
             }
 
-            /**
+            /*
              *
              *      Suppliers Site:
              *          PP# - number of each parts that have been purchased so far
              *
              * */
-            s = String.format("                      ");
-            System.out.printf(s);
+            s = "                      ";
+            System.out.print(s);
             pw.append(s);
             for(int i = 0; i < numParts; i++) {
                 s = String.format("    %02d", numBoughtPart[i]);
-                System.out.printf(s);
+                System.out.print(s);
                 pw.append(s);
             }
 
-            /**
+            /*
              *  Separates 2 logs and closes PrintWriter
              * */
             pw.append("\n******************************************************************************************************************************************************************************\n");

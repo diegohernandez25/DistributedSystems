@@ -31,7 +31,7 @@ public class SupplierSite<R> {
     }
 
     /**
-     *      Restocks car part. Always gets 3 of the part.
+     *      Restocks car part
      *
      *      @param idType - type of the part to replenish
      *      @param number - requested number
