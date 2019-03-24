@@ -246,6 +246,7 @@ public class Lounge {
         }
         try {
             stateCustomers[customerId] = WAITING_ATTENDENCE;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             customerQueue.write(customerId);
             //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Entered waiting queue for attendance", customerId, 10);
         } catch (MemException e) {
@@ -262,6 +263,7 @@ public class Lounge {
         }
         //Logger.log(CUSTOMER, LOCAL, FUNCTION,"Customer Attended", customerId, Logger.SUCCESS);
         stateCustomers[customerId] = ATTENDED;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
         gri.removeCustomersQueue();                                 //Logs Customer exists queue
         return true;
     }
@@ -275,6 +277,7 @@ public class Lounge {
      * */
     public synchronized int attendCustomer()
     {   String FUNCTION = "attendCustomer";
+        gri.setStateManager(CALL_CUSTOMER);
         if (customerQueue.isEmpty()) {
             //Logger.log(MANAGER, LOCAL,FUNCTION,"There are no clients on queue",0,10);
             if(!paymentQueue.isEmpty())
@@ -282,11 +285,15 @@ public class Lounge {
                 Logger.log(MANAGER, LOCAL,FUNCTION,"Payment queue should be empty",0,Logger.ERROR);
                 System.exit(1);
             }
+            gri.setStateManager(READ_PAPER);
             return -1;
         }
         try {
             int customerId = customerQueue.read();
+
+            gri.setStateManager(ATTEND_CUSTOMER);
             stateCustomers[customerId] = ATTENDING;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" getting attended. Notifying all",0,Logger.WARNING);
             notifyAll();
             Logger.log(MANAGER, LOCAL,FUNCTION,"Moves on",0,Logger.SUCCESS);
@@ -372,6 +379,7 @@ public class Lounge {
                 carKeysToRepairQueue.write(toRepairCarKey);                 // add car keys to repair queue
                 customerCarKeys[customerId] = -1;                           // removes customers keys
                 //Logger.log(MANAGER, LOCAL,FUNCTION, "Got customer key "+toRepairCarKey+ "for post job",0,10);
+                gri.setStateManager(READ_PAPER);
                 return toRepairCarKey;
 
             }
@@ -379,6 +387,7 @@ public class Lounge {
         }
         catch (MemException e) { Logger.logException(e); }
         //Logger.log(MANAGER, LOCAL,FUNCTION, "Ended payment operation",0,10);
+        gri.setStateManager(READ_PAPER);
         return -2;
     }
 
@@ -409,6 +418,7 @@ public class Lounge {
                 }
                 usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
                 stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+                gri.setStateCustomer(customerId, stateCustomers[customerId]);
                 gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
 
                 return tmp;                                         //ENDS Here
@@ -423,6 +433,7 @@ public class Lounge {
         try
         {   //Logger.log(CUSTOMER,LOCAL,FUNCTION,"No replacement Car keys available",customerId,10);
             stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Enter queue for replacement Car",customerId,Logger.WARNING);
             waitingReplacementKey.write(customerId);
         }
@@ -440,6 +451,7 @@ public class Lounge {
         }
         Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer waken & getting replacement car",customerId,Logger.WARNING);
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
         gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
         try {
             int tmp = replacementCarKeys.read();
@@ -491,6 +503,7 @@ public class Lounge {
             {   int waitingCustomerId = waitingReplacementKey.read();
                 //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Customer alerts "+waitingCustomerId+" return replacement key",0,Logger.SUCCESS);
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
+                gri.setStateCustomer(customerId, stateCustomers[customerId]);
             }
             //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Manager and Customer waiting for replacement car Key alerted",0,Logger.SUCCESS);
             notifyAll();    //Notifies manager and Customer!!!
@@ -509,7 +522,10 @@ public class Lounge {
      *
      * */
 
-    public synchronized void exitLounge(int customerId) { stateCustomers[customerId] = ATTENDED_WO_SUBCAR; }
+    public synchronized void exitLounge(int customerId) {
+        stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+    }
 
     /**
      *  Checks if customer queue is empty
@@ -604,6 +620,7 @@ public class Lounge {
         try
         {
             stateMechanics[mechanicId] = FIXING_THE_CAR;
+            gri.setStateMechanic(mechanicId, stateMechanics[mechanicId]);
             int tmpKey = carKeysToRepairQueue.read();
             //Logger.log(MECHANIC,LOCAL,FUNCTION,"Got the keys "+tmpKey+" to fix correspondent car",mechanicId,Logger.SUCCESS);
             return tmpKey;
@@ -642,13 +659,16 @@ public class Lounge {
 
    public synchronized boolean registerStockRefill(int idType)
    {   String FUNCTION = "registerStockRefill";
+       gri.setStateManager(FILL_STOCK);
        if(carPartsToRefill[idType] != 0)
        {    Logger.log(MANAGER,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
             carPartsToRefill[idType] = 0;
 
+            gri.setStateManager(READ_PAPER);
             return true;
        }
        Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
+       gri.setStateManager(READ_PAPER);
        return false;
    }
 
@@ -688,6 +708,7 @@ public class Lounge {
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
     {   String FUNCTION = "alertRepairDone";
+        gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
         if(!customerFixedCarKeys.isEmpty())
         {
             if(customerFixedCarKeys.containsValue(idKey)) {

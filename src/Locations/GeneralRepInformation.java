@@ -26,7 +26,7 @@ public class GeneralRepInformation {
      *                                 ATTENDING = 7,
      *                                 CAR_FIXED = 8,
      *                                 GETTING_REPLACEMENT_CAR = 9,
-     *                                 WAITING_ATTENDENCE = 10;
+     *                                 WAITING_ATTENDANCE = 10;
      * */
     private static final String[] customerStates = {"NOR", "WRR", "WRC", "GRC", "AWS", "AOS", "ATD", "ATG", "CFX", "GGR", "WGA"};
 
