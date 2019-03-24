@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int NUM_CLIENTS = 30,
-                            NUM_MECHANICS = 2,
-                            NUM_REPLACEMENT_CARS = 3,
-                            NUM_PART_TYPES = 3;
+    public static final int NUM_CLIENTS = 1,
+                            NUM_MECHANICS = 1,
+                            NUM_REPLACEMENT_CARS = 1,
+                            NUM_PART_TYPES = 1;
 
     public static void main(String[] args)
     {
@@ -42,15 +42,17 @@ public class Main {
         for(int i = 0; i<NUM_MECHANICS;i++)
             mechanic[i] = new Mechanic(i,lounge,park,repairArea);
 
-        Manager manager = new Manager(0,lounge, supplierSite);
-
-        manager.start();
+        Manager manager = new Manager(0,lounge, supplierSite, outsideWorld,repairArea);
 
         for(int i = 0;i<NUM_MECHANICS; i++)
             mechanic[i].start();
 
         for(int i = 0;i<NUM_CLIENTS; i++)
             customer[i].start();
+
+        manager.start();
+
+
 
 
         for(int i = 0;i<NUM_CLIENTS; i++) {

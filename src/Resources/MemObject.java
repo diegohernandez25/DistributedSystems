@@ -15,7 +15,7 @@ public abstract class MemObject<R>
    *   Internal storage area.
    */
 
-   protected R [] mem;
+   protected volatile R [] mem;
 
   /**
    *   Memory instantiation.

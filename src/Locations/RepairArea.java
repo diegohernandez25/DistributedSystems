@@ -108,9 +108,9 @@ public class RepairArea
      *
      *      @return the id of the part needed for repair
      * */
-    public int checkCar(int idCar, int mechanicId)
+    public synchronized int checkCar(int idCar, int mechanicId)
     {   String FUNCTION = "checkCar";
-        Random rand = null;
+        Random rand = new Random();
         int randomNum = rand.nextInt(rangeCarPartTypes)+1;
         assert (randomNum <= rangeCarPartTypes && randomNum >= 0);
         statusOfCars[idCar] = CHECKED;
@@ -213,7 +213,7 @@ public class RepairArea
      *
      *      @param idCar    - Id of the car.
      * */
-    public void concludeCarRepair(int idCar, int mechanicId) {
+    public synchronized void concludeCarRepair(int idCar, int mechanicId) {
         String FUNCTION = "ConcludeCarRepair";
         if (statusOfCars[idCar] == REPAIRED)
         {
@@ -235,7 +235,7 @@ public class RepairArea
      *
      *      @return true - refill done to accordance. false - There shouldn't be a refill.
      * */
-    public boolean refillCarPartStock(int idPart, int quantity)
+    public synchronized  boolean  refillCarPartStock(int idPart, int quantity)
     {   String FUNCTION = "refillCarPartStock";
         assert idPart <= rangeCarPartTypes;
         Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Refilling part: "+idPart+". number: "+quantity,0,10);
@@ -268,7 +268,7 @@ public class RepairArea
         Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"finding next task",mechanicId,10);
         if(workToDo)
         {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
-            int[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
+            Integer[] tmpWaitPartCarts = carsWaitingForParts.getStorage();
             for(int i: tmpWaitPartCarts)
             {
                 int tmpPart;

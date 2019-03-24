@@ -16,19 +16,19 @@ public class MemFIFO<R> extends MemObject<R>
    *   Pointer to the first empty location.
    */
 
-   private int inPnt;
+   private volatile int inPnt;
 
   /**
    *   Pointer to the first occupied location.
    */
 
-   private int outPnt;
+   private volatile int outPnt;
 
   /**
    *   Signaling FIFO empty state.
    */
 
-   private boolean empty;
+   private volatile boolean empty;
 
   /**
    *   FIFO instantiation.
@@ -83,7 +83,8 @@ public class MemFIFO<R> extends MemObject<R>
      if (!empty)
         { val = mem[outPnt];
           outPnt = (outPnt + 1) % mem.length;
-          empty = (inPnt == outPnt);
+          if(mem.length==1) empty = true;
+          else empty = (inPnt == outPnt);
         }
         else throw new MemException ("Fifo empty!");
      return val;
@@ -91,7 +92,7 @@ public class MemFIFO<R> extends MemObject<R>
 
    public boolean isEmpty()
    {
-       return inPnt == outPnt;
+       return empty;
    }
 
 
@@ -111,7 +112,8 @@ public class MemFIFO<R> extends MemObject<R>
     *       @return true - storage contains value. false- otherwise.
     * */
    public boolean containsValue(R val)
-   {    for (R r : mem) { if (r.equals(val)) return true; }
+   {    if(empty) return false;
+        for (R r : mem) { if (r.equals(val)) return true; }
         return false;
    }
 
@@ -119,11 +121,11 @@ public class MemFIFO<R> extends MemObject<R>
         return Math.abs(outPnt - inPnt);
     }
 
-    public int[] getStorage(){
+    public Integer[] getStorage(){
         int size = numElements();
         int index = inPnt;
-        int[] array = new int[size];
-        for(int i = 0;i<size;i++, index = (index+1) % mem.length) {   array[i] = (int) mem[index]; } //FIXME: Fita-cola
+        Integer[] array = new Integer[size];
+        for(int i = 0;i<size;i++, index = (index+1) % mem.length) {   array[i] = (Integer) mem[index]; } //FIXME: Fita-cola
         return array;
     }
 
@@ -133,5 +135,14 @@ public class MemFIFO<R> extends MemObject<R>
         return "MemFIFO{" +
                 "mem=" + Arrays.toString(mem) +
                 '}';
+    }
+    public int getInPtn()
+    {
+        return inPnt;
+    }
+
+    public int getOutPtn()
+    {
+        return outPnt;
     }
 }

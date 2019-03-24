@@ -93,9 +93,10 @@ public class Mechanic extends Thread {
                     }
                     break;
                 case 2:                                                                         //repair new car
-                    if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) == -1)                        // If there are new cars to
+                    if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)                        // If there are new cars to
                                                                                                 // repair
                     {
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Got car key to repair "+idCurrentKey,mechanicId,10);
                         if((idCurrentCar = park.getCar(idCurrentKey,mechanicId)) == -1)                    //Gets car at the park
                         {
                             Logger.log(MECHANIC,MECHANIC,RUN,
@@ -103,25 +104,30 @@ public class Mechanic extends Thread {
                                     0, Logger.ERROR);
                             System.exit(1);
                         }
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Checking car "+idCurrentCar,mechanicId,10);
                         int carPart = repairArea.checkCar(idCurrentCar,mechanicId);             // Checks which part the car
                                                                                                 // needs for its repair.
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Check done. Car needs part "+carPart+". Proceeding to repair"
+                                ,mechanicId,10);
                         if(!repairArea.repairCar(idCurrentCar,carPart,mechanicId))
                         {
+                            Logger.log(MECHANIC,MECHANIC,RUN,"Car part "+carPart+" not available. Requesting stock refill"
+                                    ,mechanicId,Logger.WARNING);
                             lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart)     // Requests parts.
                                     ,mechanicId);
                             continue;                                                           // Re-starts cycle once again.
                         }
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Start fixing procedure"
+                                ,mechanicId,10);
                         fixCar();                                                               // Mechanic starts fixing the
-                        // car
+                                                                                                // car
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Car fixed. Concluding repair"
+                                ,mechanicId,Logger.SUCCESS);
                         repairArea.concludeCarRepair(idCurrentCar,mechanicId);                  // Registers conclusion of
                         // repair at the repair Area
-                        if(!park.parkCar(idCurrentCar, mechanicId));                            // Parks the car
-                        {   Logger.log(MECHANIC,MECHANIC,RUN,
-                                "Error: The car is already in the park. " +
-                                        "This should not have happened!",
-                                0, Logger.ERROR);
-                            System.exit(1);
-                        }
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Parking car",mechanicId,10);
+                        park.parkCar(idCurrentCar, mechanicId);
+                        Logger.log(MECHANIC,MECHANIC,RUN,"Allerting manager that car is fixed.",mechanicId,Logger.SUCCESS);
                         lounge.alertManagerRepairDone(idCurrentCar,mechanicId);                 // Alerts manager that the repair
                         // is done
                         continue;                                                               // Goes back to cycle

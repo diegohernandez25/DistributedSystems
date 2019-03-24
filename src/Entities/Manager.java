@@ -52,12 +52,13 @@ public class Manager extends Thread
      *      @param lounge used lounge.
      *      @param supplierSite used supplier site.
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite)
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
-
+        this.outsideWorld = outsideWorld;
+        this.repairArea = repairArea;
     }
 
     /**
@@ -72,6 +73,7 @@ public class Manager extends Thread
             /**
              *      Refill car parts stock
              * */
+            readPaper();
             int indexPart = 0;
             int val = -1;
             if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)    // First checks if there is a need to refill

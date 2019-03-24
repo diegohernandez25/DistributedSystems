@@ -15,9 +15,13 @@ public class Park {
     public Park(int numSlots, int[] parkCars)
     {
         cars = new boolean[numSlots]; // numSlots = numCustomerCars + numReplaceCars
+        for(int i = 0;i<numSlots; i++)
+        {
+            cars[i] = false;
+        }
         for(int i = 0; i<parkCars.length; i++)
         {
-            parkCar(i,-1);
+            cars[parkCars[i]] = true;
         }
     }
 
@@ -30,6 +34,7 @@ public class Park {
     {   String FUNCTION = "parkCar";
         assert(carId < cars.length);
         Logger.log(LOCAL,LOCAL,FUNCTION,"Parking car",id,10);
+
         if(cars[carId])
         {
             Logger.log(LOCAL,LOCAL,FUNCTION,"Car is already parked. This should not happend",id,Logger.ERROR);
@@ -38,6 +43,7 @@ public class Park {
         }
         Logger.log(LOCAL,LOCAL,FUNCTION,"Car parked.",id,Logger.SUCCESS);
         cars[carId] = true;
+        System.out.println("RETURNING TRUE");
         return true;
     }
     /**
