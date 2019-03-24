@@ -40,7 +40,7 @@ public class Park {
         {
             Logger.log(LOCAL,LOCAL,FUNCTION,"Car is already parked. This should not happend",id,Logger.ERROR);
             System.exit(1);
-            System.out.println("parking lot: "+cars.toString());
+            //System.out.println("parking lot: "+cars.toString());
             return false;
         }
         Logger.log(LOCAL,LOCAL,FUNCTION,"Car parked.",id,Logger.SUCCESS);
@@ -59,7 +59,7 @@ public class Park {
         if(!cars[carId])
         {   Logger.log(LOCAL,LOCAL,FUNCTION,"Car is not parked. This should not happend",id,Logger.ERROR);
             System.exit(1);
-            System.out.println("parking lot: "+cars.toString());
+            //System.out.println("parking lot: "+cars.toString());
             return -1;
         }
         cars[carId] = false;

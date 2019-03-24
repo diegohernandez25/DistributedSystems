@@ -144,7 +144,10 @@ public class RepairArea
     public synchronized boolean repairCar(int carId, int partId, int mechanicId)
     {   String FUNCTION = "repairCar";
         assert (partId <= rangeCarPartTypes);
-        if(carParts[carId]>0)
+        System.out.println("cardId: "+carId);
+        System.out.println("carParts length: "+carParts.length);
+        //if(carParts[carId]>0) FIXME
+        if(carParts[partId]>0)
         {   Logger.log(MECHANIC,REPAIR_AREA,"Car is ready for repair. Parts available",mechanicId,Logger.SUCCESS);
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
@@ -155,9 +158,9 @@ public class RepairArea
                 mechanicId,Logger.WARNING);
         statusOfCars[carId] = WAITING_PARTS;
         try {
-            System.out.println("INSERTING CAR: "+carId);
+
             carsWaitingForParts.write(carId);
-            System.out.println("1."+carsWaitingForParts.toString());
+
             if(carsWaitingForParts.isEmpty())
             {
                 Logger.log(MECHANIC,REPAIR_AREA,"Should not happen. A car just got inside the storage",mechanicId,Logger.ERROR);
@@ -194,7 +197,6 @@ public class RepairArea
         {   length--;
             try
             {   tmp = carsWaitingForParts.read();//gets
-                System.out.println("REMOVING CAR: "+tmp);
 
                 if(reserveCarPart[tmp] != -1)
                 {   statusOfCars[tmp] = ON_REPAIR;
@@ -204,7 +206,6 @@ public class RepairArea
                     reserveCarPart[tmp] = -1; //part car taken
                     continue; //does not put back
                 }
-                System.out.println("INSERTING CAR: "+tmp);
                 carsWaitingForParts.write(tmp);//put back
 
             } catch (MemException e) { Logger.logException(e); }
@@ -278,18 +279,12 @@ public class RepairArea
         if(workToDo)
         {   Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
             int size = carsWaitingForParts.numElements();
-            System.out.println("Queue check: "+carsWaitingForParts.toString());
-            System.out.println("Waiting cars: "+carsWaitingForParts.numElements());
             boolean flag = false;
             while(size-- >0)
             {
                 try {
                     int tmpCar = carsWaitingForParts.read();//gets
-                    System.out.println("REMOVING CAR: "+tmpCar);
                     int tmpPart;
-                    System.out.println("tmpCar: "+tmpCar);
-                    System.out.println("tmpPart: "+carNeededPart[tmpCar]);
-                    System.out.println("carParts: "+carParts[carNeededPart[tmpCar]]);
                     if((tmpPart= carNeededPart[tmpCar]) != -1)
                     {
                         if(carParts[tmpPart] != 0) {
@@ -304,7 +299,6 @@ public class RepairArea
                         }
                     }
                     carsWaitingForParts.write(tmpCar);
-                    System.out.println("INSERTING CAR: "+tmpCar);
                     if(carsWaitingForParts.numElements() == 0)
                     {
                         Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,

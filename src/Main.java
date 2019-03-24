@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int NUM_CLIENTS = 2,
+    public static final int NUM_CLIENTS = 4,
                             NUM_MECHANICS = 1,
                             NUM_REPLACEMENT_CARS = 1,
                             NUM_PART_TYPES = 3;
