@@ -9,13 +9,13 @@ public class SupplierSite<R> {
 
     /**
      *      Stock
-     *
      *      @serialField stockType
      * */
     private int stockType;
 
     /**
-     *
+     *  Instantiation of Supplier Site
+     *  @param stockType number of total types of parts that are going to be available in stock
      * */
     public SupplierSite(int stockType)
     {
@@ -29,6 +29,8 @@ public class SupplierSite<R> {
      *
      *      @param idType - type of the part to replenish
      *      @param number - requested number
+     *
+     *      @return number of parts that were restocked of the specific type of part
      * */
     public synchronized int restockPart(int idType, int number)
     {   String FUNCTION = "restockPart";

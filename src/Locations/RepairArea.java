@@ -29,6 +29,8 @@ public class RepairArea
 
     /**
      *  Initialize GeneralRepInformation
+     *
+     *  @serialField gri
      * */
     private GeneralRepInformation gri;
 
@@ -77,17 +79,39 @@ public class RepairArea
      * */
     private volatile int[] carNeededPart;
 
+    /**
+     *  Flag announcing work left to do
+     *  @serialField workToDo
+     * */
     private volatile boolean workToDo = false;
 
+    /**
+     *  Array with a flag announcing if a car needs to be checked for missing part. The index of the array is the ID of the car
+     *  @serialField carsNeedsCheck
+     * */
     private volatile boolean[] carsNeedsCheck;
 
+    /**
+     *  Array that is -1 if a car doesn't have a car part associated with it, and the ID of the part, to reserve
+     *  that part to a specific car (index is the ID of the car).
+     *  @serialField reserveCarPart
+     * */
     private volatile int[] reserveCarPart;
 
+    /**
+     *  Flag announcing if all the tasks were done
+     *  @serialField allDone
+     * */
     private boolean allDone;
 
 
     /**
-     *
+     * Instantiation of the Repair Area.
+     * @param totalNumCars number of the total number of cars
+     * @param rangeCarPartTypes range of the IDs of car types
+     * @param carParts array of number of carParts to be used. Index represents the ID of the car and value represents the number of parts available.
+     * @param maxCarParts max stock possible for each car part. Index represents the ID of the part
+     * @param gri General Repository Information to be used as logger
      * */
     public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GeneralRepInformation gri)
     {
@@ -118,6 +142,7 @@ public class RepairArea
      *      Checks the needed parts for the car to repair
      *
      *      @param idCar    - id of the car to check
+     *      @param mechanicId - id of the mechanic doing the task
      *
      *      @return the id of the part needed for repair
      * */
@@ -149,6 +174,7 @@ public class RepairArea
      *
      *      @param carId    - The Id of car to repair.
      *      @param partId   - The id of the car part needed for the repair.
+     *      @param mechanicId - id of the mechanic doing the task
      *
      *      @return true ready for repair. False otherwise
      * */
@@ -196,6 +222,8 @@ public class RepairArea
     /**
      *      Checks which of the waiting cars are ready for repair
      *
+     *      @param mechanicId - id of the mechanic doing the task
+     *
      *      @return id of the car ready for repair.
      * */
     public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId)
@@ -235,6 +263,7 @@ public class RepairArea
      *      Conclude repair of the car.
      *
      *      @param idCar    - Id of the car.
+     *      @param mechanicId - id of the mechanic doing the task
      * */
     public synchronized void concludeCarRepair(int idCar, int mechanicId) {
         String FUNCTION = "ConcludeCarRepair";
@@ -252,7 +281,6 @@ public class RepairArea
      *      Refill car Part stock
      *      @param idPart   - ID of car part.
      *      @param quantity - number of car parts to refill
-     *      @return true - refill done to accordance. false - There shouldn't be a refill.
      * */
     public synchronized  void  refillCarPartStock(int idPart, int quantity)
     {   String FUNCTION = "refillCarPartStock";
@@ -275,6 +303,11 @@ public class RepairArea
         return maxCarPartsNumber[partId];
     }
 
+    /**
+     *  Mechanic checks what has to do next
+     *  @param mechanicId - id of the mechanic doing the task
+     *  @return the task that has to be done
+     * */
     public synchronized int findNextTask(int mechanicId)
     {   String FUNCTION = "findNextTask";
         int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3, GO_HOME =4;
@@ -344,6 +377,7 @@ public class RepairArea
 
     /**
      * Alerts that a new car needs to be checked.
+     * @param carID the ID of the car that needs to be repaired
      * */
     public synchronized void postJob(int carID)
     {   String FUNCTION = "postJob";
@@ -354,6 +388,9 @@ public class RepairArea
         notifyAll();
     }
 
+    /**
+     *  Sends the Mechanics home
+     * */
     public synchronized void sendHome()
     {
         allDone = true;
