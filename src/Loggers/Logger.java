@@ -69,7 +69,7 @@ public class Logger {
                 System.out.println(warningFormat(log));
                 break;
             default:
-                System.out.println(log);
+                //System.out.println(log);
                 break;
         }
     }

@@ -158,17 +158,24 @@ public class Lounge {
 
     /**
      * Header of the headReplacementKeys.
+     * @serialField headReplacementKeys.
      * */
     private volatile int headReplacementKeys;
 
     /**
-     *
+     *Array whom index represents de ID of a customer and its value a boolean which tells if service has been concluded.
+     * @serialField customerFinished
      * */
     private volatile boolean[] customerFinished;
 
 
     /**
-     *
+     * Lounge
+     * @param numCustomers - number of customer
+     * @param numMechanics - number of mechanics
+     * @param replacementKeys - array with the replacement Keys.
+     * @param numTypes - number of existing car types.
+     * @param gri - logger
      * */
     public Lounge(int numCustomers, int numMechanics,int replacementKeys[], int numTypes, GeneralRepInformation gri)
     {
@@ -225,12 +232,9 @@ public class Lounge {
 
     /**
      *  Customer enters queue to be attended by the Manager.
-     *
      *      @param customerId - Id of the customer to be attended
      *      @param payment - type of attendance. (true/false) Pay for repair/Request repair.
-     *
      *      @note Customer invokes this method
-     *
      *      @return operation success so the thread can move on to the next operation.
      * */
     public synchronized boolean enterCustomerQueue(int customerId, boolean payment)
@@ -270,10 +274,8 @@ public class Lounge {
 
     /**
      *  Operation to attend customer. Can be for receive payment or to initiate the repair of a car.
-     *
-     *      @note Manager invokes this method.
-     *
-     *      @return success of the operation so the Mechanic can move on or not to the next operation.
+     *  Manager invokes this method.
+     *  @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
     public synchronized int attendCustomer()
     {   String FUNCTION = "attendCustomer";
@@ -297,7 +299,8 @@ public class Lounge {
             //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" getting attended. Notifying all",0,Logger.WARNING);
             notifyAll();
             Logger.log(MANAGER, LOCAL,FUNCTION,"Moves on",0,Logger.SUCCESS);
-            if(!paymentQueue.isEmpty() && paymentQueue.peek() == customerId){                          //Customer wants to make payment
+            //if(!paymentQueue.isEmpty() && paymentQueue.peek() == customerId){                          //Customer wants to make payment
+            if(paymentQueue.numElements()!=0 && paymentQueue.peek() == customerId){
                 //Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" wants to make payment",0,10);
                 if(paymentQueue.read()!=customerId)
                 {
@@ -312,29 +315,10 @@ public class Lounge {
                         break;
                     }
                 }
-                /*if(i == usedReplacementCarKeys.length)
-                {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,"Customer "+customerId+" did not request a replacement car",0,Logger.WARNING);
-                    i--;                 //FIXME: Fita cola
-                }*/
-                /*else {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,"Manager is waiting for the replacement key taken by customer "+customerId  ,0,Logger.WARNING);
-                }*/
+
                 Logger.log(MANAGER, LOCAL,FUNCTION,"Manager is waiting for the payment by customer "+customerId,0,Logger.WARNING);
-                /*while (usedReplacementCarKeys[i] == customerId
-                        || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
-                                                                            // replacement key and the client to
-                                                                            // retrieve his/her keys
-                { try {
-                    Logger.log(MANAGER, LOCAL,FUNCTION,
-                            "Manager waiting..."
-                            ,0,Logger.WARNING);
-                        wait();
-                    } catch (InterruptedException e) {
-                        Logger.logException(e);
-                    }
-                }*/
-                if(flag)//TODO
+
+                if(flag)
                 {
                     while (usedReplacementCarKeys[i] == customerId
                             || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
@@ -392,13 +376,9 @@ public class Lounge {
     }
 
     /**
-     *  Get replacement car key.
-     *
-     *      @note Client invokes this method.
-     *
-     *      @param customerId - ID of the client who needs the replacement car.
-     *
-     *      @return the key of the replacement car.
+     * Get replacement car key.
+     * @param customerId - ID of the client who needs the replacement car.
+     * @return the key of the replacement car.
      * */
     public synchronized int getReplacementCarKey(int customerId)
     {   //  If there are keys available, the customer will take one.
@@ -410,7 +390,6 @@ public class Lounge {
             {   int tmp = replacementCarKeys.read();
                 //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Got replacement Key "+tmp,customerId,Logger.SUCCESS);
 
-                //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
                 if(tmp - headReplacementKeys < 0)
                 {
                     Logger.log(CUSTOMER,LOCAL,FUNCTION,"Wrong replacement Key",customerId,Logger.ERROR);
@@ -455,8 +434,6 @@ public class Lounge {
         gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
         try {
             int tmp = replacementCarKeys.read();
-            //FIXME this.usedReplacementCarKeys[tmp] = customerId;      //User registers which key he/she took.
-            //TODO Eliminate duplicate
             if(tmp - headReplacementKeys < 0)
             {
                 Logger.log(CUSTOMER,LOCAL,FUNCTION,"Wrong replacement Key",customerId,Logger.ERROR);
@@ -485,10 +462,6 @@ public class Lounge {
     {
         String FUNCTION = "returnReplacementCarKey";
 
-        System.out.println("DEBUG\n");
-        System.out.println("AvailableReplacementCarKeys: "+replacementCarKeys.toString());
-        System.out.println();
-
         if(replacementCarKeys.containsValue(key))
         {
             Logger.log(CUSTOMER,LOCAL,FUNCTION,"Error: replacement car key is already available. " +"This should not happen",customerId,Logger.ERROR);
@@ -514,14 +487,9 @@ public class Lounge {
         return true;
     }
     /**
-     *  Exit Lounge
-     *
-     *      @param customerId - Id of the customer who will exit the lounge
-     *
-     *      @note Customer without the need of a replacement car invokes this method.
-     *
+     * Exit Lounge
+     * @param customerId - Id of the customer who will exit the lounge
      * */
-
     public synchronized void exitLounge(int customerId) {
         stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
         gri.setStateCustomer(customerId, stateCustomers[customerId]);
@@ -529,47 +497,38 @@ public class Lounge {
 
     /**
      *  Checks if customer queue is empty
-     *
-     *      @note Manager invokes this method
-     *
+     *  @return customer
      * */
     public boolean isCustomerQueueEmpty() { return customerQueue.isEmpty(); }
 
 
     /**
      *  Checks if Replacement Car Keys is Empty
-     *
-     *      @return boolean (true/false) Available replacement cars/No replacement cars.
-     *
+     *  @return boolean (true/false) Available replacement cars/No replacement cars.
      * */
     public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
 
     /**
      *  Checks if Customer car keys are empty
-     *
-     *     @return boolean (true/false) Available customers cars/No customers cars.
+     *  @return boolean (true/false) Available customers cars/No customers cars.
      * */
     public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
     /**
-     *  Checks the size of Customer Car Keys
-     *
-     *      @return int size of the array, useful to check the total number of clients
-     *
+     * Checks the size of Customer Car Keys
+     * @return int size of the array, useful to check the total number of clients
      * */
     public int customerCarKeysSize() { return customerCarKeys.length; }
 
     /**
      *  Checks if queue of keys of cars to be repaired is empty
-     *
-     *      @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
+     *  @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
      * */
     public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
 
     /**
-     *      Customer gives Manager his/hers car key.
-     *
-     *      @param key - Customer's car key.
+     * Customer gives Manager his/hers car key.
+     * @param key - Customer's car key.
      */
     public synchronized void giveManagerCarKey(int key, int customerId)
     {   String FUNCTION = "giveManagerCarKey";
@@ -583,12 +542,9 @@ public class Lounge {
 
     /**
      *  Customer pays for the service and retrieves the keys of his/her car.
-     *
-     *      @param customerId - ID of the customer.
-     *
-     *      @return the Customer's car key.
+     *  @param customerId - ID of the customer.
+     *  @return the Customer's car key.
      * */
-
     public synchronized int payForTheService(int customerId)
     {   String FUNCTION = "payForTheService";
         //Logger.log(CUSTOMER,LOCAL,FUNCTION,"Payment given.",customerId,Logger.SUCCESS);
@@ -601,13 +557,9 @@ public class Lounge {
         return key;
     }
     /**
-     *
      *  Mechanic gets keys of car to be repaired
-     *
-     *      @param mechanicId ID of the Mechanic
-     *
-     *      @return key of the car to repair
-     *
+     *  @param mechanicId ID of the Mechanic
+     *  @return key of the car to repair
      *  */
     public synchronized int getCarToRepairKey(int mechanicId)
     {
@@ -637,46 +589,55 @@ public class Lounge {
 
     /**
      *      Mechanic asks for a type of car parts for the repair
-     *
-     *      @param idType   - the id of the part to refill stock
-     *      @param number   - the number of stock needed    //FIXME: maybe not needed
-     *
+     *      @param idType       - the id of the part to refill stock
+     *      @param number       - the number of stock needed
+     *      @param mechanicId   - the id of the mechanic
      *      @return true - request done. false - request has already been made.
      * */
    public synchronized boolean requestPart(int idType, int number, int mechanicId)
    {   String FUNCTION = "requestPart";
         Logger.log(MECHANIC,LOCAL,FUNCTION,"Requesting car parts of type "+idType,mechanicId,10);
-       if(carPartsToRefill[idType] == 0)
-       {    //Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
+       //if(carPartsToRefill[idType] == 0)
+       //{    //Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
             gri.setFlagMissingPart(idType, "T");                          // Log Manager has been advised for missing part
             //carPartsToRefill[idType] = number;
             carPartsToRefill[idType] += number;
             return true;
-       }
-       Logger.log(MECHANIC,LOCAL,FUNCTION,"Request has already been made of type part:"+idType,mechanicId,Logger.WARNING);
-       return false;
+       //}
+       //Logger.log(MECHANIC,LOCAL,FUNCTION,"Request has already been made of type part:"+idType,mechanicId,Logger.WARNING);
+       //return false;
    }
-
-   public synchronized boolean registerStockRefill(int idType)
+    /**
+     *  register refill of stock
+     *  @param idType - the type
+     * */
+   public synchronized boolean registerStockRefill(int idType, int numberParts)
    {   String FUNCTION = "registerStockRefill";
        gri.setStateManager(FILL_STOCK);
        if(carPartsToRefill[idType] != 0)
-       {    Logger.log(MANAGER,LOCAL,FUNCTION,"Done request of type part:"+idType,0,Logger.SUCCESS);
-            carPartsToRefill[idType] = 0;
-
-            gri.setStateManager(READ_PAPER);
-            return true;
+       {
+           if(carPartsToRefill[idType] == numberParts) {
+               Logger.log(MANAGER, LOCAL, FUNCTION, "Done request of type part:" + idType, 0, Logger.SUCCESS);
+               carPartsToRefill[idType] = 0;
+               gri.setStateManager(READ_PAPER);
+           }
+           else
+           {
+               carPartsToRefill[idType] -= numberParts;
+               gri.setStateManager(READ_PAPER);
+           }
+           return true;
        }
        Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
        gri.setStateManager(READ_PAPER);
        return false;
    }
 
-   /**
-    *       Manager checks if parts needs to be refilled
-    *
-    *       @return id of the part to refill. Returns -1 if no part is needed to refill
-    * */
+    /**
+     * Manager checks if parts needs to be refilled
+     * @param index - start index of search
+     * @return id of the part to refill. Returns -1 if no part is needed to refill
+     * */
     public synchronized int checksPartsRequest(int index)
     {   String FUNCTION = "checksPartsRequest";
        // Logger.log(MANAGER,LOCAL,FUNCTION,"Checking if refill of stock is needed",0,10);
@@ -692,19 +653,18 @@ public class Lounge {
     }
 
     /**
-     *      Mechanic checks stock of a specific part
-     *
-     *      @param idType   - id of the car part.
-     *
-     *      @return True if there is stock available for the part. False otherwise.
+     * Mechanic checks stock of a specific part.
+     * @param idType   - id of the car part.
+     * @return True if there is stock available for the part. False otherwise.
      * */
     public synchronized boolean checksPartStock(int idType) { return carPartsToRefill[idType] != 0; }
 
 
 
     /**
-     *Mechanic return key of the repaired car
-     *@param idKey    - the id of the key (= idCar)
+     * Mechanic return key of the repaired car
+     * @param idKey         - the id of the key (= idCar)
+     * @param mechanicId    - the id of the mechanic.
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
     {   String FUNCTION = "alertRepairDone";
@@ -727,12 +687,16 @@ public class Lounge {
     }
 
     /**
-     *Checks if there are cars repaired
+     * Checks if there are cars repaired
+     * @return true - customer fixed car keys empty
      * */
     public synchronized boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
 
 
-
+    /**
+     * Gets key of a fixed car.
+     * @return id of the key
+     * */
     public synchronized int getFixedCarKey()
     {   String FUNCTION = "getFixedCarKey";
         if(!isCustomerCarKeysEmpty())
@@ -747,7 +711,11 @@ public class Lounge {
         //Logger.log(MANAGER,LOCAL,FUNCTION,"There are no repaired cars registered",0, Logger.WARNING);
         return -1;
     }
-
+    /**
+     * Gets customer given the id of the key whom the customer belongs-
+     * @param idKey - id of the key.
+     * @return the id of the customer
+     * */
     public synchronized int getCustomerFromKey(int idKey)
     {
         String FUNCTION = "getCustomerFromKey";
@@ -761,7 +729,11 @@ public class Lounge {
         memKeysCustomers[idKey] = -1;
         return customerId;
     }
-
+    /**
+     * Make key ready to give back to customer.
+     * @param idCustomer - id of the customer.
+     * @param idKey - id of the key.
+     * */
     public synchronized void readyToDeliverKey(int idCustomer, int idKey)
     {   String FUNCTION= "readyToDeliverKey";
         //Logger.log(MANAGER, LOCAL,FUNCTION,"Ready to deliver key "+idKey+" to customer "+idCustomer,0,10);
@@ -775,12 +747,15 @@ public class Lounge {
 
     /**
      *  Get the requested number of a part
+     *  @param partId - ID of the part Car.
+     *  @return number of parts requested.
      * */
     public synchronized int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
 
 
     /**
      * Checks if all customer have been attended.
+     * @return true - all services done to all customers for the dat. False - otherwise
      * */
     public synchronized boolean allDone()
     {

@@ -15,18 +15,20 @@ public class OutsideWorld {
             CUSTOMER    = "Customer";
     /**
      *  Array with the id of the users which are waiting for the car to be repaired.
-     *
-     *      @serialField waitingForRepair.
+     *  @serialField waitingForRepair.
      * */
     volatile boolean[] waitingForRepair;
 
-    volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
     /**
-     *
+     * FIFO of all customers who haven't been arrived yet to the outside world (mainly because it waits for
+     * a replacement car key).
+     * @serialField customerNotYetAtOutsideWorld.
+     * */
+    volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
+
+    /**
      * Instantiation of the Outside World
-     *
-     *      @param numClients - Number of clients
-     *
+     * @param numClients - Number of clients
      * */
     public OutsideWorld(int numClients){
 
@@ -42,9 +44,7 @@ public class OutsideWorld {
 
     /**
      *  Customer waits until the manager alerts him/her about the end of the service.
-     *
-     *      @param customerId - ID of the waiting customer.
-     *
+     *  @param customerId - ID of the waiting customer.
      * */
     public synchronized void waitForRepair(Integer customerId)
     {   String FUNCTION = "waitForRepair";
@@ -64,8 +64,7 @@ public class OutsideWorld {
 
     /**
      *  Managers alerts customer that car is fixed and it can be retrieved;
-     *
-     *      @param customerId - ID of the customer to alert .
+     *  @param customerId - ID of the customer to alert .
      * */
     public synchronized void alertCustomer(Integer customerId) //TODO: Does it need to be synchronized?
     {   String FUNCTION = "alertCustomer";
@@ -89,7 +88,9 @@ public class OutsideWorld {
         //////Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, ////Logger.WARNING);
         notifyAll();
     }
-
+    /**
+     *  Alert remaining customer whom hasn't been alerted (because they haven't arrived sooner at the outside world)
+     * */
     public synchronized void alertRemainingCustomers()
     {
         String FUNCTION = "alertRemainingCustomers";
@@ -112,6 +113,10 @@ public class OutsideWorld {
         //////Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer.",0, ////Logger.WARNING);
         notifyAll();
     }
+
+    /**
+     *  Checks if there are user's expected to arrive at the outside world.
+     * */
     public synchronized boolean customersNotYetAtOutsideWorldisEmpty()
     {
         return customersNotYetAtOutsideWorld.isEmpty();

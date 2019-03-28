@@ -78,7 +78,6 @@ public class Mechanic extends Thread {
         boolean WORK = true;
         while(WORK)
         {
-
             switch (repairArea.findNextTask(mechanicId))
             {
                 case 1: //Continue repairing car

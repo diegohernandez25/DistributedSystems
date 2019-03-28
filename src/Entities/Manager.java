@@ -92,7 +92,8 @@ public class Manager extends Thread
                 gri.setNumBoughtPart(indexPart, numberParts);               // Log added number of specific car part restocked
                 gri.setFlagMissingPart(indexPart, "F");                // Log part is no longer needed for restock
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
-                lounge.registerStockRefill(indexPart);
+                //lounge.registerStockRefill(indexPart,numberParts);
+                lounge.registerStockRefill(indexPart,numberParts);
                 continue;                                                   //Refills all the asked stock
 
             }

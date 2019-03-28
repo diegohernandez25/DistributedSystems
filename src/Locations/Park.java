@@ -5,12 +5,22 @@ import Loggers.Logger;
 import java.util.HashMap;
 
 public class Park {
+    /**
+     * Constants
+     * */
     public static String    LOCAL       = "Park";
 
-
+    /**
+     * Array of cars with the purpose of knowing if car is parked or not. Index is the id of the car, value is a boolean
+     * true - car is parked; false - otherwise.
+     * @serialField cars.
+     * */
     private static boolean[] cars;
+
     /**
      * Instantiation of the Park.
+     * @param numSlots - number of slots of the parking lot.
+     * @param parkCars - parks that are already parked for default.
      * */
     public Park(int numSlots, int[] parkCars)
     {
@@ -27,9 +37,10 @@ public class Park {
     }
 
     /**
-     *Park Car.
-     * @id of customer or mechanic. This is just for the //Logger
-     *@return Operation status.
+     *  Park Car.
+     *  @param carId - ID of the car.
+     *  @param id - ID of customer or mechanic. This is just for the Logger
+     *  @return Operation status.
      * */
     public synchronized boolean parkCar(Integer carId, int id)
     {   String FUNCTION = "parkCar";
@@ -47,9 +58,12 @@ public class Park {
         printParkingLot();
         return true;
     }
+
     /**
-     *Gets Car.
-     *@return the car.
+     *  Gets Car.
+     *  @param carId - id of the car.
+     *  @param id - id of the car
+     *  @return the car.
      * */
     public synchronized Integer getCar(Integer carId, int id)
     {   String FUNCTION = "getCar";
@@ -66,6 +80,9 @@ public class Park {
         return carId;
     }
 
+    /**
+     *  Print Parking Lot
+     * */
     public synchronized void printParkingLot()
     {
         String tmp = "[";
