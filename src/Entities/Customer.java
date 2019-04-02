@@ -97,6 +97,11 @@ public class Customer extends Thread{
      *
      *      @param customerId identification of customer.
      *      @param requiresCar customer needs car.
+     *      @param car car driven by customer
+     *      @param lounge used Lounge
+     *      @param park used Park
+     *      @param outsideWorld used Outside World
+     *      @param gri used General Repository Information
      *
      * */
     public Customer(int customerId, boolean requiresCar, int car, Lounge lounge, Park park, OutsideWorld outsideWorld, GeneralRepInformation gri)

@@ -146,9 +146,15 @@ public class GeneralRepInformation {
 
     /**
      *
-     *  Instantiation of GeneralRepInformation
+     *  Instantiation of GeneralRepInformation.
      *
      *  Initialization of values to be updated
+     *
+     *  @param numCustomers total number of Customers
+     *  @param numMechanics total number of Mechanics
+     *  @param numParts total number of Car Parts
+     *  @param carParts starting stock of Car Parts
+     *  @param nameOfFile name of the file where the log is going to be written in
      *
      * */
     public GeneralRepInformation(int numCustomers, int numMechanics, int numParts, int[] carParts, String nameOfFile)

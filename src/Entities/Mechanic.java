@@ -50,9 +50,10 @@ public class Mechanic extends Thread {
      *  Instantiation of Mechanic Thread.
      *
      *      @param mechanicId identification of Mechanic.
-     *      @param lounge used lounge.
-     *      @param park used park.
-     *      @param repairArea used repair area.
+     *      @param lounge used Lounge.
+     *      @param park used Park.
+     *      @param repairArea used Repair Area.
+     *      @param gri used General Repository Information
      * */
 
 

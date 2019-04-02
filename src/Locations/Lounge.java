@@ -455,6 +455,7 @@ public class Lounge {
      *      @note Customer with the need of a replacement car invokes this method.
      *
      *      @param key - Key of the replacement car key.
+     *      @param customerId ID of the current Customer returning the replacement car key
      *
      *      @return status of the operation.
      * */
@@ -529,6 +530,7 @@ public class Lounge {
     /**
      * Customer gives Manager his/hers car key.
      * @param key - Customer's car key.
+     * @param customerId current Customer giving their car key
      */
     public synchronized void giveManagerCarKey(int key, int customerId)
     {   String FUNCTION = "giveManagerCarKey";
@@ -609,7 +611,9 @@ public class Lounge {
    }
     /**
      *  register refill of stock
-     *  @param idType - the type
+     *  @param idType - the type of Car Part
+     *  @param numberParts number of Car Parts being refilled
+     *  @return completed with success
      * */
    public synchronized boolean registerStockRefill(int idType, int numberParts)
    {   String FUNCTION = "registerStockRefill";
@@ -628,7 +632,7 @@ public class Lounge {
            }
            return true;
        }
-       Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. THis should not happen",0,Logger.ERROR);
+       Logger.log(MANAGER, LOCAL, "Error: stock refill has already been made. This should not happen",0,Logger.ERROR);
        gri.setStateManager(READ_PAPER);
        return false;
    }

@@ -55,8 +55,11 @@ public class Manager extends Thread
      *  Instantiation of Manager Thread.
      *
      *      @param managerId identification of Manager.
-     *      @param lounge used lounge.
-     *      @param supplierSite used supplier site.
+     *      @param lounge used Lounge.
+     *      @param supplierSite used Supplier Site.
+     *      @param outsideWorld used Outside World
+     *      @param repairArea used Repair Area
+     *      @param gri used General Repository Information
      * */
     public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea, GeneralRepInformation gri)
     {

@@ -116,6 +116,7 @@ public class OutsideWorld {
 
     /**
      *  Checks if there are user's expected to arrive at the outside world.
+     *  @return true/false if customer is already in the Outside World or not
      * */
     public synchronized boolean customersNotYetAtOutsideWorldisEmpty()
     {
