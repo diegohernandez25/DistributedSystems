@@ -30,20 +30,20 @@ public class Main {
 
         Lounge lounge = new Lounge(NUM_CLIENTS, NUM_MECHANICS,replacementCarKeys,NUM_PART_TYPES, gri);
 
-        Park park = new Park(NUM_REPLACEMENT_CARS+NUM_CLIENTS, replacementCarKeys);
+        Park park = new Park(NUM_REPLACEMENT_CARS+NUM_CLIENTS, replacementCarKeys, gri);
         RepairArea repairArea = new RepairArea(NUM_CLIENTS, NUM_PART_TYPES, carParts, maxCarParts, gri);
 
-        SupplierSite supplierSite = new SupplierSite(NUM_PART_TYPES);
+        SupplierSite supplierSite = new SupplierSite(NUM_PART_TYPES, gri);
 
         Customer[] customer = new Customer[NUM_CLIENTS];
         for(int i =0 ; i<NUM_CLIENTS; i++)
-            customer[i] = new Customer(i,Math.random() < 0.5,i,lounge,park,outsideWorld, gri);
+            customer[i] = new Customer(i,Math.random() < 0.5,i,lounge,park,outsideWorld);
 
         Mechanic[] mechanic = new Mechanic[NUM_MECHANICS];
         for(int i = 0; i<NUM_MECHANICS;i++)
-            mechanic[i] = new Mechanic(i,lounge,park,repairArea, gri);
+            mechanic[i] = new Mechanic(i,lounge,park,repairArea);
 
-        Manager manager = new Manager(0,lounge, supplierSite, outsideWorld,repairArea, gri);
+        Manager manager = new Manager(0,lounge, supplierSite, outsideWorld,repairArea);
 
         for(int i = 0;i<NUM_MECHANICS; i++)
             mechanic[i].start();

@@ -383,6 +383,7 @@ public class Lounge {
     public synchronized int getReplacementCarKey(int customerId)
     {   //  If there are keys available, the customer will take one.
         String FUNCTION = "getReplacementCarKey";
+        gri.setCustomerNeedsReplacement(customerId);            //Logs Customer needs a replacement vehicle
         gri.addCustomersReplacementQueue();                     //Logs Customer enters replacement car queue
         if(!replacementCarKeys.isEmpty())
         {   Logger.log(CUSTOMER,LOCAL,FUNCTION,"Replacement Car keys is not empty",customerId,10);
@@ -601,10 +602,12 @@ public class Lounge {
         Logger.log(MECHANIC,LOCAL,FUNCTION,"Requesting car parts of type "+idType,mechanicId,10);
        //if(carPartsToRefill[idType] == 0)
        //{    //Logger.log(MECHANIC,LOCAL,FUNCTION,"Registered request of type part:"+idType,mechanicId,Logger.SUCCESS);
-            gri.setFlagMissingPart(idType, "T");                          // Log Manager has been advised for missing part
-            //carPartsToRefill[idType] = number;
-            carPartsToRefill[idType] += number;
-            return true;
+        gri.setFlagMissingPart(idType, "T");                        // Log Manager has been advised for missing part
+        gri.setNumCarWaitingPart(idType, 1);                        // Log new car waiting for part
+        //carPartsToRefill[idType] = number;
+        carPartsToRefill[idType] += number;
+
+        return true;
        //}
        //Logger.log(MECHANIC,LOCAL,FUNCTION,"Request has already been made of type part:"+idType,mechanicId,Logger.WARNING);
        //return false;

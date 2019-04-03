@@ -47,7 +47,8 @@ public class OutsideWorld {
      *  @param customerId - ID of the waiting customer.
      * */
     public synchronized void waitForRepair(Integer customerId)
-    {   String FUNCTION = "waitForRepair";
+    {
+        String FUNCTION = "waitForRepair";
         ////Logger.log(CUSTOMER,LOCAL,FUNCTION,"Waiting for the car to get fixed",customerId,10);
         waitingForRepair[customerId] = true;
         while (waitingForRepair[customerId])
@@ -66,8 +67,9 @@ public class OutsideWorld {
      *  Managers alerts customer that car is fixed and it can be retrieved;
      *  @param customerId - ID of the customer to alert .
      * */
-    public synchronized void alertCustomer(Integer customerId) //TODO: Does it need to be synchronized?
-    {   String FUNCTION = "alertCustomer";
+    public synchronized void alertCustomer(Integer customerId)
+    {
+        String FUNCTION = "alertCustomer";
         //////Logger.log(CUSTOMER,LOCAL,FUNCTION,"Notifying customer "+customerId+" about fixed car",0, ////Logger.WARNING);
         if(!waitingForRepair[customerId]) //if customer not yet on the outside world
         {

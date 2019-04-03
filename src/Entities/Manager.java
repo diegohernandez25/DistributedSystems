@@ -11,10 +11,6 @@ public class Manager extends Thread
 {
     private String  MANAGER = "Manager",
                     RUN     = "Run";
-    /**
-     *  Initialize GeneralRepInformation
-     * */
-    private GeneralRepInformation gri;
 
     /**
      *  Manager identification
@@ -59,16 +55,14 @@ public class Manager extends Thread
      *      @param supplierSite used Supplier Site.
      *      @param outsideWorld used Outside World
      *      @param repairArea used Repair Area
-     *      @param gri used General Repository Information
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea, GeneralRepInformation gri)
+    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
         this.outsideWorld = outsideWorld;
         this.repairArea = repairArea;
-        this.gri = gri;
     }
 
     /**
@@ -92,8 +86,6 @@ public class Manager extends Thread
             {
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
                         indexPart,lounge.requestedNumberPart(indexPart));
-                gri.setNumBoughtPart(indexPart, numberParts);               // Log added number of specific car part restocked
-                gri.setFlagMissingPart(indexPart, "F");                // Log part is no longer needed for restock
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
                 //lounge.registerStockRefill(indexPart,numberParts);
                 lounge.registerStockRefill(indexPart,numberParts);

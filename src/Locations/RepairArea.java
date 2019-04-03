@@ -179,10 +179,11 @@ public class RepairArea
      *      @return true ready for repair. False otherwise
      * */
     public synchronized boolean repairCar(int carId, int partId, int mechanicId)
-    {   String FUNCTION = "repairCar";
+    {
+        String FUNCTION = "repairCar";
         assert (partId <= rangeCarPartTypes);
         //if(carParts[carId]>0) FIXME
-        /**TODO Verify if cars are waiting for that part*/
+        /*TODO Verify if cars are waiting for that part*/
         int count = 0;
         System.out.println("DEBUG:");
         for(int i = 0; i< carNeededPart.length; i++)
@@ -195,6 +196,7 @@ public class RepairArea
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
             carParts[partId]--;
+            gri.removeNumPartAvailable(partId);                                    // Log car part being needed
             System.out.println("part used to repait :"+partId);
             return true;
         }
@@ -291,6 +293,7 @@ public class RepairArea
         }
         //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area",mechanicId,Logger.SUCCESS);
         statusOfCars[idCar] = REPAIRED;
+        gri.setCustomerCarRepaired(idCar);                                      // Log Customer car has been repaired
         gri.setNumCarsRepaired();                                               // Log additional car repaired
     }
 
