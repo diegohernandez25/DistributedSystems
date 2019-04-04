@@ -1,15 +1,16 @@
 package Locations;
 
+import Interfaces.*;
 import Loggers.Logger;
 
-public class SupplierSite<R> {
+public class SupplierSite<R> implements ManagerSS{
     public static String    LOCAL   = "Supplier Site",
                             MANAGER = "Manager";
 
     /**
      *  Initialize GeneralRepInformation
      * */
-    private GeneralRepInformation gri;
+    private GriSS gri;
 
     /**
      *      Stock
@@ -22,7 +23,7 @@ public class SupplierSite<R> {
      *  @param stockType number of total types of parts that are going to be available in stock
      *  @param gri - logger
      * */
-    public SupplierSite(int stockType, GeneralRepInformation gri)
+    public SupplierSite(int stockType, GriSS gri)
     {
         this.gri = gri;
         this.stockType = stockType;

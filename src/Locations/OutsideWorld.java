@@ -1,13 +1,10 @@
 package Locations;
 
-import Loggers.Logger;
+import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
 
-import javax.security.auth.login.LoginException;
-import java.nio.file.Watchable;
-
-public class OutsideWorld {
+public class OutsideWorld implements ManagerOW, CustomerOW {
 
 
     String  LOCAL       = "OutsideWorld",
@@ -17,14 +14,14 @@ public class OutsideWorld {
      *  Array with the id of the users which are waiting for the car to be repaired.
      *  @serialField waitingForRepair.
      * */
-    volatile boolean[] waitingForRepair;
+    private volatile boolean[] waitingForRepair;
 
     /**
      * FIFO of all customers who haven't been arrived yet to the outside world (mainly because it waits for
      * a replacement car key).
      * @serialField customerNotYetAtOutsideWorld.
      * */
-    volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
+    private volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
 
     /**
      * Instantiation of the Outside World

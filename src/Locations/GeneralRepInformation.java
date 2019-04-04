@@ -1,9 +1,9 @@
 package Locations;
 
 import java.io.*;
-import java.util.Arrays;
+import Interfaces.*;
 
-public class GeneralRepInformation {
+public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
 
     /**
      *  Manager state abbreviation (each index is the corresponding state in integer). 4 chars max
@@ -502,7 +502,7 @@ public class GeneralRepInformation {
             int count = 0;
 
             // always one Manager only
-            s = String.format("Stat  ");
+            s = "Stat  ";
             // number of spaces occupied are 6
             count += 6;
 //            System.out.print(s);
@@ -527,7 +527,7 @@ public class GeneralRepInformation {
 
                     // print spaces to align log
                     for(int j = 0; j < count; j++) {
-                        s = String.format(" ");
+                        s = " ";
 //                        System.out.print(s);
                         pw.append(s);
                     }
@@ -551,7 +551,7 @@ public class GeneralRepInformation {
             *   Print static content based on number of parts
             *
             * */
-            s = String.format("               InQ WtK NRV    NCV  NPV       NSRQ   ");
+            s = "               InQ WtK NRV    NCV  NPV       NSRQ   ";
 //            System.out.print(s);
             pw.append(s);
 
@@ -563,7 +563,7 @@ public class GeneralRepInformation {
             }
 
             // separate the two loops
-            s = String.format("                        ");
+            s = "                        ";
 //            System.out.print(s);
             pw.append(s);
 
@@ -618,7 +618,7 @@ public class GeneralRepInformation {
 
                     // print spaces to align log
                     for(int j = 0; j < count-1; j++) {
-                        s = String.format(" ");
+                        s = " ";
 //                        System.out.print(s);
                         pw.append(s);
                     }

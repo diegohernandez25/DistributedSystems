@@ -1,19 +1,18 @@
 package Locations;
 
 import Loggers.Logger;
+import Interfaces.*;
 
-import java.util.HashMap;
-
-public class Park {
+public class Park implements CustomerPark, MechanicPark {
     /**
      * Constants
      * */
-    public static String    LOCAL       = "Park";
+    private static String    LOCAL       = "Park";
 
     /**
      *  Initialize GeneralRepInformation
      * */
-    private GeneralRepInformation gri;
+    private GriPark gri;
 
     /**
      *  Number of Replacement Cars
@@ -34,7 +33,7 @@ public class Park {
      * @param parkCars - parks that are already parked for default.
      * @param gri - used General Repository Information
      * */
-    public Park(int numSlots, int[] parkCars, GeneralRepInformation gri)
+    public Park(int numSlots, int[] parkCars, GriPark gri)
     {
         this.gri = gri;
 

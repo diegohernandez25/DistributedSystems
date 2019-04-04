@@ -1,9 +1,6 @@
 package Entities;
 
-import Locations.GeneralRepInformation;
-import Locations.Lounge;
-import Locations.OutsideWorld;
-import Locations.Park;
+import Interfaces.*;
 import Loggers.Logger;
 
 
@@ -57,21 +54,21 @@ public class Customer extends Thread{
      *
      *      @serialField lounge
      */
-    private Lounge lounge;
+    private CustomerLounge lounge;
 
     /**
      *  Parking Lot
      *
      *      @serialField park
      * */
-    private Park park;
+    private CustomerPark park;
 
     /**
      *  Outside World
      *
      *      @serialField park
      * */
-    private OutsideWorld outsideWorld;
+    private CustomerOW outsideWorld;
 
     /**
      *  Car that the user posses.
@@ -98,7 +95,7 @@ public class Customer extends Thread{
      *      @param outsideWorld used Outside World
      *
      * */
-    public Customer(int customerId, boolean requiresCar, int car, Lounge lounge, Park park, OutsideWorld outsideWorld)
+    public Customer(int customerId, boolean requiresCar, int car, CustomerLounge lounge, CustomerPark park, CustomerOW outsideWorld)
     {
         this.customerId = customerId;
         this.requiresCar = requiresCar;

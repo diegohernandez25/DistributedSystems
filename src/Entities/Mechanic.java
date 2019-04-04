@@ -1,9 +1,6 @@
 package Entities;
 
-import Locations.GeneralRepInformation;
-import Locations.Lounge;
-import Locations.Park;
-import Locations.RepairArea;
+import Interfaces.*;
 import Loggers.Logger;
 
 public class Mechanic extends Thread {
@@ -25,21 +22,21 @@ public class Mechanic extends Thread {
      *
      *      @serialField lounge
      * */
-    private Lounge lounge;
+    private MechanicLounge lounge;
 
     /**
      *  Parking Lot
      *
      *      @serialField park
      * */
-    private Park park;
+    private MechanicPark park;
 
     /**
      *  Repair Area
      *
      *      @serialField repairArea
      * */
-    private RepairArea repairArea;
+    private MechanicRA repairArea;
 
     /**
      *  Instantiation of Mechanic Thread.
@@ -51,7 +48,7 @@ public class Mechanic extends Thread {
      * */
 
 
-    public Mechanic(int mechanicId, Lounge lounge, Park park, RepairArea repairArea)
+    public Mechanic(int mechanicId, MechanicLounge lounge, MechanicPark park, MechanicRA repairArea)
     {
         this.mechanicId = mechanicId;
         this.lounge = lounge;

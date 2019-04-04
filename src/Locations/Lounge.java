@@ -1,10 +1,11 @@
 package Locations;
 
+import Interfaces.*;
 import Loggers.Logger;
 import Resources.MemException;
 import Resources.MemFIFO;
 
-public class Lounge {
+public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *  Type of Manager Tasks FIXME
@@ -47,7 +48,7 @@ public class Lounge {
     /**
      *  Initialize GeneralRepInformation
      * */
-    private GeneralRepInformation gri;
+    private GriLounge gri;
 
     /**
      *  Current state of Manager
@@ -177,7 +178,7 @@ public class Lounge {
      * @param numTypes - number of existing car types.
      * @param gri - logger
      * */
-    public Lounge(int numCustomers, int numMechanics,int replacementKeys[], int numTypes, GeneralRepInformation gri)
+    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GriLounge gri)
     {
         this.gri = gri;
         gri.setNumReplacementParked(replacementKeys.length);
@@ -497,36 +498,36 @@ public class Lounge {
         gri.setStateCustomer(customerId, stateCustomers[customerId]);
     }
 
-    /**
-     *  Checks if customer queue is empty
-     *  @return customer
-     * */
-    public boolean isCustomerQueueEmpty() { return customerQueue.isEmpty(); }
+//    /**
+//     *  Checks if customer queue is empty
+//     *  @return customer
+//     * */
+//    public boolean isCustomerQueueEmpty() { return customerQueue.isEmpty(); }
 
 
-    /**
-     *  Checks if Replacement Car Keys is Empty
-     *  @return boolean (true/false) Available replacement cars/No replacement cars.
-     * */
-    public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
+//    /**
+//     *  Checks if Replacement Car Keys is Empty
+//     *  @return boolean (true/false) Available replacement cars/No replacement cars.
+//     * */
+//    public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
 
     /**
      *  Checks if Customer car keys are empty
      *  @return boolean (true/false) Available customers cars/No customers cars.
      * */
-    public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
+    private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
-    /**
-     * Checks the size of Customer Car Keys
-     * @return int size of the array, useful to check the total number of clients
-     * */
-    public int customerCarKeysSize() { return customerCarKeys.length; }
+//    /**
+//     * Checks the size of Customer Car Keys
+//     * @return int size of the array, useful to check the total number of clients
+//     * */
+//    public int customerCarKeysSize() { return customerCarKeys.length; }
 
-    /**
-     *  Checks if queue of keys of cars to be repaired is empty
-     *  @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
-     * */
-    public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
+//    /**
+//     *  Checks if queue of keys of cars to be repaired is empty
+//     *  @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
+//     * */
+//    public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
 
     /**
      * Customer gives Manager his/hers car key.
@@ -659,12 +660,12 @@ public class Lounge {
         return -1;
     }
 
-    /**
-     * Mechanic checks stock of a specific part.
-     * @param idType   - id of the car part.
-     * @return True if there is stock available for the part. False otherwise.
-     * */
-    public synchronized boolean checksPartStock(int idType) { return carPartsToRefill[idType] != 0; }
+//    /**
+//     * Mechanic checks stock of a specific part.
+//     * @param idType   - id of the car part.
+//     * @return True if there is stock available for the part. False otherwise.
+//     * */
+//    public synchronized boolean checksPartStock(int idType) { return carPartsToRefill[idType] != 0; }
 
 
 
@@ -746,11 +747,12 @@ public class Lounge {
         //Logger.log(MANAGER, LOCAL,FUNCTION,"Ready to deliver key "+idKey+" to customer "+idCustomer,0,10);
         customerCarKeys[idCustomer] = idKey;
     }
-    /**
-     * Get the number of existing part car types.
-     * @return number of type parts.
-     * */
-    public synchronized int getNumberOfPartTypes(){ return numTypes;}
+
+//    /**
+//     * Get the number of existing part car types.
+//     * @return number of type parts.
+//     * */
+//    public synchronized int getNumberOfPartTypes(){ return numTypes;}
 
     /**
      *  Get the requested number of a part
