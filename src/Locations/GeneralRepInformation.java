@@ -1,9 +1,9 @@
 package Locations;
 
 import java.io.*;
-import java.util.Arrays;
+import Interfaces.*;
 
-public class GeneralRepInformation {
+public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
 
     /**
      *  Manager state abbreviation (each index is the corresponding state in integer). 4 chars max
@@ -146,9 +146,15 @@ public class GeneralRepInformation {
 
     /**
      *
-     *  Instantiation of GeneralRepInformation
+     *  Instantiation of GeneralRepInformation.
      *
      *  Initialization of values to be updated
+     *
+     *  @param numCustomers total number of Customers
+     *  @param numMechanics total number of Mechanics
+     *  @param numParts total number of Car Parts
+     *  @param carParts starting stock of Car Parts
+     *  @param nameOfFile name of the file where the log is going to be written in
      *
      * */
     public GeneralRepInformation(int numCustomers, int numMechanics, int numParts, int[] carParts, String nameOfFile)
@@ -476,21 +482,104 @@ public class GeneralRepInformation {
              *  Print Static content
              *
              */
-            s = String.format(" MAN  MECHANIC                                                                 CUSTOMER                                                                             %n" +
-                    "Stat  St0 St1  S00 C00 P00 R00 S01 C01 P01 R01 S02 C02 P02 R02 S03 C03 P03 R03 S04 C04 P04 R04 S05 C05 P05 R05 S06 C06 P06 R06 S07 C07 P07 R07 S08 C08 P08 R08 S09 C09 P09 R09%n" +
-                    "               S10 C10 P10 R10 S11 C11 P11 R11 S12 C12 P12 R12 S13 C13 P13 R13 S14 C14 P14 R14 S15 C15 P15 R15 S16 C16 P16 R16 S17 C17 P17 R17 S18 C18 P18 R18 S19 C19 P19 R19%n" +
-                    "               S20 C20 P20 R20 S21 C21 P21 R21 S22 C22 P22 R22 S23 C23 P23 R23 S24 C24 P24 R24 S25 C25 P25 R25 S26 C26 P26 R26 S27 C27 P27 R27 S28 C28 P28 R28 S29 C29 P29 R29%n" +
-                    "                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n" +
-                    "               InQ WtK NRV    NCV  NPV       NSRQ   Prt0  NV0  S0 Prt1  NV1  S1 Prt2  NV2  S2                         PP0   PP1   PP2                                         %n");
+//            s = String.format(" MAN  MECHANIC                                                                 CUSTOMER                                                                             %n" +
+//                    "Stat  St0 St1  S00 C00 P00 R00 S01 C01 P01 R01 S02 C02 P02 R02 S03 C03 P03 R03 S04 C04 P04 R04 S05 C05 P05 R05 S06 C06 P06 R06 S07 C07 P07 R07 S08 C08 P08 R08 S09 C09 P09 R09%n" +
+//                    "               S10 C10 P10 R10 S11 C11 P11 R11 S12 C12 P12 R12 S13 C13 P13 R13 S14 C14 P14 R14 S15 C15 P15 R15 S16 C16 P16 R16 S17 C17 P17 R17 S18 C18 P18 R18 S19 C19 P19 R19%n" +
+//                    "               S20 C20 P20 R20 S21 C21 P21 R21 S22 C22 P22 R22 S23 C23 P23 R23 S24 C24 P24 R24 S25 C25 P25 R25 S26 C26 P26 R26 S27 C27 P27 R27 S28 C28 P28 R28 S29 C29 P29 R29%n" +
+//                    "                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n" +
+//                    "               InQ WtK NRV    NCV  NPV       NSRQ   Prt0  NV0  S0 Prt1  NV1  S1 Prt2  NV2  S2                         PP0   PP1   PP2                                         %n");
+            s = String.format(" MAN  MECHANIC                                                                 CUSTOMER                                                                             %n");
 //            System.out.print(s);
             pw.append(s);
+
+            /*
+             *
+             *  Print Static content based on number of entities
+             *
+             * */
+
+            // this count is only to get log aligned when the number of Customers is only > 10
+            int count = 0;
+
+            // always one Manager only
+            s = "Stat  ";
+            // number of spaces occupied are 6
+            count += 6;
+//            System.out.print(s);
+            pw.append(s);
+
+            // for each Mechanic
+            for(int i = 0; i < numMechanics; i++) {
+                s = String.format("St%1d ", i);
+                // number of spaces occupied are 4 for each Mechanic
+                count += 4;
+//                System.out.print(s);
+                pw.append(s);
+            }
+
+            // for each Customer
+            for(int i = 0; i < numCustomers; i++) {
+                if(i % 10 == 0 && i != 0){
+                    // print next line
+                    s = String.format("%n");
+//                    System.out.print(s);
+                    pw.append(s);
+
+                    // print spaces to align log
+                    for(int j = 0; j < count; j++) {
+                        s = " ";
+//                        System.out.print(s);
+                        pw.append(s);
+                    }
+                }
+                s = String.format(" S%02d C%02d P%02d R%02d", i, i, i, i);
+//                System.out.print(s);
+                pw.append(s);
+            }
+
+            /*
+            *
+            *   Print more static content
+            *
+            * */
+            s = String.format("%n                  LOUNGE        PARK                             REPAIR AREA                                           SUPPLIERS SITE                                         %n");
+//            System.out.print(s);
+            pw.append(s);
+
+            /*
+            *
+            *   Print static content based on number of parts
+            *
+            * */
+            s = "               InQ WtK NRV    NCV  NPV       NSRQ   ";
+//            System.out.print(s);
+            pw.append(s);
+
+            // repair area loop
+            for(int i = 0; i < numParts; i++) {
+                s = String.format("Prt%1d  NV%1d  S%1d ", i, i, i);
+//                System.out.print(s);
+                pw.append(s);
+            }
+
+            // separate the two loops
+            s = "                        ";
+//            System.out.print(s);
+            pw.append(s);
+
+            // supplier site loop
+            for(int i = 0; i < numParts; i++) {
+                s = String.format("PP%1d   ", i);
+//                System.out.print(s);
+                pw.append(s);
+            }
 
             /*
              *
              *  Print Manager states
              *
              */
-            s = String.format("%4s ", managerStates[stateManager]);
+            s = String.format("%n%4s ", managerStates[stateManager]);
 //            System.out.print(s);
             pw.append(s);
 
@@ -522,9 +611,17 @@ public class GeneralRepInformation {
              */
             for(int i = 0; i < numCustomers; i++) {
                 if(i % 10 == 0 && i != 0){
-                    s = String.format("%n             ");
+                    // print next line
+                    s = String.format("%n");
 //                    System.out.print(s);
                     pw.append(s);
+
+                    // print spaces to align log
+                    for(int j = 0; j < count-1; j++) {
+                        s = " ";
+//                        System.out.print(s);
+                        pw.append(s);
+                    }
                 }
 
                 s = String.format("  %3s  %2s  %1s   %1s", customerStates[stateCustomer[i]], customerVehicle[i], customerNeedsReplacement[i], customerCarRepaired[i]);

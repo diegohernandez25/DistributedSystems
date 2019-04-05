@@ -1,14 +1,13 @@
 package Locations;
 
+import Interfaces.*;
 import Loggers.Logger;
 import Resources.MemException;
 import Resources.MemFIFO;
-import sun.rmi.runtime.Log;
 
 import java.util.Random;
 
-public class RepairArea
-{
+public class RepairArea implements ManagerRA, MechanicRA {
 
     /**
      *      Constants
@@ -32,7 +31,7 @@ public class RepairArea
      *
      *  @serialField gri
      * */
-    private GeneralRepInformation gri;
+    private GriRA gri;
 
     /**
      *      Cars waiting for parts
@@ -113,7 +112,7 @@ public class RepairArea
      * @param maxCarParts max stock possible for each car part. Index represents the ID of the part
      * @param gri General Repository Information to be used as logger
      * */
-    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GeneralRepInformation gri)
+    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GriRA gri)
     {
         this.gri = gri;
 
@@ -157,17 +156,17 @@ public class RepairArea
         return randomNum;
     }
 
-    /**
-     *      Checks availability of car part
-     *
-     *      @param partId    - ID of the part.
-     *
-     *      @return true if there are parts available. False otherwise.
-     * */
-    public synchronized boolean checkPartAvailability(int partId)
-    {   assert (partId <= rangeCarPartTypes);
-        return carParts[partId] != 0;
-    }
+//    /**
+//     *      Checks availability of car part
+//     *
+//     *      @param partId    - ID of the part.
+//     *
+//     *      @return true if there are parts available. False otherwise.
+//     * */
+//    public synchronized boolean checkPartAvailability(int partId)
+//    {   assert (partId <= rangeCarPartTypes);
+//        return carParts[partId] != 0;
+//    }
 
     /**
      *      Checks availability of car parts and if available repairs the car
@@ -179,17 +178,28 @@ public class RepairArea
      *      @return true ready for repair. False otherwise
      * */
     public synchronized boolean repairCar(int carId, int partId, int mechanicId)
-    {   String FUNCTION = "repairCar";
+    {
+        String FUNCTION = "repairCar";
         assert (partId <= rangeCarPartTypes);
         //if(carParts[carId]>0) FIXME
-        if(carParts[partId]>0)
+        /*TODO Verify if cars are waiting for that part*/
+        int count = 0;
+        System.out.println("DEBUG:");
+        for(int i = 0; i< carNeededPart.length; i++)
+        {
+            if(carNeededPart[i] == partId) { count++; }
+        }
+
+        if( carParts[partId]>=count)
         {   Logger.log(MECHANIC,REPAIR_AREA,"Car is ready for repair. Parts available",mechanicId,Logger.SUCCESS);
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
             carParts[partId]--;
+            gri.removeNumPartAvailable(partId);                                    // Log car part being needed
+            System.out.println("part used to repait :"+partId);
             return true;
         }
-        Logger.log(MECHANIC,REPAIR_AREA,"HEEEEEREEEE Car part "+carId+" not available. Requesting part",
+        Logger.log(MECHANIC,REPAIR_AREA,"HEEEEEREEEE Car part "+partId+" not available. Requesting part",
                 mechanicId,Logger.WARNING);
         statusOfCars[carId] = WAITING_PARTS;
         try {
@@ -208,16 +218,16 @@ public class RepairArea
         return false;
     }
 
-    /**
-     *      Checks if car there are cars waiting for parts
-     *
-     *      @return true - no cars waiting for parts
-     *
-     * */
-    public synchronized boolean CarsWaitingForPartsIsEmpty()
-    {
-        return carsWaitingForParts.isEmpty();
-    }
+//    /**
+//     *      Checks if car there are cars waiting for parts
+//     *
+//     *      @return true - no cars waiting for parts
+//     *
+//     * */
+//    public synchronized boolean CarsWaitingForPartsIsEmpty()
+//    {
+//        return carsWaitingForParts.isEmpty();
+//    }
 
     /**
      *      Checks which of the waiting cars are ready for repair
@@ -227,7 +237,8 @@ public class RepairArea
      *      @return id of the car ready for repair.
      * */
     public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId)
-    {   String FUNCTION = "repairWaitingCarWithPartsAvailable";
+    {
+        String FUNCTION = "repairWaitingCarWithPartsAvailable";
         int length = carsWaitingForParts.numElements();
         int tmp = -1;
         int res = -1;
@@ -238,13 +249,21 @@ public class RepairArea
             {   tmp = carsWaitingForParts.read();//gets
 
                 if(reserveCarPart[tmp] != -1 && !flag)
+                //if(reserveCarPart[tmp]!= -1)
                 {   res = tmp;
                     statusOfCars[tmp] = ON_REPAIR;
                     Logger.log(REPAIR_AREA,MECHANIC,FUNCTION,"Car "+tmp+" ready for repair. Car Part "+reserveCarPart[tmp],mechanicId,Logger.SUCCESS);
 
                     gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);  // Log minus one car needs the part
-
+                    System.out.println("Before:");
+                    for(int i = 0;i<reserveCarPart.length;i++) {
+                        System.out.println(i + ". " + reserveCarPart[i]);
+                    }
+                    System.out.println("After:");
                     reserveCarPart[tmp] = -1; //part car taken
+                    for(int i = 0;i<reserveCarPart.length;i++) {
+                        System.out.println(i + ". " + reserveCarPart[i]);
+                    }
                     flag=true;
                     continue; //does not put back
                 }
@@ -274,6 +293,7 @@ public class RepairArea
         }
         //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car fixed. Register done on Repair Area",mechanicId,Logger.SUCCESS);
         statusOfCars[idCar] = REPAIRED;
+        gri.setCustomerCarRepaired(idCar);                                      // Log Customer car has been repaired
         gri.setNumCarsRepaired();                                               // Log additional car repaired
     }
 
@@ -283,10 +303,11 @@ public class RepairArea
      *      @param quantity - number of car parts to refill
      * */
     public synchronized  void  refillCarPartStock(int idPart, int quantity)
-    {   String FUNCTION = "refillCarPartStock";
+    {
+        String FUNCTION = "refillCarPartStock";
         assert idPart <= rangeCarPartTypes;
 
-        carParts[idPart] = quantity;
+        carParts[idPart] += quantity;
         workToDo = true;
         gri.addNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
        // Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"Stock Refilled.Notifying Mechanics",0,Logger.SUCCESS);
@@ -299,7 +320,8 @@ public class RepairArea
      * @return the maximum number of storage for the part
      * */
     public synchronized int getMaxPartStock(int partId)
-    {   assert (partId <= rangeCarPartTypes);
+    {
+        assert (partId <= rangeCarPartTypes);
         return maxCarPartsNumber[partId];
     }
 
@@ -309,31 +331,39 @@ public class RepairArea
      *  @return the task that has to be done
      * */
     public synchronized int findNextTask(int mechanicId)
-    {   String FUNCTION = "findNextTask";
+    {
+        String FUNCTION = "findNextTask";
         int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3, GO_HOME =4;
         //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"finding next task",mechanicId,10);
         if(workToDo || allDone)
         {   //Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"There may be work to do",mechanicId,10);
+            System.out.println("Queue:"+carsWaitingForParts.toString());
             int size = carsWaitingForParts.numElements();
+            System.out.println("size:"+size);
             boolean flag = false;
+
             while(size-- >0)
             {
                 try {
                     int tmpCar = carsWaitingForParts.read();//gets
+                    carsWaitingForParts.write(tmpCar);
+                    //int tmpCar = tmp2.read();//gets FIXME
                     int tmpPart;
                     if((tmpPart= carNeededPart[tmpCar]) != -1)
                     {
+                        System.out.println("Car parts available for"+tmpPart+": "+carParts[tmpPart]);
                         if(carParts[tmpPart] != 0) {
                             carNeededPart[tmpCar] = -1;
                             Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Reserving part "+tmpPart,mechanicId,10);
                             reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
-                            carParts[tmpPart]-=1;
+                            carParts[tmpPart]--;
                             flag = true;
                             //continue;
-                            // return CONTINUE_REPAIR_CAR;
+                            break;
+                            //return CONTINUE_REPAIR_CAR;
                         }
                     }
-                    carsWaitingForParts.write(tmpCar);
+                   // carsWaitingForParts.write(tmpCar);
                     if(carsWaitingForParts.numElements() == 0)
                     {
                         Logger.log(MECHANIC,REPAIR_AREA,FUNCTION,"Car Waiting For Parts is empty. Should not happen "+tmpPart,mechanicId,Logger.ERROR);
@@ -380,7 +410,8 @@ public class RepairArea
      * @param carID the ID of the car that needs to be repaired
      * */
     public synchronized void postJob(int carID)
-    {   String FUNCTION = "postJob";
+    {
+        String FUNCTION = "postJob";
         gri.setNumPostJobs();           // Log additional job posted
         //Logger.log(MANAGER,REPAIR_AREA,FUNCTION,"New car needs to be checked. Notifying managers",0,Logger.WARNING);
         carsNeedsCheck[carID] = true;

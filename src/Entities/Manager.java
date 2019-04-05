@@ -1,20 +1,12 @@
 package Entities;
 
-import Locations.Lounge;
-import Locations.OutsideWorld;
-import Locations.RepairArea;
-import Locations.SupplierSite;
-import Locations.GeneralRepInformation;
+import Interfaces.*;
 import Loggers.Logger;
 
 public class Manager extends Thread
 {
     private String  MANAGER = "Manager",
                     RUN     = "Run";
-    /**
-     *  Initialize GeneralRepInformation
-     * */
-    private GeneralRepInformation gri;
 
     /**
      *  Manager identification
@@ -29,43 +21,44 @@ public class Manager extends Thread
      *
      *      @serialField lounge
      * */
-    private Lounge lounge;
+    private ManagerLounge lounge;
 
     /**
      *  SupplierSite
      *
      *      @serialField supplierSite
      * */
-    private SupplierSite supplierSite;
+    private ManagerSS supplierSite;
 
     /**
      * Repair Area
      * @serialField repairArea;
      * */
-    private RepairArea repairArea;
+    private ManagerRA repairArea;
 
 
     /**
      * Outside World
      * @serialField outsideWorld;
      * */
-    private OutsideWorld outsideWorld;
+    private ManagerOW outsideWorld;
 
     /**
      *  Instantiation of Manager Thread.
      *
      *      @param managerId identification of Manager.
-     *      @param lounge used lounge.
-     *      @param supplierSite used supplier site.
+     *      @param lounge used Lounge.
+     *      @param supplierSite used Supplier Site.
+     *      @param outsideWorld used Outside World
+     *      @param repairArea used Repair Area
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite, OutsideWorld outsideWorld, RepairArea repairArea, GeneralRepInformation gri)
+    public Manager(int managerId, ManagerLounge lounge, ManagerSS supplierSite, ManagerOW outsideWorld, ManagerRA repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;
         this.supplierSite = supplierSite;
         this.outsideWorld = outsideWorld;
         this.repairArea = repairArea;
-        this.gri = gri;
     }
 
     /**
@@ -84,15 +77,14 @@ public class Manager extends Thread
             readPaper();
             int indexPart = 0;
             int val = -1;
-            if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)    // First checks if there is a need to refill
+            if((indexPart =lounge.checksPartsRequest(indexPart))!=-1)       // First checks if there is a need to refill
                                                                             // the stock
             {
                 int numberParts = supplierSite.restockPart(                 // Gets parts from the supplier site
                         indexPart,lounge.requestedNumberPart(indexPart));
-                gri.setNumBoughtPart(indexPart, numberParts);               // Log added number of specific car part restocked
-                gri.setFlagMissingPart(indexPart, "F");                // Log part is no longer needed for restock
                 repairArea.refillCarPartStock(indexPart,numberParts);       // Store parts at the Repair Area storage
-                lounge.registerStockRefill(indexPart);
+                //lounge.registerStockRefill(indexPart,numberParts);
+                lounge.registerStockRefill(indexPart,numberParts);
                 continue;                                                   //Refills all the asked stock
 
             }
