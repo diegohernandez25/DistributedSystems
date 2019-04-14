@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8589988c-7e04-447b-89a2-d08744f64c6d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Customer/src/Entities/Customer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Interfaces/GriLounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Interfaces/GriPark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Interfaces/GriRA.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Interfaces/GriSS.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Locations/GeneralRepInformation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Interfaces/CustomerLounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Interfaces/ManagerLounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Interfaces/MechanicLounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Locations/Lounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Resources/MemException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Resources/MemFIFO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lounge/src/Resources/MemObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Manager/src/Entities/Manager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entities/Mechanic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../OutsideWorld/src/Interfaces/CustomerOW.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../OutsideWorld/src/Interfaces/ManagerOW.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../OutsideWorld/src/Locations/OutsideWorld.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Park/src/Interfaces/CustomerPark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Park/src/Interfaces/MechanicPark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Park/src/Locations/Park.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RepairArea/src/Interfaces/ManagerRA.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RepairArea/src/Interfaces/MechanicRA.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RepairArea/src/Locations/RepairArea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SupplierSite/src/Interfaces/ManagerSS.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SupplierSite/src/Locations/SupplierSite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Entities/Customer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Entities/Manager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Entities/Mechanic.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Interfaces/ManagerSS.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/GeneralRepInformation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/Lounge.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/OutsideWorld.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/Park.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/RepairArea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Locations/SupplierSite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Loggers/Logger.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Resources/MemException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Resources/MemFIFO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Resources/MemObject.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/Resources/MemStack.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid21675" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid22194" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid22493" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid22741" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid23044" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid23200" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid23358" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid23948" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.attach_pid24598" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/out/production/sd-assignment1/sd-assignment1.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/sd-assignment2.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/sd-assignment2/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sd-assignment2.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Entities/Customer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Entities/Manager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Entities/Mechanic.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/CustomerLounge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/CustomerOW.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/CustomerPark.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/GriLounge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/GriPark.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/GriRA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/GriSS.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/ManagerLounge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/ManagerOW.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/ManagerRA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/ManagerSS.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/MechanicLounge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/MechanicPark.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Interfaces/MechanicRA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/GeneralRepInformation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/Lounge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/OutsideWorld.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/Park.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/RepairArea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Locations/SupplierSite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Loggers/Logger.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Resources/MemException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Resources/MemFIFO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Resources/MemObject.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Resources/MemStack.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid21675" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid22194" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid22493" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid22741" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid23044" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid23200" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid23358" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid23948" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.attach_pid24598" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Entities/Customer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Entities/Manager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Entities/Mechanic.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/GeneralRepInformation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/Lounge.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/OutsideWorld.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/Park.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/RepairArea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Locations/SupplierSite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Loggers/Logger.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Resources/MemException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Resources/MemFIFO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Resources/MemObject.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/Resources/MemStack.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/sd-assignment1.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/out/production/sd-assignment1/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test.java" beforeDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Entities/Mechanic.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="316">
+              <caret line="131" selection-start-line="131" selection-end-line="131" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>logger</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/Entities/Mechanic.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="4">
+    <option name="x" value="163" />
+    <option name="y" value="21" />
+    <option name="width" value="1364" />
+    <option name="height" value="747" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Mechanic" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Mechanic" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Mechanic" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Mechanic" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Mechanic" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Mechanic" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Entities" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8589988c-7e04-447b-89a2-d08744f64c6d" name="Default Changelist" comment="" />
+      <created>1554974491857</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1554974491857</updated>
+      <workItem from="1554974494343" duration="11000" />
+      <workItem from="1554975466090" duration="34000" />
+      <workItem from="1554976260304" duration="47000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="92000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="163" y="21" width="1364" height="747" extended-state="4" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25757575" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Maven" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Database" order="8" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Entities/Mechanic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="131" selection-start-line="131" selection-end-line="131" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8.0_191 (2)</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
