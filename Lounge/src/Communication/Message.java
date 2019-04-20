@@ -130,41 +130,49 @@ public class Message implements Serializable {
 
     /**
      * Get customer Id.
+     * @return customer Id
      * */
     public int getCustomerId(){ return this.customerId;}
 
     /**
      * Get payment flag.
+     * @return payment flag
      * */
     public boolean getPayment(){ return payment;}
 
     /**
      * Get customer key.
+     * @return customer key.
      * */
     public int getCustomerKey(){ return customerKey;}
 
     /**
      * Get replacement car key.
+     * @return replacement car key.
      * */
     public int getReplacementCarKey(){ return replacementCarKey;}
 
     /**
      *  Get mechanic id.
+     * @return mechanic id
      * */
     public int getMechanicId(){ return  mechanicId;}
 
     /**
      *  Get car part.
+     * @return car part.
      * */
     public int getCarPart(){ return carPart;}
 
     /**
      *  Get number of parts.
+     * @return requested number of parts.
      * */
     public int getNumPart(){ return numPart;}
 
     /**
      *  Get done flag
+     * @return done flag.
      * */
     public boolean getDone(){ return done;}
 }

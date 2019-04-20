@@ -109,6 +109,10 @@ public class LoungeProxy implements SharedRegionInterface {
                 resBool     = this.lounge.allDone();
                 response    = new Message(MessageType.ALL_DONE, resBool);
                 break;
+
+            default:
+                System.out.println("Not expecting this message type.");
+                System.exit(1);
         }
         return response;
     }
