@@ -11,7 +11,7 @@ public interface CustomerLounge {
      *      @param payment - type of attendance. (true/false) Pay for repair/Request repair.
      *      @return operation success so the thread can move on to the next operation.
      * */
-    boolean enterCustomerQueue(int customerId, boolean payment);
+    void enterCustomerQueue(int customerId, boolean payment);
 
     /**
      * Get replacement car key.
@@ -29,7 +29,7 @@ public interface CustomerLounge {
      *
      *      @return status of the operation.
      * */
-    boolean returnReplacementCarKey(int key, int customerId);
+    void returnReplacementCarKey(int key, int customerId);
 
     /**
      * Exit Lounge

@@ -17,14 +17,13 @@ public interface ManagerLounge {
      *  @param numberParts number of Car Parts being refilled
      *  @return completed with success
      * */
-    boolean registerStockRefill(int idType, int numberParts);
+    void registerStockRefill(int idType, int numberParts);
 
     /**
      * Manager checks if parts needs to be refilled
-     * @param index - start index of search
      * @return id of the part to refill. Returns -1 if no part is needed to refill
      * */
-    int checksPartsRequest(int index);
+    int checksPartsRequest();
 
     /**
      * Checks if there are cars repaired

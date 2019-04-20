@@ -1,4 +1,4 @@
-package Locations;
+package SharedRegions;
 
 import Interfaces.*;
 import Resources.MemException;
@@ -9,17 +9,10 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Type of Manager Tasks FIXME
      * */
-    private static final int        READ_PAPER = 0,
-            ATTEND_CUSTOMER = 1,
-            CALL_CUSTOMER = 2,
-            FILL_STOCK = 3;
-    /**
-     *  Created Constants for the Logger
-     *  */
-    private static final String     MANAGER     = "Manager",
-            CUSTOMER    = "Customer",
-            LOCAL       = "Lounge",
-            MECHANIC    = "Mechanic";
+    private static final int    READ_PAPER = 0,
+                                ATTEND_CUSTOMER = 1,
+                                CALL_CUSTOMER = 2,
+                                FILL_STOCK = 3;
 
     /**
      * Customer constants states.
@@ -43,11 +36,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
             FIXING_THE_CAR = 1,
             CHECKING_STOCK = 2,
             ALERTING_MANAGER = 3;
-
-    /**
-     *  Initialize GeneralRepInformation
-     * */
-    private GriLounge gri;
 
     /**
      *  Current state of Manager
@@ -92,7 +80,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *
      * */
 
-    private volatile int[] customerCarKeys; //TODO Should have the length of total users
+    private volatile int[] customerCarKeys;
 
     /**
      *  Queue of Car Keys to be repaired
@@ -169,20 +157,16 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     private volatile boolean[] customerFinished;
 
 
+
     /**
      * Lounge
      * @param numCustomers - number of customer
      * @param numMechanics - number of mechanics
      * @param replacementKeys - array with the replacement Keys.
      * @param numTypes - number of existing car types.
-     * @param gri - logger
      * */
-    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GriLounge gri)
-    {
-        this.gri = gri;
-        gri.setNumReplacementParked(replacementKeys.length);
-
-        this.stateManager = READ_PAPER;
+    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes)
+    {   this.stateManager = READ_PAPER;
         this.numTypes = numTypes;
         this.stateCustomers = new int[numCustomers];
         this.customerCarKeys = new int[numCustomers];
@@ -226,44 +210,30 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
         } catch (MemException e) {
         }
-
     }
+
 
     /**
      *  Customer enters queue to be attended by the Manager.
-     *  Customer invokes this method
-     *      @param customerId - Id of the customer to be attended
-     *      @param payment - type of attendance. (true/false) Pay for repair/Request repair.
-     *      @return operation success so the thread can move on to the next operation.
+     *  @param customerId - Id of the customer to be attended
+     *  @param payment - type of attendance. (true/false) Pay for repair/Request repair.
+     *  @return operation success so the thread can move on to the next operation.
      * */
-    public synchronized boolean enterCustomerQueue(int customerId, boolean payment)
-    {   String FUNCTION = "enterCustomerQueue";
-        gri.addCustomersQueue();                                    //Logs Customer entering queue
-        if(payment)
-        {   try {
-            paymentQueue.write(customerId);
-
+    public synchronized void enterCustomerQueue(int customerId, boolean payment)
+    {   if(payment)
+        {   try {   paymentQueue.write(customerId);}
+            catch (MemException e) {  }
         }
-        catch (MemException e) {  }
-        }
-        try {
-            stateCustomers[customerId] = WAITING_ATTENDENCE;
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        try
+        {   stateCustomers[customerId] = WAITING_ATTENDENCE;
             customerQueue.write(customerId);
-        } catch (MemException e) {
-            return false;
-        }
+        } catch (MemException e) { System.exit(1);}
 
         while (stateCustomers[customerId] != ATTENDING)
-        {
-
-            try { wait();}
+        {   try { wait();}
             catch(InterruptedException e){ }
         }
         stateCustomers[customerId] = ATTENDED;
-        gri.setStateCustomer(customerId, stateCustomers[customerId]);
-        gri.removeCustomersQueue();                                 //Logs Customer exists queue
-        return true;
     }
 
     /**
@@ -272,83 +242,56 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
     public synchronized int attendCustomer()
-    {   String FUNCTION = "attendCustomer";
-        gri.setStateManager(CALL_CUSTOMER);
-        if (customerQueue.isEmpty()) {
-            if(!paymentQueue.isEmpty())
-            {
-                System.exit(1);
+    {   if (customerQueue.isEmpty())
+        {   if(!paymentQueue.isEmpty())
+            {   System.exit(1);
             }
-            gri.setStateManager(READ_PAPER);
-            return -1;
+            return -1; //-1 : No waiting customers.
         }
-        try {
-            int customerId = customerQueue.read();
-
-            gri.setStateManager(ATTEND_CUSTOMER);
+        try
+        {   int customerId = customerQueue.read();
             stateCustomers[customerId] = ATTENDING;
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             notifyAll();
-            //if(!paymentQueue.isEmpty() && paymentQueue.peek() == customerId){                          //Customer wants to make payment
-            if(paymentQueue.numElements()!=0 && paymentQueue.peek() == customerId){
-                if(paymentQueue.read()!=customerId)
-                {
-                    System.exit(1);
+            if(paymentQueue.numElements()!=0 && paymentQueue.peek() == customerId)
+            {   if(paymentQueue.read()!=customerId)
+                {   System.exit(1);
                 }
-                int i = 0;
                 boolean flag = false;
-                for(;i<usedReplacementCarKeys.length;i++) {
-                    if (usedReplacementCarKeys[i] == customerId)
+                int i = 0;
+                for(;i<usedReplacementCarKeys.length;i++)
+                {   if (usedReplacementCarKeys[i] == customerId)
                     {   flag = true;
                         break;
                     }
                 }
-
-
                 if(flag)
-                {
-                    while (usedReplacementCarKeys[i] == customerId
-                            || customerCarKeys[customerId] != -1)               // Manager waits for the handling of the
-                    // replacement key and the client to
-                    // retrieve his/her keys
-                    { try {
-                        wait();
-                    } catch (InterruptedException e) {
-                    }
+                {   while (usedReplacementCarKeys[i] == customerId
+                            || customerCarKeys[customerId] != -1)
+                    {   try { wait(); }
+                        catch (InterruptedException e) { }
                     }
                 }
-                else{
-                    while(customerCarKeys[customerId] != -1)
-                    {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                        }
+                else
+                {   while(customerCarKeys[customerId] != -1)
+                    {   try { wait(); }
+                        catch (InterruptedException e) { }
                     }
                 }
             }
             else
-            {
-                int toRepairCarKey;
+            {   int toRepairCarKey;
                 while((toRepairCarKey = customerCarKeys[customerId])==-1)
-                {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                    }
+                {   try { wait(); }
+                    catch (InterruptedException e) { }
                 }
-
-                carKeysToRepairQueue.write(toRepairCarKey);                 // add car keys to repair queue
-                customerCarKeys[customerId] = -1;                           // removes customers keys
-                gri.setStateManager(READ_PAPER);
+                carKeysToRepairQueue.write(toRepairCarKey);
+                customerCarKeys[customerId] = -1;
                 return toRepairCarKey;
-
             }
 
         }
         catch (MemException e) {  }
-        gri.setStateManager(READ_PAPER);
-        return -2;
+        return -2; // -2 : Customer operation done successful.
     }
 
     /**
@@ -357,60 +300,35 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @return the key of the replacement car.
      * */
     public synchronized int getReplacementCarKey(int customerId)
-    {   //  If there are keys available, the customer will take one.
-        String FUNCTION = "getReplacementCarKey";
-        gri.setCustomerNeedsReplacement(customerId);            //Logs Customer needs a replacement vehicle
-        gri.addCustomersReplacementQueue();                     //Logs Customer enters replacement car queue
-        if(!replacementCarKeys.isEmpty())
-        {
-            try
+    {   if(!replacementCarKeys.isEmpty())
+        {   try
             {   int tmp = replacementCarKeys.read();
-
-                if(tmp - headReplacementKeys < 0)
-                {
-                    System.exit(1);
-                }
+                if(tmp - headReplacementKeys < 0) { System.exit(1); }
                 usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
                 stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-                gri.setStateCustomer(customerId, stateCustomers[customerId]);
-                gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
-
-                return tmp;                                         //ENDS Here
+                return tmp;
             }
             catch (MemException e)
-            {
-                System.exit(1);
-                return -1;
+            {   System.exit(1);
             }
         }
-        //  Else the customer waits for a key.
         try
-        {
-            stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        {   stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
-        {
-            System.exit(1);
-            return -1;
+        {   System.exit(1);
         }
         while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
-        {   try {
-            wait();
-        }
-        catch (InterruptedException e) { }
+        {   try { wait(); }
+            catch (InterruptedException e) { }
         }
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-        gri.setStateCustomer(customerId, stateCustomers[customerId]);
-        gri.removeCustomersReplacementQueue();                  //Logs Customer exits replacement car queue
-        try {
-            int tmp = replacementCarKeys.read();
-            if(tmp - headReplacementKeys < 0)
-            {
-                System.exit(1);
-            }
+        try
+        {   int tmp = replacementCarKeys.read();
+            if(tmp - headReplacementKeys < 0) {System.exit(1); }
             this.usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
+            stateCustomers[customerId] = ATTENDED_W_SUBCAR;
             return tmp;
         } catch (MemException e){
             System.exit(1);
@@ -421,56 +339,27 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Return Replacement car key.
      *  Customer with the need of a replacement car invokes this method.
-     *
-     *      @param key - Key of the replacement car key.
-     *      @param customerId ID of the current Customer returning the replacement car key
-     *
-     *      @return status of the operation.
+     *  @param key - Key of the replacement car key.
+     *  @param customerId ID of the current Customer returning the replacement car key.
+     *  @return status of the operation.
      * */
-    public synchronized boolean returnReplacementCarKey(int key, int customerId)
-    {
-        String FUNCTION = "returnReplacementCarKey";
-
-        if(replacementCarKeys.containsValue(key))
-        {
-            System.exit(1);
-        }
-        try {
-            replacementCarKeys.write(key);
-            //FIXME usedReplacementCarKeys[key] = -1;       //unregistered loan
+    public synchronized void returnReplacementCarKey(int key, int customerId)
+    {   if(replacementCarKeys.containsValue(key)) { System.exit(1); }
+        try
+        {   replacementCarKeys.write(key);
             usedReplacementCarKeys[key - headReplacementKeys] = -1;
-            if(!waitingReplacementKey.isEmpty())    //alert thread waiting for a key
+            if(!waitingReplacementKey.isEmpty())
             {   int waitingCustomerId = waitingReplacementKey.read();
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
-                gri.setStateCustomer(customerId, stateCustomers[customerId]);
             }
-            notifyAll();    //Notifies manager and Customer!!!
-        } catch (MemException e) {
-            return false;
-        }
-        return true;
+            notifyAll();
+        } catch (MemException e) { System.exit(1); }
     }
     /**
      * Exit Lounge
      * @param customerId - Id of the customer who will exit the lounge
      * */
-    public synchronized void exitLounge(int customerId) {
-        stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
-        gri.setStateCustomer(customerId, stateCustomers[customerId]);
-    }
-
-//    /**
-//     *  Checks if customer queue is empty
-//     *  @return customer
-//     * */
-//    public boolean isCustomerQueueEmpty() { return customerQueue.isEmpty(); }
-
-
-//    /**
-//     *  Checks if Replacement Car Keys is Empty
-//     *  @return boolean (true/false) Available replacement cars/No replacement cars.
-//     * */
-//    public boolean isReplacementCarKeysEmpty() { return replacementCarKeys.isEmpty(); }
+    public synchronized void exitLounge(int customerId) { stateCustomers[customerId] = ATTENDED_WO_SUBCAR; }
 
     /**
      *  Checks if Customer car keys are empty
@@ -478,30 +367,16 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * */
     private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
-//    /**
-//     * Checks the size of Customer Car Keys
-//     * @return int size of the array, useful to check the total number of clients
-//     * */
-//    public int customerCarKeysSize() { return customerCarKeys.length; }
-
-//    /**
-//     *  Checks if queue of keys of cars to be repaired is empty
-//     *  @return boolean (true/false) No available cars to be repaired/Available cars to be repaired.
-//     * */
-//    public boolean iscarKeysToRepairQueueEmpty() { return carKeysToRepairQueue.isEmpty(); }
-
     /**
      * Customer gives Manager his/hers car key.
      * @param key - Customer's car key.
      * @param customerId current Customer giving their car key
      */
     public synchronized void giveManagerCarKey(int key, int customerId)
-    {   String FUNCTION = "giveManagerCarKey";
-        customerCarKeys[customerId] = key;
-        memKeysCustomers[key] = customerId; //TODO: Should be unregistered at checkout
+    {   customerCarKeys[customerId] = key;
+        memKeysCustomers[key] = customerId;
         notifyAll();
     }
-
 
     /**
      *  Customer pays for the service and retrieves the keys of his/her car.
@@ -509,8 +384,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @return the Customer's car key.
      * */
     public synchronized int payForTheService(int customerId)
-    {   String FUNCTION = "payForTheService";
-        int key = customerCarKeys[customerId];
+    {   int key = customerCarKeys[customerId];
         customerCarKeys[customerId] = -1;
         notifyAll();
         customerFinished[customerId] = true;
@@ -522,26 +396,16 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @return key of the car to repair
      *  */
     public synchronized int getCarToRepairKey(int mechanicId)
-    {
-        String FUNCTION  = "getCarKey";
-        if(isCustomerCarKeysEmpty())
-        {
-            return -1;
-        }
+    {   if(isCustomerCarKeysEmpty()) { return -1; }
         try
-        {
-            stateMechanics[mechanicId] = FIXING_THE_CAR;
-            gri.setStateMechanic(mechanicId, stateMechanics[mechanicId]);
+        {   stateMechanics[mechanicId] = FIXING_THE_CAR;
             int tmpKey = carKeysToRepairQueue.read();
             return tmpKey;
         }
-        catch (Exception e){
-            System.exit(1);
-        }
+        catch (Exception e){System.exit(1); }
         System.exit(1);
         return -1;
     }
-
 
     /**
      *      Mechanic asks for a type of car parts for the repair
@@ -550,70 +414,37 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *      @param mechanicId   - the id of the mechanic
      *      @return true - request done. false - request has already been made.
      * */
-    public synchronized boolean requestPart(int idType, int number, int mechanicId)
-    {   String FUNCTION = "requestPart";
-        //if(carPartsToRefill[idType] == 0)
-        //{
-        gri.setFlagMissingPart(idType, "T");                        // Log Manager has been advised for missing part
-        gri.setNumCarWaitingPart(idType, 1);                        // Log new car waiting for part
-        //carPartsToRefill[idType] = number;
-        carPartsToRefill[idType] += number;
-
-        return true;
-        //}
-        //return false;
+    public synchronized void requestPart(int idType, int number, int mechanicId)
+    {   carPartsToRefill[idType] += number;
     }
+
+    //TODO: Testar mudança
     /**
      *  register refill of stock
      *  @param idType - the type of Car Part
      *  @param numberParts number of Car Parts being refilled
      *  @return completed with success
      * */
-    public synchronized boolean registerStockRefill(int idType, int numberParts)
-    {   String FUNCTION = "registerStockRefill";
-        gri.setStateManager(FILL_STOCK);
-        if(carPartsToRefill[idType] != 0)
-        {
-            if(carPartsToRefill[idType] == numberParts) {
-                carPartsToRefill[idType] = 0;
-                gri.setStateManager(READ_PAPER);
-            }
-            else
-            {
-                carPartsToRefill[idType] -= numberParts;
-                gri.setStateManager(READ_PAPER);
-            }
-            return true;
+    public synchronized void registerStockRefill(int idType, int numberParts)
+    {   if(carPartsToRefill[idType] != 0)
+        {   carPartsToRefill[idType] -= numberParts;
         }
-        gri.setStateManager(READ_PAPER);
-        return false;
+        System.out.println("Error: parts is already 0");
+        System.exit(1);
     }
 
     /**
      * Manager checks if parts needs to be refilled
-     * @param index - start index of search
      * @return id of the part to refill. Returns -1 if no part is needed to refill
      * */
-    public synchronized int checksPartsRequest(int index)
-    {   String FUNCTION = "checksPartsRequest";
-        for(int i= index; i<carPartsToRefill.length; i++)
+    //TODO: Test change
+    public synchronized int checksPartsRequest()
+    {   for(int i = 0; i<carPartsToRefill.length; i++)
         {   if(carPartsToRefill[i] != 0)
-        {
-            return i;
-        }
-
+                return i;
         }
         return -1;
     }
-
-//    /**
-//     * Mechanic checks stock of a specific part.
-//     * @param idType   - id of the car part.
-//     * @return True if there is stock available for the part. False otherwise.
-//     * */
-//    public synchronized boolean checksPartStock(int idType) { return carPartsToRefill[idType] != 0; }
-
-
 
     /**
      * Mechanic return key of the repaired car
@@ -621,20 +452,12 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @param mechanicId    - the id of the mechanic.
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
-    {   String FUNCTION = "alertRepairDone";
-        gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
-        if(!customerFixedCarKeys.isEmpty())
-        {
-            if(customerFixedCarKeys.containsValue(idKey)) {
+    {   if(!customerFixedCarKeys.isEmpty())
+        {   if(customerFixedCarKeys.containsValue(idKey))
                 System.exit(1);
-            }
         }
-        try {
-            customerFixedCarKeys.write(idKey);
-
-        } catch (MemException e) {
-            System.exit(1);
-        }
+        try { customerFixedCarKeys.write(idKey); }
+        catch (MemException e) { System.exit(1); }
     }
 
     /**
@@ -643,35 +466,29 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * */
     public synchronized boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
 
-
     /**
      * Gets key of a fixed car.
      * @return id of the key
      * */
     public synchronized int getFixedCarKey()
-    {   String FUNCTION = "getFixedCarKey";
-        if(!isCustomerCarKeysEmpty())
-        {
-            try {
-                return customerFixedCarKeys.read();
-            } catch (MemException e) {
-                System.exit(1);
+    {   if(!isCustomerCarKeysEmpty())
+        {   try
+            {   return customerFixedCarKeys.read();
+            } catch (MemException e)
+            {   System.exit(1);
             }
         }
         return -1;
     }
+
     /**
      * Gets customer given the id of the key whom the customer belongs-
      * @param idKey - id of the key.
      * @return the id of the customer
      * */
     public synchronized int getCustomerFromKey(int idKey)
-    {
-        String FUNCTION = "getCustomerFromKey";
-        if(memKeysCustomers[idKey] == -1)
-        {
+    {   if(memKeysCustomers[idKey] == -1)
             System.exit(1);
-        }
         int customerId = memKeysCustomers[idKey];
         memKeysCustomers[idKey] = -1;
         return customerId;
@@ -681,16 +498,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @param idCustomer - id of the customer.
      * @param idKey - id of the key.
      * */
-    public synchronized void readyToDeliverKey(int idCustomer, int idKey)
-    {   String FUNCTION= "readyToDeliverKey";
-        customerCarKeys[idCustomer] = idKey;
-    }
-
-//    /**
-//     * Get the number of existing part car types.
-//     * @return number of type parts.
-//     * */
-//    public synchronized int getNumberOfPartTypes(){ return numTypes;}
+    public synchronized void readyToDeliverKey(int idCustomer, int idKey) {   customerCarKeys[idCustomer] = idKey; }
 
     /**
      *  Get the requested number of a part
@@ -698,7 +506,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @return number of parts requested.
      * */
     public synchronized int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
-
 
     /**
      * Checks if all customer have been attended.

@@ -19,7 +19,7 @@ public interface MechanicLounge {
      *      @param mechanicId   - the id of the mechanic
      *      @return true - request done. false - request has already been made.
      * */
-    boolean requestPart(int idType, int number, int mechanicId);
+    void requestPart(int idType, int number, int mechanicId);
 
     /**
      * Mechanic return key of the repaired car
