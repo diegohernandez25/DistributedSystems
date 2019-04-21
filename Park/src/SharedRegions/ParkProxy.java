@@ -35,9 +35,15 @@ public class ParkProxy implements SharedRegionInterface {
                 this.park.parkCar(msg.getCarId());
                 response = new Message(MessageType.OK);
                 break;
+
             case GET_CAR:
                 resInt = this.park.getCar(msg.getCarId());
                 response = new Message(MessageType.GET_CAR, resInt);
+                break;
+
+            default:
+                System.out.println("message not expected.");
+                System.exit(1);
                 break;
         }
         return response;
