@@ -217,7 +217,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  Customer enters queue to be attended by the Manager.
      *  @param customerId - Id of the customer to be attended
      *  @param payment - type of attendance. (true/false) Pay for repair/Request repair.
-     *  @return operation success so the thread can move on to the next operation.
      * */
     public synchronized void enterCustomerQueue(int customerId, boolean payment)
     {   if(payment)
@@ -423,7 +422,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  register refill of stock
      *  @param idType - the type of Car Part
      *  @param numberParts number of Car Parts being refilled
-     *  @return completed with success
      * */
     public synchronized void registerStockRefill(int idType, int numberParts)
     {   if(carPartsToRefill[idType] != 0)
@@ -482,7 +480,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     }
 
     /**
-     * Gets customer given the id of the key whom the customer belongs-
+     * Gets customer OKOKgiven the id of the key whom the customer belongs-
      * @param idKey - id of the key.
      * @return the id of the customer
      * */

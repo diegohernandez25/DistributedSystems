@@ -1,7 +1,5 @@
 package Communication;
 
-import Resources.MemFIFO;
-
 import java.io.Serializable;
 
 public class Message implements Serializable {
@@ -130,8 +128,8 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-            this.done   = var1;
-            break;
+                this.done   = var1;
+                break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
@@ -153,9 +151,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case REGISTER_STOCK_REFILL:
-            this.carPart        = var1;
-            this.numPart        = var2;
-            break;
+                this.carPart        = var1;
+                this.numPart        = var2;
+                break;
             case READY_TO_DELIVER_KEY:
                 this.customerId     = var1;
                 this.customerKey    = var2;
@@ -176,9 +174,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-            this.customerId = var1;
-            this.payment    = var2;
-            break;
+                this.customerId = var1;
+                this.payment    = var2;
+                break;
 
             default:
                 System.out.println("message type not expected.");

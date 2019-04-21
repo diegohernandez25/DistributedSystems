@@ -1,6 +1,9 @@
 package Communication;
 
 public enum MessageType {
+    /**
+     * Lounge
+     * */
     ENTER_CUSTOMER_QUEUE,
 
     ATTEND_CUSTOMER,
