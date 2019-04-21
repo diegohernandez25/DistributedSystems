@@ -35,10 +35,10 @@ public class Lounge {
      *  @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
     public int attendCustomer()
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.ATTEND_CUSTOMER);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.ATTEND_CUSTOMER_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.ATTEND_CUSTOMER_RES);
         return response.getCustomerKey();
     }
 
@@ -48,10 +48,10 @@ public class Lounge {
      *  @param numberParts number of Car Parts being refilled
      * */
     public void registerStockRefill(int idType, int numberParts)
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.REGISTER_STOCK_REFILL, idType, numberParts);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.OK);
+        Message response = Com.expectMessageType(clientCom, MessageType.OK);
     }
 
     /**
@@ -59,10 +59,10 @@ public class Lounge {
      * @return id of the part to refill. Returns -1 if no part is needed to refill
      * */
     public int checksPartsRequest()
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.CHECKS_PARTS_REQUEST);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.CHECKS_PARTS_REQUEST_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.CHECKS_PARTS_REQUEST_RES);
         return response.getCarPart();
     }
 
@@ -71,10 +71,10 @@ public class Lounge {
      * @return true - customer fixed car keys empty
      * */
     public boolean isCustomerFixedCarKeysEmpty()
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.ARE_CARS_FIXED);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.ARE_CARS_FIXED_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.ARE_CARS_FIXED_RES);
         return response.isAvailableFixedCars();
     }
 
@@ -83,10 +83,10 @@ public class Lounge {
      * @return id of the key
      * */
     public int getFixedCarKey()
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.GET_FIXED_CAR_KEY);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.GET_FIXED_CAR_KEY_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.GET_FIXED_CAR_KEY_RES);
         return response.getCustomerKey();
     }
 
@@ -96,10 +96,10 @@ public class Lounge {
      * @return the id of the customer
      * */
     public int getCustomerFromKey(int idKey)
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.GET_CUSTOMER_FROM_KEY, idKey);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.GET_CUSTOMER_FROM_KEY_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.GET_CUSTOMER_FROM_KEY_RES);
         return  response.getCustomerId();
     }
 
@@ -109,10 +109,10 @@ public class Lounge {
      * @param idKey - id of the key.
      * */
     public void readyToDeliverKey(int idCustomer, int idKey)
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.READY_TO_DELIVER_KEY,idCustomer, idKey);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.OK);
+        Message response = Com.expectMessageType(clientCom, MessageType.OK);
     }
 
     /**
@@ -121,10 +121,10 @@ public class Lounge {
      *  @return number of parts requested.
      * */
     public int requestedNumberPart(int partId)
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.REQUEST_NUMBER_PART, partId);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.REQUEST_NUMBER_PART_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.REQUEST_NUMBER_PART_RES);
         return response.getNumPart();
     }
 
@@ -133,48 +133,11 @@ public class Lounge {
      * @return true - all services done to all customers for the dat. False - otherwise
      * */
     public boolean allDone()
-    {   ClientCom clientCom = openChannel();
+    {   ClientCom clientCom = Com.openChannel(server,port);
         Message request = new Message(MessageType.ALL_DONE);
         clientCom.writeObject(request);
-        Message response = expectMessageType(clientCom, MessageType.ALL_DONE_RES);
+        Message response = Com.expectMessageType(clientCom, MessageType.ALL_DONE_RES);
         return response.isDone();
     }
 
-    /**
-     *  Open socket communication.
-     *  @return client communication object.
-     * */
-    private ClientCom openChannel()
-    {   ClientCom clientCom = new ClientCom(server,port);
-        while (!clientCom.open())
-        {   try
-        {   Thread.sleep((long) 10);
-        } catch (InterruptedException ignored){}
-
-        }
-        return clientCom;
-    }
-
-    /**
-     *  Closes socket communication.
-     *  @param clientCom - client communication object.
-     * */
-    private void closeChannel(ClientCom clientCom){ clientCom.close();}
-
-    /**
-     * Checks if message is according to the expected message. If it is, returns response message.
-     * Closes connection.
-     * @param clientCom - client socket communication object.
-     * @param msgType   - expected message type.
-     * @return response message.
-     * */
-    private Message expectMessageType(ClientCom clientCom, MessageType msgType)
-    {   Message response = (Message) clientCom.readObject();
-        if(response.getType() != msgType)
-        {   System.out.println("Expecting message of type "+ msgType.toString());
-            System.exit(1);
-        }
-        clientCom.close();
-        return response;
-    }
 }

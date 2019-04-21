@@ -48,7 +48,7 @@ public class OutsideWorldProxy implements SharedRegionInterface {
 
             case IS_CUSTOMER_IN_OW:
                 resBool = this.outsideWorld.customersNotYetAtOutsideWorldisEmpty();
-                response = new Message(MessageType.IS_CUSTOMER_IN_OW, resBool);
+                response = new Message(MessageType.IS_CUSTOMER_IN_OW_RES, resBool);
                 break;
 
             default:

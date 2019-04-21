@@ -42,7 +42,7 @@ public interface CustomerLounge {
      * @param key - Customer's car key.
      * @param customerId current Customer giving their car key
      */
-    void giveManagerCarKey(int key, int customerId);
+    void giveManagerCarKey(int customerId, int key);
 
     /**
      *  Customer pays for the service and retrieves the keys of his/her car.

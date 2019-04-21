@@ -1,6 +1,7 @@
 package Communication;
 
 public enum MessageType {
+
     /**
      * Lounge
      * */
@@ -62,6 +63,28 @@ public enum MessageType {
 
     GET_FIXED_CAR_KEY,
 
-    GET_FIXED_CAR_KEY_RES
-    ;
+    GET_FIXED_CAR_KEY_RES,
+
+    /**
+     *  Park
+     * */
+    GET_CAR,
+
+    GET_CAR_RES,
+
+    PARK_CAR,
+
+    /**
+     * Outside World
+     * */
+    WAIT_FOR_REPAIR,
+
+    ALERT_CUSTOMER,
+
+    ALERT_REMAINING_CUSTOMERS,
+
+    IS_CUSTOMER_IN_OW,
+
+    IS_CUSTOMER_IN_OW_RES;
+
 }

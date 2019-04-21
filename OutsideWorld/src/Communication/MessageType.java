@@ -1,6 +1,82 @@
 package Communication;
 
 public enum MessageType {
+
+    /**
+     * Lounge
+     * */
+    ENTER_CUSTOMER_QUEUE,
+
+    ATTEND_CUSTOMER,
+
+    GET_REPLACEMENT_CAR_KEY,
+
+    RETURN_REPLACEMENT_CAR_KEY,
+
+    EXIT_LOUNGE,
+
+    IS_CUSTOMER_CAR_KEYS_EMPTY,
+
+    GIVE_MANAGER_CAR_KEY,
+
+    PAY_FOR_THE_SERVICE,
+
+    GET_CAR_TO_REPAIR_KEY,
+
+    REQUEST_PART,
+
+    REGISTER_STOCK_REFILL,
+
+    CHECKS_PARTS_REQUEST,
+
+    ALERT_MANAGER_REPAIR_DONE,
+
+    READY_TO_DELIVER_KEY,
+
+    REQUEST_NUMBER_PART,
+
+    ALL_DONE,
+
+    OK,
+
+    ATTEND_CUSTOMER_RES,
+
+    GET_REPLACEMENT_CAR_KEY_RES,
+
+    PAY_FOR_THE_SERVICE_RES,
+
+    GET_CAR_TO_REPAIR_KEY_RES,
+
+    CHECKS_PARTS_REQUEST_RES,
+
+    REQUEST_NUMBER_PART_RES,
+
+    ALL_DONE_RES,
+
+    GET_CUSTOMER_FROM_KEY,
+
+    GET_CUSTOMER_FROM_KEY_RES,
+
+    ARE_CARS_FIXED,
+
+    ARE_CARS_FIXED_RES,
+
+    GET_FIXED_CAR_KEY,
+
+    GET_FIXED_CAR_KEY_RES,
+
+    /**
+     *  Park
+     * */
+    GET_CAR,
+
+    GET_CAR_RES,
+
+    PARK_CAR,
+
+    /**
+     * Outside World
+     * */
     WAIT_FOR_REPAIR,
 
     ALERT_CUSTOMER,
@@ -9,5 +85,6 @@ public enum MessageType {
 
     IS_CUSTOMER_IN_OW,
 
-    OK;
+    IS_CUSTOMER_IN_OW_RES;
+
 }

@@ -366,12 +366,13 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * */
     private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
+    //TODO: NOTE: Changed parameters order!!!!!
     /**
      * Customer gives Manager his/hers car key.
      * @param key - Customer's car key.
      * @param customerId current Customer giving their car key
      */
-    public synchronized void giveManagerCarKey(int key, int customerId)
+    public synchronized void giveManagerCarKey(int customerId, int key)
     {   customerCarKeys[customerId] = key;
         memKeysCustomers[key] = customerId;
         notifyAll();

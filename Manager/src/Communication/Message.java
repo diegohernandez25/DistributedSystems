@@ -53,6 +53,16 @@ public class Message implements Serializable {
      * */
     private boolean availableFixedCars;
 
+    /**
+     * Car Id
+     * */
+    private int carId;
+
+    /**
+     * Flag customers at outside world
+     * */
+    private boolean custAtOW;
+
 
     /**
      * Message Constructor.
@@ -67,6 +77,8 @@ public class Message implements Serializable {
         numPart                 = 0;
         done                    = false;
         availableFixedCars      = false;
+        carId                   = -1;
+        custAtOW                = false;
     }
 
     /**
@@ -101,6 +113,11 @@ public class Message implements Serializable {
 
 
             case GET_CUSTOMER_FROM_KEY_RES:
+            case GET_REPLACEMENT_CAR_KEY:
+            case EXIT_LOUNGE:
+            case PAY_FOR_THE_SERVICE:
+            case WAIT_FOR_REPAIR:
+            case ALERT_CUSTOMER:
                 this.customerId = var1;
                 break;
 
@@ -110,6 +127,11 @@ public class Message implements Serializable {
 
             case REQUEST_NUMBER_PART_RES:
                 this.numPart = var1;
+                break;
+
+            case GET_CAR:
+            case PARK_CAR:
+                this.carId = var1;
                 break;
 
             default:
@@ -128,11 +150,15 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-                this.done   = var1;
-                break;
+            this.done   = var1;
+            break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
+                break;
+
+            case IS_CUSTOMER_IN_OW_RES:
+                this.custAtOW = var1;
                 break;
 
             default:
@@ -151,12 +177,19 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case REGISTER_STOCK_REFILL:
-                this.carPart        = var1;
-                this.numPart        = var2;
-                break;
+            this.carPart        = var1;
+            this.numPart        = var2;
+            break;
             case READY_TO_DELIVER_KEY:
+            case GIVE_MANAGER_CAR_KEY:
                 this.customerId     = var1;
                 this.customerKey    = var2;
+                break;
+            case RETURN_REPLACEMENT_CAR_KEY:
+                this.replacementCarKey  = var1;
+                this.customerId         = var2;
+                break;
+
             default:
                 System.out.println("message type not expected.");
                 System.exit(1);
@@ -174,9 +207,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-                this.customerId = var1;
-                this.payment    = var2;
-                break;
+            this.customerId = var1;
+            this.payment    = var2;
+            break;
 
             default:
                 System.out.println("message type not expected.");
@@ -246,4 +279,15 @@ public class Message implements Serializable {
      * */
     public int getMechanicId(){ return  mechanicId;}
 
+    /**
+     * Get car Id
+     * @return car id
+     * */
+    public int getCarId(){ return carId;}
+
+    /**
+     * Get custAtOW flag
+     * @return custAtOW flag
+     * */
+    public boolean isCustAtOW() { return custAtOW; }
 }
