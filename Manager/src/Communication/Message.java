@@ -71,17 +71,47 @@ public class Message implements Serializable {
     /**
      * Maximum number of storage for car part
      */
-     private int maxPartNumber;
+    private int maxPartNumber;
 
     /**
      * Next task to be done
      */
-     private int nextTask;
+    private int nextTask;
 
      /**
       * Number of parts that were restocked
       */
-     private int numRestocked;
+    private int numRestocked;
+
+     /**
+      * Current state
+      */
+    private int state;
+
+     /**
+      * Type of vehicle.
+      * Values can be:
+      *   own car - customer ID.
+      *   replacement car - R# (where # is the number of the replacement car).
+      *   none - '-'.
+      */
+    private String vehicle;
+
+     /**
+      * Number to increment/decrement.
+      * Values can be:
+      *    1 - increment.
+      *   -1 - decrement.
+      */
+    private int number;
+
+    /**
+     * Flag signaling if Manager has been adviced for missing part.
+     * Values can be:
+     *   T - true.
+     *   F - false.
+     */
+    private String flagMissingPart;
 
     /**
      * Message Constructor.
@@ -102,6 +132,10 @@ public class Message implements Serializable {
         maxPartNumber           = -1;
         nextTask                = -1;
         numRestocked            = -1;
+        state                   = -1;
+        vehicle                 = "-";
+        number                  = 0;
+        flagMissingPart         = "F";
     }
 
     /**
@@ -140,12 +174,15 @@ public class Message implements Serializable {
             case PAY_FOR_THE_SERVICE:
             case WAIT_FOR_REPAIR:
             case ALERT_CUSTOMER:
+            case SET_CUSTOMER_NEEDS_REPLACEMENT:
+            case SET_CUSTOMER_CAR_REPAIRED:
                 this.customerId = var1;
                 break;
 
             case CHECKS_PARTS_REQUEST_RES:
             case CHECK_CAR_RES:
             case GET_MAX_PART_STOCK:
+            case REMOVE_NUM_PART_AVAILABLE:
                 this.carPart = var1;
                 break;
 
@@ -175,6 +212,16 @@ public class Message implements Serializable {
 
             case RESTOCK_PART_RES:
                 this.numRestocked = var1;
+                break;
+
+            case SET_STATE_MANAGER:
+                this.state = var1;
+                break;
+
+            case SET_NUM_REPLACEMENT_PARKED:
+            case SET_NUM_CARS_PARKED:
+            case SET_NUM_REPLACEMENT_PARKED:
+                this.number = var1;
                 break;
 
             default:
@@ -235,7 +282,7 @@ public class Message implements Serializable {
                 this.customerId     = var1;
                 this.customerKey    = var2;
                 break;
-                
+
             case RETURN_REPLACEMENT_CAR_KEY:
                 this.replacementCarKey  = var1;
                 this.customerId         = var2;
@@ -250,6 +297,24 @@ public class Message implements Serializable {
             case CONCLUDE_CAR_REPAIR:
                 this.carId      = var1;
                 this.mechanicId = var2;
+                break;
+
+            case SET_STATE_CUSTOMER:
+                this.customerId = var1;
+                this.state      = var2;
+                break;
+
+            case SET_STATE_MECHANIC:
+                this.mechanicId = var1;
+                this.state      = var2;
+                break;
+
+            case SET_NUM_CAR_WAITING_PART:
+            case SET_NUM_BOUGHT_PART:
+            case ADD_NUM_PART_AVAILABLE:
+            case SET_NUM_CAR_WAITING_PART:
+                this.carPart = var1;
+                this.number  = var2;
                 break;
 
             default:
@@ -303,6 +368,32 @@ public class Message implements Serializable {
             this.carPart    = var2;
             this.mechanicId = var3;
             break;
+
+          default:
+              System.out.println("message type not expected.");
+              System.exit(1);
+              break;
+        }
+    }
+
+    /**
+     * Message constructor
+     * @param var1      - first integer variable
+     * @param var2      - second string flag.
+     * */
+    public Message(MessageType msgType, int var1, String var2)
+    {
+        this(msgType);
+        switch (msgType)
+        {
+          case SET_FLAG_MISSING_PART:
+              this.carPart         = var1;
+              this.flagMissingPart = var2;
+              break;
+
+          case SET_CUSTOMER_VEHICLE:
+              this.customerId = var1;
+              this.vehicle    = var2;
 
           default:
               System.out.println("message type not expected.");
@@ -406,4 +497,28 @@ public class Message implements Serializable {
      * @return number of parts that were restocked
      */
     public int getNumRestocked() { return numRestocked; }
+
+    /**
+     * Get current state
+     * @return current state
+     */
+     public int getState() { return state; }
+
+     /**
+      * Get type of vehicle
+      * @return type of vehicle
+      */
+     public String getVehicle() { return vehicle; }
+
+     /**
+      * Get number
+      * @return number
+      */
+     public int getNumber() { return number; }
+
+     /**
+      * Get flag signaling Manager adviced from missing part
+      * @return flag
+      */
+     public String getFlagMissingPart() { return flagMissingPart; }
 }

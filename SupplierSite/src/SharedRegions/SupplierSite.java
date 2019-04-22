@@ -31,8 +31,8 @@ public class SupplierSite<R> implements ManagerSS{
     {   String FUNCTION = "restockPart";
         if(idType<=stockType && idType>=0)
         {
-            gri.setNumBoughtPart(idType, number);   // Log added number of specific car part restocked
-            gri.setFlagMissingPart(idType, "F");    // Log part is no longer needed for restock
+            // gri.setNumBoughtPart(idType, number);   // Log added number of specific car part restocked
+            // gri.setFlagMissingPart(idType, "F");    // Log part is no longer needed for restock
             return number;
         }
 \        return 0;

@@ -175,7 +175,8 @@ public class RepairArea implements ManagerRA, MechanicRA {
         {
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
-            carParts[partId]--;                               // Log car part being needed
+            carParts[partId]--;
+            // gri.removeNumPartAvailable(partId);                                    // Log car part being needed
             System.out.println("part used to repait :"+partId);
             return true;
         }
@@ -230,6 +231,7 @@ public class RepairArea implements ManagerRA, MechanicRA {
                 {   res = tmp;
                     statusOfCars[tmp] = ON_REPAIR;
 
+                    // gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);  // Log minus one car needs the part
                     System.out.println("Before:");
                     for(int i = 0;i<reserveCarPart.length;i++) {
                         System.out.println(i + ". " + reserveCarPart[i]);
@@ -265,7 +267,9 @@ public class RepairArea implements ManagerRA, MechanicRA {
         {
             System.exit(1);
         }
-        statusOfCars[idCar] = REPAIRED;                                         // Log additional car repaired
+        statusOfCars[idCar] = REPAIRED;
+        // gri.setCustomerCarRepaired(idCar);                                      // Log Customer car has been repaired
+        // gri.setNumCarsRepaired();                                               // Log additional car repaired
     }
 
     /**
@@ -280,6 +284,7 @@ public class RepairArea implements ManagerRA, MechanicRA {
 
         carParts[idPart] += quantity;
         workToDo = true;
+        // gri.addNumPartAvailable(idPart, quantity);          // Log number of parts now available in stock
         notifyAll();        //notify sleeping mechanics
     }
 
@@ -375,6 +380,7 @@ public class RepairArea implements ManagerRA, MechanicRA {
     public synchronized void postJob(int carID)
     {
         String FUNCTION = "postJob";
+        // gri.setNumPostJobs();           // Log additional job posted
         carsNeedsCheck[carID] = true;
         workToDo = true;                        //notify sleeping mechanics
         notifyAll();
