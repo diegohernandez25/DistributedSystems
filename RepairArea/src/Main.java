@@ -4,7 +4,7 @@ import SharedRegions.RepairAreaProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 1;  //TODO: Replace by port number.
+    private static final int PORT_NUM = 22463;  //TODO: Replace by port number.
 
     /**
      * Service Termination flag;
@@ -36,7 +36,8 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {   System.out.println("Starting...");
+        ServerCom sc, sci;
         ServiceProvider sp;
 
         RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts);

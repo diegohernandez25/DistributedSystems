@@ -1,73 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cafb6312-e852-4045-82b3-8458158141e6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Customer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Customer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Manager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Mechanic.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Entities/Mechanic.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/GeneralRepInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/GeneralRepInformation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/Lounge.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/Lounge.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/OutsideWorld.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/OutsideWorld.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/Park.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/Park.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/RepairArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/RepairArea.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/SupplierSite.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Locations/SupplierSite.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Loggers/Logger.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Loggers/Logger.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/sd-assignment2/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/sd-assignment2/sd-assignment2.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/CustomerLounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/CustomerLounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/CustomerOW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/CustomerOW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/CustomerPark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/CustomerPark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/GriLounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/GriLounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/GriPark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/GriPark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/GriRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/GriRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/GriSS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/GriSS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/ManagerLounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/ManagerLounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/ManagerOW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/ManagerOW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/ManagerRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/ManagerRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/ManagerSS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/ManagerSS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/MechanicLounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/MechanicLounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/MechanicPark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/MechanicPark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/MechanicRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/MechanicRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Locations/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Locations/Lounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Locations/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Locations/RepairArea.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid21675" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid22194" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid22493" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid22741" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid23044" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid23200" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid23358" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid23948" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.attach_pid24598" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Entities/Customer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Entities/Manager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Entities/Mechanic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/GeneralRepInformation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/Lounge.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/OutsideWorld.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/Park.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/RepairArea.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Locations/SupplierSite.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Loggers/Logger.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Resources/MemException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Resources/MemFIFO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Resources/MemObject.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/Resources/MemStack.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/sd-assignment1.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/out/production/sd-assignment1/test.class" beforeDir="false" />
-    </list>
+    <list default="true" id="cafb6312-e852-4045-82b3-8458158141e6" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -153,58 +87,36 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-3" />
-    <option name="y" value="-4" />
-    <option name="width" value="1366" />
-    <option name="height" value="758" />
+    <option name="x" value="274" />
+    <option name="y" value="55" />
+    <option name="width" value="1024" />
+    <option name="height" value="535" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
+      <pane id="PackagesPane" />
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
             <path>
-              <item name="sd-assignment2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sd-assignment2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sd-assignment2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sd-assignment2" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sd-assignment2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sd-assignment2" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Entities" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sd-assignment2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sd-assignment2" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Interfaces" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sd-assignment2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sd-assignment2" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Locations" type="462c0819:PsiDirectoryNode" />
+              <item name="sd-assignment2" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="$PROJECT_DIR$" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Lounge" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -255,14 +167,15 @@
       <workItem from="1554413459552" duration="753000" />
       <workItem from="1554970862667" duration="3011000" />
       <workItem from="1554973954273" duration="12000" />
+      <workItem from="1555972623848" duration="71000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6800000" />
+    <option name="totallyTimeSpent" value="6871000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="-14" width="1368" height="783" extended-state="6" />
+    <frame x="-1" y="-4" width="1368" height="773" extended-state="6" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21450152" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -334,170 +247,29 @@
     <entry file="file://$PROJECT_DIR$/../UA/4Ano/2Sem/SD/AS_PA1/src/ReentrantLock/MyThreadDecrement.java" />
     <entry file="file://$PROJECT_DIR$/../UA/4Ano/2Sem/SD/AS_PA1/src/ReentrantLock/Monitor.java" />
     <entry file="file://$PROJECT_DIR$/../UA/4Ano/2Sem/SD/AS_PA1/src/ReentrantLock/IDecrement.java" />
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="45" selection-start-line="45" selection-end-line="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Entities/Manager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Entities/Customer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="154" column="28" selection-start-line="154" selection-start-column="28" selection-end-line="154" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/OutsideWorld.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="118" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/SupplierSite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="39" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/Lounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="669" lean-forward="true" selection-start-line="669" selection-end-line="674" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/RepairArea.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="325" column="5" lean-forward="true" selection-start-line="325" selection-start-column="5" selection-end-line="331" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/Park.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="105" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Locations/GeneralRepInformation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="441" lean-forward="true" selection-start-line="441" selection-end-line="446" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerLounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="599">
-          <caret line="50" column="9" selection-start-line="50" selection-start-column="9" selection-end-line="50" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerOW.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerPark.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="9" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriLounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="719">
-          <caret line="70" column="9" selection-start-line="70" selection-start-column="9" selection-end-line="70" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriPark.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="9" selection-start-line="23" selection-start-column="9" selection-end-line="23" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriRA.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriSS.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerLounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="64" column="9" selection-start-line="64" selection-start-column="9" selection-end-line="64" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerOW.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="9" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerRA.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="9" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicLounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="9" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicPark.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="9" selection-start-line="22" selection-start-column="9" selection-end-line="22" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicRA.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerSS.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java" />
+    <entry file="file://$PROJECT_DIR$/src/Entities/Manager.java" />
+    <entry file="file://$PROJECT_DIR$/src/Entities/Customer.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/OutsideWorld.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/SupplierSite.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/Lounge.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/RepairArea.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/Park.java" />
+    <entry file="file://$PROJECT_DIR$/src/Locations/GeneralRepInformation.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerLounge.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerOW.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerPark.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriLounge.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriPark.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriRA.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriSS.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerLounge.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerOW.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerRA.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicLounge.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicPark.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/MechanicRA.java" />
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerSS.java" />
     <entry file="file://$PROJECT_DIR$/../UA/4Ano/2Sem/SD/sd-distributed-horses_2/Projeto/Spectators/src/main/java/MainPackage/SimulationParameters.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>

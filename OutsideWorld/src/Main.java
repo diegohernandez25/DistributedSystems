@@ -4,7 +4,7 @@ import SharedRegions.OutsideWorldProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 1;  //TODO: Replace by port number.
+    private static final int PORT_NUM = 22462;  //TODO: Replace by port number.
 
     /**
      * Service Termination flag;

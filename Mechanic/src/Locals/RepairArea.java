@@ -112,7 +112,7 @@ public class RepairArea {
      *  @return the task that has to be done
      * */
     public int findNextTask(int mechanicId)
-    {
+    {   System.out.println("Finding next task");
       ClientCom clientCom = Com.openChannel(server,port);
       Message request = new Message(MessageType.FIND_NEXT_TASK, mechanicId);
       clientCom.writeObject(request);

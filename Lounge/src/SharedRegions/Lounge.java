@@ -417,18 +417,25 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     {   carPartsToRefill[idType] += number;
     }
 
-    //TODO: Testar mudança
     /**
      *  register refill of stock
      *  @param idType - the type of Car Part
      *  @param numberParts number of Car Parts being refilled
      * */
     public synchronized void registerStockRefill(int idType, int numberParts)
-    {   if(carPartsToRefill[idType] != 0)
-        {   carPartsToRefill[idType] -= numberParts;
+    {   String FUNCTION = "registerStockRefill";
+        if(carPartsToRefill[idType] != 0)
+        {
+            if(carPartsToRefill[idType] == numberParts) {
+                carPartsToRefill[idType] = 0;
+            }
+            else
+            {
+                carPartsToRefill[idType] -= numberParts;
+            }
+            //return true;
         }
-        System.out.println("Error: parts is already 0");
-        System.exit(1);
+        //return false;
     }
 
     /**

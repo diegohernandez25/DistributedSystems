@@ -6,7 +6,7 @@ import SharedRegions.ServiceProvider;
 import java.net.SocketTimeoutException;
 
 public class Main {
-    private static final int PORT_NUM = 1;  //TODO: Replace by port number.
+    private static final int PORT_NUM = 22460 ;
 
     /**
      * Service Termination flag;

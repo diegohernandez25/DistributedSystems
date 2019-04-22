@@ -88,8 +88,8 @@ public enum MessageType {
     IS_CUSTOMER_IN_OW_RES,
 
     /**
-    *   Repair Area
-    */
+     *   Repair Area
+     */
     CHECK_CAR,
 
     CHECK_CAR_RES,
@@ -165,4 +165,5 @@ public enum MessageType {
     SET_FLAG_MISSING_PART,
 
     SET_NUM_BOUGHT_PART;
+
 }

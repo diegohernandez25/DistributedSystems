@@ -35,6 +35,7 @@ public class Com {
      * */
     public static Message expectMessageType(ClientCom clientCom, MessageType msgType)
     {   Message response = (Message) clientCom.readObject();
+        System.out.println("Message type: "+response.getType().toString());
         if(response.getType() != msgType)
         {   System.out.println("Expecting message of type "+ msgType.toString());
             System.exit(1);

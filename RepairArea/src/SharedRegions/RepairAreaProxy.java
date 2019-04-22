@@ -29,6 +29,8 @@ public class RepairAreaProxy implements SharedRegionInterface {
    * */
   @Override
   public Message processMessage(Message msg, ServerCom sc) {
+      System.out.println("PROCESSING MESSAGE.");
+      System.out.println(msg.getType().toString());
       Message response = null;
       int resInt;
       boolean resBool;
@@ -62,15 +64,17 @@ public class RepairAreaProxy implements SharedRegionInterface {
 
         case GET_MAX_PART_STOCK:
           resInt = this.repairArea.getMaxPartStock(msg.getCarPart());
-          response = new Message(MessageType.GET_MAX_PART_STOCK_RES);
+          response = new Message(MessageType.GET_MAX_PART_STOCK_RES,resInt);
           break;
 
         case FIND_NEXT_TASK:
           resInt = this.repairArea.findNextTask(msg.getMechanicId());
-          response = new Message(MessageType.FIND_NEXT_TASK_RES);
+          System.out.println("Response: "+resInt);
+          response = new Message(MessageType.FIND_NEXT_TASK_RES, resInt);
           break;
 
         case POST_JOB:
+          System.out.println("Received POST JOB");
           this.repairArea.postJob(msg.getCarId());
           response = new Message(MessageType.OK);
           break;

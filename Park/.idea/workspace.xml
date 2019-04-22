@@ -2,42 +2,52 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="843769a3-a176-42e2-a1a3-1bd4c57917a0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Communication/ClientCom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Communication/Message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Communication/MessageType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Communication/ServerCom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/EntitiesState/CustomerState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Locals/Com.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Locals/Lounge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Locals/OutsideWorld.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Locals/Park.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Customer/src/Main/Customer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Manager/src/Locals/Com.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Manager/src/Locals/OutsideWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/src/Entities/Customer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Customer/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Customer/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Communication/MessageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Customer/src/Main/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Main/Customer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Lounge/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Lounge/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Lounge/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/src/Communication/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Lounge/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/src/Communication/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lounge/src/Interfaces/CustomerLounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/src/Interfaces/CustomerLounge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Lounge/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Lounge/src/SharedRegions/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Lounge/src/SharedRegions/Lounge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Communication/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Communication/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/Lounge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/Com.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/Com.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Main/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Main/Manager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Communication/MessageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Locals/Com.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Locals/Com.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Locals/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Locals/RepairArea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Main/Mechanic.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Main/Mechanic.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../OutsideWorld/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../OutsideWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/Communication/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/Communication/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/SharedRegions/OutsideWorldProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/SharedRegions/OutsideWorldProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Communication/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Communication/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedRegions/ParkProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedRegions/ParkProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/Communication/MessageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairArea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairAreaProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairAreaProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/ServiceProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/ServiceProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/Communication/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/Communication/MessageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/SharedRegions/SupplierSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/SharedRegions/SupplierSite.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,7 +65,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerPark.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
+            <state relative-caret-position="75">
               <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
             </state>
           </provider>
@@ -64,7 +74,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Communication/ServerCom.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
+            <state relative-caret-position="210">
               <caret line="14" selection-start-line="14" selection-end-line="277" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -76,7 +86,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SharedRegions/Park.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1078">
+            <state relative-caret-position="735">
               <caret line="49" column="33" selection-start-line="49" selection-start-column="33" selection-end-line="49" selection-end-column="33" />
             </state>
           </provider>
@@ -85,8 +95,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Communication/Message.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="767">
-              <caret line="293" lean-forward="true" selection-start-line="293" selection-end-line="293" />
+            <state relative-caret-position="301">
+              <caret line="521" selection-start-line="521" selection-end-line="521" />
             </state>
           </provider>
         </entry>
@@ -94,7 +104,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Communication/ClientCom.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5302">
+            <state relative-caret-position="3630">
               <caret line="242" column="1" selection-start-line="4" selection-end-line="242" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -106,8 +116,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="26" selection-end-column="9" />
+            <state relative-caret-position="255">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -118,8 +128,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SharedRegions/ServiceProvider.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="880">
-              <caret line="42" column="1" selection-start-line="6" selection-end-line="42" selection-end-column="1" />
+            <state relative-caret-position="450">
+              <caret line="30" selection-start-line="30" selection-end-line="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -130,7 +140,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Interfaces/SharedRegionInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
+            <state relative-caret-position="225">
               <caret line="15" column="54" selection-start-line="9" selection-start-column="4" selection-end-line="15" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -142,8 +152,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SharedRegions/ParkProxy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="814">
-              <caret line="40" column="62" selection-start-line="40" selection-start-column="62" selection-end-line="40" selection-end-column="62" />
+            <state relative-caret-position="600">
+              <caret line="40" column="51" selection-start-line="40" selection-start-column="51" selection-end-line="40" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -154,8 +164,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Communication/MessageType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="855">
-              <caret line="90" selection-start-line="90" selection-end-line="90" />
+            <state relative-caret-position="2535">
+              <caret line="169" selection-start-line="169" selection-end-line="169" />
             </state>
           </provider>
         </entry>
@@ -192,17 +202,18 @@
         <option value="$PROJECT_DIR$/src/Interfaces/MechanicPark.java" />
         <option value="$PROJECT_DIR$/src/SharedRegions/Park.java" />
         <option value="$PROJECT_DIR$/src/Interfaces/CustomerPark.java" />
-        <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/SharedRegions/ParkProxy.java" />
+        <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/Communication/MessageType.java" />
         <option value="$PROJECT_DIR$/src/Communication/Message.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="960" />
-    <option name="width" value="950" />
-    <option name="height" value="1080" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="264" />
+    <option name="y" value="21" />
+    <option name="width" value="1024" />
+    <option name="height" value="535" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -212,7 +223,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -253,16 +263,21 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555789098904" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555970280015" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RepairArea" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunDashboard">
@@ -276,6 +291,20 @@
         </RuleState>
       </list>
     </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="Park" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -294,17 +323,24 @@
       <workItem from="1555787477218" duration="1671000" />
       <workItem from="1555847868716" duration="1209000" />
       <workItem from="1555855310308" duration="23000" />
+      <workItem from="1555953651557" duration="68000" />
+      <workItem from="1555954850796" duration="14000" />
+      <workItem from="1555954882489" duration="24000" />
+      <workItem from="1555956983964" duration="3314000" />
+      <workItem from="1555972551290" duration="72000" />
+      <workItem from="1555972718849" duration="8000" />
+      <workItem from="1555972772324" duration="262000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6850000" />
+    <option name="totallyTimeSpent" value="10612000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="0" width="950" height="1080" extended-state="4" />
+    <frame x="-1" y="-4" width="1368" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.38606194" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15558912" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -313,7 +349,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32874617" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -323,6 +359,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -369,14 +406,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Interfaces/CustomerPark.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
+        <state relative-caret-position="75">
           <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Communication/ServerCom.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
+        <state relative-caret-position="210">
           <caret line="14" selection-start-line="14" selection-end-line="277" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -386,14 +423,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SharedRegions/Park.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1078">
+        <state relative-caret-position="735">
           <caret line="49" column="33" selection-start-line="49" selection-start-column="33" selection-end-line="49" selection-end-column="33" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Communication/ClientCom.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5302">
+        <state relative-caret-position="3630">
           <caret line="242" column="1" selection-start-line="4" selection-end-line="242" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -403,8 +440,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="26" selection-end-column="9" />
+        <state relative-caret-position="255">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -413,8 +450,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SharedRegions/ServiceProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="880">
-          <caret line="42" column="1" selection-start-line="6" selection-end-line="42" selection-end-column="1" />
+        <state relative-caret-position="450">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -423,7 +460,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Interfaces/SharedRegionInterface.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
+        <state relative-caret-position="225">
           <caret line="15" column="54" selection-start-line="9" selection-start-column="4" selection-end-line="15" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -433,8 +470,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SharedRegions/ParkProxy.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="814">
-          <caret line="40" column="62" selection-start-line="40" selection-start-column="62" selection-end-line="40" selection-end-column="62" />
+        <state relative-caret-position="600">
+          <caret line="40" column="51" selection-start-line="40" selection-start-column="51" selection-end-line="40" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -443,24 +480,96 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Communication/MessageType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="855">
-          <caret line="90" selection-start-line="90" selection-end-line="90" />
+        <state relative-caret-position="2535">
+          <caret line="169" selection-start-line="169" selection-end-line="169" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Communication/Message.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="767">
-          <caret line="293" lean-forward="true" selection-start-line="293" selection-end-line="293" />
+        <state relative-caret-position="301">
+          <caret line="521" selection-start-line="521" selection-end-line="521" />
         </state>
       </provider>
     </entry>
   </component>
   <component name="masterDetails">
     <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>jquery</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>Park</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
       <state key="ProjectJDKs.UI">
         <settings>
           <last-edited>1.8.0_191 (2)</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
           <splitter-proportions>
             <option name="proportions">
               <list>
