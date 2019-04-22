@@ -63,6 +63,25 @@ public class Message implements Serializable {
      * */
     private boolean custAtOW;
 
+    /**
+     * Flag car ready for repair
+     */
+    private boolean readyForRepair;
+
+    /**
+     * Maximum number of storage for car part
+     */
+     private int maxPartNumber;
+
+    /**
+     * Next task to be done
+     */
+     private int nextTask;
+
+     /**
+      * Number of parts that were restocked
+      */
+     private int numRestocked;
 
     /**
      * Message Constructor.
@@ -79,6 +98,10 @@ public class Message implements Serializable {
         availableFixedCars      = false;
         carId                   = -1;
         custAtOW                = false;
+        readyForRepair          = false;
+        maxPartNumber           = -1;
+        nextTask                = -1;
+        numRestocked            = -1;
     }
 
     /**
@@ -111,7 +134,6 @@ public class Message implements Serializable {
                 this.replacementCarKey = var1;
                 break;
 
-
             case GET_CUSTOMER_FROM_KEY_RES:
             case GET_REPLACEMENT_CAR_KEY:
             case EXIT_LOUNGE:
@@ -122,6 +144,8 @@ public class Message implements Serializable {
                 break;
 
             case CHECKS_PARTS_REQUEST_RES:
+            case CHECK_CAR_RES:
+            case GET_MAX_PART_STOCK:
                 this.carPart = var1;
                 break;
 
@@ -131,7 +155,26 @@ public class Message implements Serializable {
 
             case GET_CAR:
             case PARK_CAR:
+            case REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE_RES:
                 this.carId = var1;
+                break;
+
+            case GET_CAR_TO_REPAIR_KEY:
+            case REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE:
+            case FIND_NEXT_TASK:
+                this.mechanicId = var1;
+                break;
+
+            case GET_MAX_PART_STOCK_RES:
+                this.maxPartNumber = var1;
+                break;
+
+            case FIND_NEXT_TASK_RES:
+                this.nextTask = var1;
+                break;
+
+            case RESTOCK_PART_RES:
+                this.numRestocked = var1;
                 break;
 
             default:
@@ -150,8 +193,8 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-            this.done   = var1;
-            break;
+                this.done   = var1;
+                break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
@@ -159,6 +202,10 @@ public class Message implements Serializable {
 
             case IS_CUSTOMER_IN_OW_RES:
                 this.custAtOW = var1;
+                break;
+
+            case REPAIR_CAR_RES:
+                this.readyForRepair = var1;
                 break;
 
             default:
@@ -177,17 +224,32 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case REGISTER_STOCK_REFILL:
-            this.carPart        = var1;
-            this.numPart        = var2;
-            break;
+            case REFILL_CAR_PART_STOCK:
+            case RESTOCK_PART:
+                this.carPart        = var1;
+                this.numPart        = var2;
+                break;
+
             case READY_TO_DELIVER_KEY:
             case GIVE_MANAGER_CAR_KEY:
                 this.customerId     = var1;
                 this.customerKey    = var2;
                 break;
+                
             case RETURN_REPLACEMENT_CAR_KEY:
                 this.replacementCarKey  = var1;
                 this.customerId         = var2;
+                break;
+
+            case ALERT_MANAGER_REPAIR_DONE:
+                this.customerKey = var1;
+                this.mechanicId  = var2;
+                break;
+
+            case CHECK_CAR:
+            case CONCLUDE_CAR_REPAIR:
+                this.carId      = var1;
+                this.mechanicId = var2;
                 break;
 
             default:
@@ -207,9 +269,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-            this.customerId = var1;
-            this.payment    = var2;
-            break;
+              this.customerId = var1;
+              this.payment    = var2;
+              break;
 
             default:
                 System.out.println("message type not expected.");
@@ -217,6 +279,36 @@ public class Message implements Serializable {
                 break;
         }
 
+    }
+
+    /**
+     * Message constructor
+     * @param var1      - first integer variable
+     * @param var2      - second integer variable.
+     * @param var3      - third integer variable.
+     * */
+    public Message(MessageType msgType, int var1, int var2, int var3)
+    {
+        this(msgType);
+        switch (msgType)
+        {
+          case REQUEST_PART:
+            this.carPart    = var1;
+            this.numPart    = var2;
+            this.mechanicId = var3;
+            break;
+
+          case REPAIR_CAR:
+            this.carId      = var1;
+            this.carPart    = var2;
+            this.mechanicId = var3;
+            break;
+
+          default:
+              System.out.println("message type not expected.");
+              System.exit(1);
+              break;
+        }
     }
 
     /**
@@ -290,4 +382,28 @@ public class Message implements Serializable {
      * @return custAtOW flag
      * */
     public boolean isCustAtOW() { return custAtOW; }
+
+    /**
+     * Get readyForRepair flag
+     * @return readyForRepair flag
+     * */
+    public boolean isReadyForRepair() { return readyForRepair; }
+
+    /**
+     * Get maximum number of storage for car part
+     * @return maximum number of storage for part
+     */
+    public int getMaxPartNumber() { return maxPartNumber; }
+
+    /**
+     * Get next task to be done
+     * @return next task
+     */
+    public int getNextTask() { return nextTask; }
+
+    /**
+     * Get number of restocked parts
+     * @return number of parts that were restocked
+     */
+    public int getNumRestocked() { return numRestocked; }
 }

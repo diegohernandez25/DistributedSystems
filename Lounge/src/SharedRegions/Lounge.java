@@ -412,7 +412,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *      @param idType       - the id of the part to refill stock
      *      @param number       - the number of stock needed
      *      @param mechanicId   - the id of the mechanic
-     *      @return true - request done. false - request has already been made.
      * */
     public synchronized void requestPart(int idType, int number, int mechanicId)
     {   carPartsToRefill[idType] += number;

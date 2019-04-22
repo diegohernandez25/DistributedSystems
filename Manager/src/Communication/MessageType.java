@@ -85,6 +85,44 @@ public enum MessageType {
 
     IS_CUSTOMER_IN_OW,
 
-    IS_CUSTOMER_IN_OW_RES;
+    IS_CUSTOMER_IN_OW_RES,
+
+    /**
+    *   Repair Area
+    */
+    CHECK_CAR,
+
+    CHECK_CAR_RES,
+
+    REPAIR_CAR,
+
+    REPAIR_CAR_RES,
+
+    REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE,
+
+    REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE_RES,
+
+    CONCLUDE_CAR_REPAIR,
+
+    REFILL_CAR_PART_STOCK,
+
+    GET_MAX_PART_STOCK,
+
+    GET_MAX_PART_STOCK_RES,
+
+    FIND_NEXT_TASK,
+
+    FIND_NEXT_TASK_RES,
+
+    POST_JOB,
+
+    SEND_HOME,
+
+    /**
+     *  Supplier Site
+     */
+    RESTOCK_PART,
+
+    RESTOCK_PART_RES;
 
 }
