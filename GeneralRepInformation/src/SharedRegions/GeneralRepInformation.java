@@ -1,4 +1,4 @@
-package Locations;
+package SharedRegions;
 
 import java.io.*;
 import Interfaces.*;

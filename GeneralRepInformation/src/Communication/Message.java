@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
     /**
+     * Serial version of the class.
+     */
+    private static final long serialVersionUID = 220419L;
+
+    /**
      *  Type of the message.
      * */
     private MessageType type;
@@ -78,33 +83,30 @@ public class Message implements Serializable {
      */
     private int nextTask;
 
-     /**
-      * Number of parts that were restocked
-      */
+    /**
+     * Number of parts that were restocked
+     */
     private int numRestocked;
 
-     /**
-      * Current state
-      */
+    /**
+     * Current state
+     */
     private int state;
-
-     /**
-      * Type of vehicle.
-      * Values can be:
-      *   own car - customer ID.
-      *   replacement car - R# (where # is the number of the replacement car).
-      *   none - '-'.
-      */
+    /**
+     * Type of vehicle.
+     * Values can be:
+     *   own car - customer ID.
+     *   replacement car - R# (where # is the number of the replacement car).
+     *   none - '-'.
+     */
     private String vehicle;
-
-     /**
-      * Number to increment/decrement.
-      * Values can be:
-      *    1 - increment.
-      *   -1 - decrement.
-      */
+    /**
+     * Number to increment/decrement.
+     * Values can be:
+     *    1 - increment.
+     *   -1 - decrement.
+     */
     private int number;
-
     /**
      * Flag signaling if Manager has been adviced for missing part.
      * Values can be:
@@ -181,6 +183,7 @@ public class Message implements Serializable {
 
             case CHECKS_PARTS_REQUEST_RES:
             case CHECK_CAR_RES:
+            case REQUEST_NUMBER_PART:
             case GET_MAX_PART_STOCK:
             case REMOVE_NUM_PART_AVAILABLE:
                 this.carPart = var1;
@@ -193,6 +196,8 @@ public class Message implements Serializable {
             case GET_CAR:
             case PARK_CAR:
             case REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE_RES:
+            case POST_JOB:
+            case GET_CAR_RES:
                 this.carId = var1;
                 break;
 
@@ -220,7 +225,6 @@ public class Message implements Serializable {
 
             case SET_NUM_REPLACEMENT_PARKED:
             case SET_NUM_CARS_PARKED:
-            case SET_NUM_REPLACEMENT_PARKED:
                 this.number = var1;
                 break;
 
@@ -240,8 +244,8 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-                this.done   = var1;
-                break;
+            this.done   = var1;
+            break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
@@ -303,7 +307,6 @@ public class Message implements Serializable {
                 this.customerId = var1;
                 this.state      = var2;
                 break;
-
             case SET_STATE_MECHANIC:
                 this.mechanicId = var1;
                 this.state      = var2;
@@ -312,7 +315,6 @@ public class Message implements Serializable {
             case SET_NUM_CAR_WAITING_PART:
             case SET_NUM_BOUGHT_PART:
             case ADD_NUM_PART_AVAILABLE:
-            case SET_NUM_CAR_WAITING_PART:
                 this.carPart = var1;
                 this.number  = var2;
                 break;
@@ -334,9 +336,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-              this.customerId = var1;
-              this.payment    = var2;
-              break;
+            this.customerId = var1;
+            this.payment    = var2;
+            break;
 
             default:
                 System.out.println("message type not expected.");
@@ -357,22 +359,22 @@ public class Message implements Serializable {
         this(msgType);
         switch (msgType)
         {
-          case REQUEST_PART:
-            this.carPart    = var1;
-            this.numPart    = var2;
-            this.mechanicId = var3;
-            break;
+            case REQUEST_PART:
+                this.carPart    = var1;
+                this.numPart    = var2;
+                this.mechanicId = var3;
+                break;
 
-          case REPAIR_CAR:
-            this.carId      = var1;
-            this.carPart    = var2;
-            this.mechanicId = var3;
-            break;
+            case REPAIR_CAR:
+                this.carId      = var1;
+                this.carPart    = var2;
+                this.mechanicId = var3;
+                break;
 
-          default:
-              System.out.println("message type not expected.");
-              System.exit(1);
-              break;
+            default:
+                System.out.println("message type not expected.");
+                System.exit(1);
+                break;
         }
     }
 
@@ -386,19 +388,17 @@ public class Message implements Serializable {
         this(msgType);
         switch (msgType)
         {
-          case SET_FLAG_MISSING_PART:
-              this.carPart         = var1;
-              this.flagMissingPart = var2;
-              break;
-
-          case SET_CUSTOMER_VEHICLE:
-              this.customerId = var1;
-              this.vehicle    = var2;
-
-          default:
-              System.out.println("message type not expected.");
-              System.exit(1);
-              break;
+            case SET_FLAG_MISSING_PART:
+                this.carPart         = var1;
+                this.flagMissingPart = var2;
+                break;
+            case SET_CUSTOMER_VEHICLE:
+                this.customerId = var1;
+                this.vehicle    = var2;
+            default:
+                System.out.println("message type not expected.");
+                System.exit(1);
+                break;
         }
     }
 
@@ -502,23 +502,20 @@ public class Message implements Serializable {
      * Get current state
      * @return current state
      */
-     public int getState() { return state; }
-
-     /**
-      * Get type of vehicle
-      * @return type of vehicle
-      */
-     public String getVehicle() { return vehicle; }
-
-     /**
-      * Get number
-      * @return number
-      */
-     public int getNumber() { return number; }
-
-     /**
-      * Get flag signaling Manager adviced from missing part
-      * @return flag
-      */
-     public String getFlagMissingPart() { return flagMissingPart; }
+    public int getState() { return state; }
+    /**
+     * Get type of vehicle
+     * @return type of vehicle
+     */
+    public String getVehicle() { return vehicle; }
+    /**
+     * Get number
+     * @return number
+     */
+    public int getNumber() { return number; }
+    /**
+     * Get flag signaling Manager adviced from missing part
+     * @return flag
+     */
+    public String getFlagMissingPart() { return flagMissingPart; }
 }
