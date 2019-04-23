@@ -3,6 +3,7 @@ import SharedRegions.Park;
 import SharedRegions.ParkProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import GeneralRep.GeneralRepInformation;
 
 public class Main {
     private static final int PORT_NUM = Parameters.parkPort;
@@ -27,14 +28,19 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {
+        System.out.println("Starting...");
+
+        ServerCom sc, sci;
         ServiceProvider sp;
+
+        GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys);
+        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys, gri);
         ParkProxy parkProxy = new ParkProxy(park);
         sc = new ServerCom(PORT_NUM);
         sc.start();

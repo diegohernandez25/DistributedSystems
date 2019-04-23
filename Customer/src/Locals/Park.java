@@ -32,9 +32,9 @@ public class Park {
      *  Park Car.
      *  @param carId ID of the car.
      * */
-    public void parkCar(Integer carId)
+    public void parkCar(Integer carId, int id, boolean customerPark)
     {   ClientCom clientCom = Com.openChannel(server,port);
-        Message request = new Message(MessageType.PARK_CAR,carId);
+        Message request = new Message(MessageType.PARK_CAR, carId, id, customerPark);
         clientCom.writeObject(request);
         Message response = Com.expectMessageType(clientCom, MessageType.OK);
     }
@@ -44,9 +44,9 @@ public class Park {
      *  @param carId id of the car.
      *  @return id of the car
      * */
-    public Integer getCar(Integer carId)
+    public Integer getCar(Integer carId, int id, boolean customerGet)
     {   ClientCom clientCom = Com.openChannel(server,port);
-        Message request = new Message(MessageType.GET_CAR,carId);
+        Message request = new Message(MessageType.GET_CAR, carId, id, customerGet);
         clientCom.writeObject(request);
         Message response = Com.expectMessageType(clientCom, MessageType.GET_CAR_RES);
         return response.getCarId();

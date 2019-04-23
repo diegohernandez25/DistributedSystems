@@ -3,6 +3,7 @@ import SharedRegions.RepairArea;
 import SharedRegions.RepairAreaProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import GeneralRep.GeneralRepInformation;
 
 public class Main {
     private static final int PORT_NUM = Parameters.raPort;
@@ -37,11 +38,15 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   System.out.println("Starting...");
+    {
+        System.out.println("Starting...");
+
         ServerCom sc, sci;
         ServiceProvider sp;
 
-        RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts);
+        GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
+
+        RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, gri);
         RepairAreaProxy repairAreaProxy = new RepairAreaProxy(repairArea);
         sc = new ServerCom(PORT_NUM);
         sc.start();

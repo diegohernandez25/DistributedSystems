@@ -3,6 +3,7 @@ package SharedRegions;
 import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
+import GeneralRep.GeneralRepInformation;
 
 import java.util.Random;
 
@@ -17,6 +18,11 @@ public class RepairArea implements ManagerRA, MechanicRA {
                         WAITING_PARTS   = 2,
                         ON_REPAIR       = 3,
                         REPAIRED        = 4;
+
+    /**
+    * Initialize General Repository Information
+    */
+    private GeneralRepInformation gri;
 
     /**
      *      Cars waiting for parts
@@ -96,8 +102,9 @@ public class RepairArea implements ManagerRA, MechanicRA {
      * @param carParts array of number of carParts to be used. Index represents the ID of the car and value represents the number of parts available.
      * @param maxCarParts max stock possible for each car part. Index represents the ID of the part
      * */
-    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts)
+    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GeneralRepInformation gri)
     {
+        this.gri = gri;
         this.allDone = false;
         this.rangeCarPartTypes = rangeCarPartTypes;
         this.carParts = carParts;
@@ -175,7 +182,8 @@ public class RepairArea implements ManagerRA, MechanicRA {
         {
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
-            carParts[partId]--;                               // Log car part being needed
+            carParts[partId]--;
+            gri.removeNumPartAvailable(partId);
             System.out.println("part used to repait :"+partId);
             return true;
         }
@@ -230,6 +238,8 @@ public class RepairArea implements ManagerRA, MechanicRA {
                 {   res = tmp;
                     statusOfCars[tmp] = ON_REPAIR;
 
+                    gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);
+
                     System.out.println("Before:");
                     for(int i = 0;i<reserveCarPart.length;i++) {
                         System.out.println(i + ". " + reserveCarPart[i]);
@@ -265,7 +275,9 @@ public class RepairArea implements ManagerRA, MechanicRA {
         {
             System.exit(1);
         }
-        statusOfCars[idCar] = REPAIRED;                                         // Log additional car repaired
+        statusOfCars[idCar] = REPAIRED;
+        gri.setCustomerCarRepaired(idCar);
+        gri.setNumCarsRepaired();
     }
 
     /**
@@ -280,6 +292,7 @@ public class RepairArea implements ManagerRA, MechanicRA {
 
         carParts[idPart] += quantity;
         workToDo = true;
+        gri.addNumPartAvailable(idPart, quantity);
         notifyAll();        //notify sleeping mechanics
     }
 
@@ -373,6 +386,7 @@ public class RepairArea implements ManagerRA, MechanicRA {
      * */
     public synchronized void postJob(int carID)
     {   System.out.println("Posting job!");
+        gri.setNumPostJobs();
         carsNeedsCheck[carID] = true;
         workToDo = true;                        //notify sleeping mechanics
         notifyAll();

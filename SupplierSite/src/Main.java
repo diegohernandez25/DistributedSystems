@@ -3,6 +3,7 @@ import SharedRegions.SupplierSite;
 import SharedRegions.SupplierSiteProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import GeneralRep.GeneralRepInformation;
 
 public class Main {
     private static final int PORT_NUM = Parameters.ssPort;
@@ -22,10 +23,15 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {
+        System.out.println("Starting...");
+
+        ServerCom sc, sci;
         ServiceProvider sp;
 
-        SupplierSite supplierSite = new SupplierSite(numPartTypes);
+        GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
+
+        SupplierSite supplierSite = new SupplierSite(numPartTypes, gri);
         SupplierSiteProxy supplierSiteProxy = new SupplierSiteProxy(supplierSite);
         sc = new ServerCom(PORT_NUM);
         sc.start();

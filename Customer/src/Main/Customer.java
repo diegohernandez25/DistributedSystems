@@ -98,7 +98,7 @@ public class Customer extends Thread{
     {   int key = car;
         livingNormalLife();
         System.out.println(customerId +". Going to park car.");
-        park.parkCar(this.car);
+        park.parkCar(this.car, customerId, true);
         this.car = null;
         System.out.println(customerId +". Car Parked.");
         System.out.println(customerId +". Entering Customer queue.");
@@ -113,7 +113,7 @@ public class Customer extends Thread{
         {   System.out.println(customerId +". Customer wants rental key.");
             repKey = lounge.getReplacementCarKey(this.customerId);
             System.out.println(customerId +". Customer has rental key. Going to park");
-            repCar = park.getCar(repKey);
+            repCar = park.getCar(repKey, customerId, true);
             System.out.println(customerId +". Customer got car.");
         }
         else
@@ -125,7 +125,7 @@ public class Customer extends Thread{
         System.out.println(customerId +". Repair done getting back to the office.");
         if(repCar != -1)
         {   System.out.println(customerId +". Parking car");
-            park.parkCar(repCar);
+            park.parkCar(repCar, customerId, true);
             repCar = -1;
             System.out.println(customerId +". Car parked.");
         }
@@ -139,7 +139,7 @@ public class Customer extends Thread{
         System.out.println(customerId +". Paying for the service.");
         key = lounge.payForTheService(this.customerId);
         System.out.println(customerId +". Getting car back");
-        car = park.getCar(key);
+        car = park.getCar(key, customerId, true);
         System.out.println(customerId +"Got back car");
         System.out.println(customerId +"Operation finished!");
         //System.exit(1);

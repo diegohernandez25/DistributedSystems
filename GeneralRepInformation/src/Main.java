@@ -41,7 +41,10 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {
+        System.out.println("Starting...");
+
+        ServerCom sc, sci;
         ServiceProvider sp;
         GeneralRepInformation generalRepInformation = new GeneralRepInformation(numCustomers, numMechanics, numPartTypes, carParts, fileName);
         GeneralRepInformationProxy generalRepInformationProxy = new GeneralRepInformationProxy(generalRepInformation);

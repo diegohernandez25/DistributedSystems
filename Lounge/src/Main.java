@@ -3,11 +3,12 @@ import SharedRegions.Lounge;
 import SharedRegions.LoungeProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import GeneralRep.GeneralRepInformation;
 
 import java.net.SocketTimeoutException;
 
 public class Main {
-    private static final int PORT_NUM = Parameters.loungePort ;
+    private static final int PORT_NUM = Parameters.loungePort;
 
     /**
      * Service Termination flag;
@@ -38,14 +39,20 @@ public class Main {
      * Main function.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {
+        System.out.println("Starting...");
+
+        ServerCom sc, sci;
         ServiceProvider sp;
+
+        GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes);
+
+        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, gri);
         LoungeProxy loungeProxy = new LoungeProxy(lounge);
         sc = new ServerCom(PORT_NUM);
         sc.start();

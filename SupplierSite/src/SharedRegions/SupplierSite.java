@@ -1,8 +1,14 @@
 package SharedRegions;
 
 import Interfaces.*;
+import GeneralRep.GeneralRepInformation;
 
 public class SupplierSite<R> implements ManagerSS{
+
+    /**
+    * Initialize General Repository Information
+    */
+    private GeneralRepInformation gri;
 
     /**
      *      Stock
@@ -14,8 +20,9 @@ public class SupplierSite<R> implements ManagerSS{
      *  Instantiation of Supplier Site
      *  @param stockType number of total types of parts that are going to be available in stock
      * */
-    public SupplierSite(int stockType)
+    public SupplierSite(int stockType, GeneralRepInformation gri)
     {
+        this.gri = gri;
         this.stockType = stockType;
     }
 
@@ -31,6 +38,8 @@ public class SupplierSite<R> implements ManagerSS{
     {   String FUNCTION = "restockPart";
         if(idType<=stockType && idType>=0)
         {
+            gri.setNumBoughtPart(idType, number);
+            gri.setFlagMissingPart(idType, "F");
             return number;
         }
         return 0;

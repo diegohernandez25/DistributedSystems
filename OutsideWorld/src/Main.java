@@ -22,7 +22,10 @@ public class Main {
      * @param args  - arguments.
      * */
     public static void main(String[] args)
-    {   ServerCom sc, sci;
+    {
+        System.out.println("Starting...");
+
+        ServerCom sc, sci;
         ServiceProvider sp;
         OutsideWorld outsideWorld = new OutsideWorld(numCustomers);
         OutsideWorldProxy outsideWorldProxy = new OutsideWorldProxy(outsideWorld);

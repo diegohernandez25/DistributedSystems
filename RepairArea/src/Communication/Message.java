@@ -92,6 +92,7 @@ public class Message implements Serializable {
      * Current state
      */
     private int state;
+
     /**
      * Type of vehicle.
      * Values can be:
@@ -100,6 +101,7 @@ public class Message implements Serializable {
      *   none - '-'.
      */
     private String vehicle;
+
     /**
      * Number to increment/decrement.
      * Values can be:
@@ -107,6 +109,7 @@ public class Message implements Serializable {
      *   -1 - decrement.
      */
     private int number;
+
     /**
      * Flag signaling if Manager has been adviced for missing part.
      * Values can be:
@@ -114,6 +117,19 @@ public class Message implements Serializable {
      *   F - false.
      */
     private String flagMissingPart;
+
+    /**
+    * Auxiliary integer for id of either Customer or Mechanic, used in Park
+    */
+    private int id;
+
+    /**
+    * Flag checking if it was the Customer using the park.
+    * Values can be:
+    *   true  - it was the Customer who used the Park.
+    *   false - it was the Mechanic who used the Park.
+    */
+    private boolean flagCustomer;
 
     /**
      * Message Constructor.
@@ -138,6 +154,8 @@ public class Message implements Serializable {
         vehicle                 = "-";
         number                  = 0;
         flagMissingPart         = "F";
+        id                      = -1;
+        flagCustomer            = false;
     }
 
     /**
@@ -193,8 +211,6 @@ public class Message implements Serializable {
                 this.numPart = var1;
                 break;
 
-            case GET_CAR:
-            case PARK_CAR:
             case REPAIR_WAITING_CAR_WITH_PARTS_AVAILABLE_RES:
             case POST_JOB:
             case GET_CAR_RES:
@@ -244,8 +260,8 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-            this.done   = var1;
-            break;
+                this.done   = var1;
+                break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
@@ -307,6 +323,7 @@ public class Message implements Serializable {
                 this.customerId = var1;
                 this.state      = var2;
                 break;
+                
             case SET_STATE_MECHANIC:
                 this.mechanicId = var1;
                 this.state      = var2;
@@ -336,9 +353,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-            this.customerId = var1;
-            this.payment    = var2;
-            break;
+                this.customerId = var1;
+                this.payment    = var2;
+                break;
 
             default:
                 System.out.println("message type not expected.");
@@ -351,7 +368,7 @@ public class Message implements Serializable {
     /**
      * Message constructor
      * @param var1      - first integer variable
-     * @param var2      - second integer variable.
+     * @param var2      - second integer variable
      * @param var3      - third integer variable.
      * */
     public Message(MessageType msgType, int var1, int var2, int var3)
@@ -381,7 +398,7 @@ public class Message implements Serializable {
     /**
      * Message constructor
      * @param var1      - first integer variable
-     * @param var2      - second string flag.
+     * @param var2      - second string variable.
      * */
     public Message(MessageType msgType, int var1, String var2)
     {
@@ -395,6 +412,32 @@ public class Message implements Serializable {
             case SET_CUSTOMER_VEHICLE:
                 this.customerId = var1;
                 this.vehicle    = var2;
+                break;
+            default:
+                System.out.println("message type not expected.");
+                System.exit(1);
+                break;
+        }
+    }
+
+    /**
+     * Message constructor
+     * @param var1      - first integer variable
+     * @param var2      - second integer variable
+     * @param var3      - third boolean variable.
+     * */
+    public Message(MessageType msgType, int var1, int var2, boolean var3)
+    {
+        this(msgType);
+        switch (msgType)
+        {
+            case PARK_CAR:
+            case GET_CAR:
+                this.carId        = var1;
+                this.id           = var2;
+                this.flagCustomer = var3;
+                break;
+
             default:
                 System.out.println("message type not expected.");
                 System.exit(1);
@@ -503,19 +546,34 @@ public class Message implements Serializable {
      * @return current state
      */
     public int getState() { return state; }
+
     /**
      * Get type of vehicle
      * @return type of vehicle
      */
     public String getVehicle() { return vehicle; }
+
     /**
      * Get number
      * @return number
      */
     public int getNumber() { return number; }
+
     /**
      * Get flag signaling Manager adviced from missing part
      * @return flag
      */
     public String getFlagMissingPart() { return flagMissingPart; }
+
+    /**
+    * Get id of Customer or Mechanic
+    * @return id of entity
+    */
+    public int getId() { return id; }
+
+    /**
+    * Get flag signaling if it was the Customer using the Park
+    * @return flag
+    */
+    public boolean getFlagCustomer() { return flagCustomer; }
 }

@@ -74,7 +74,7 @@ public class Mechanic extends Thread {
                         repairArea.concludeCarRepair(idCurrentCar,mechanicId);
                         System.out.println("Repair concluded");
                         idCurrentKey = idCurrentCar;
-                        park.parkCar(idCurrentCar);
+                        park.parkCar(idCurrentCar, mechanicId, false);
                         System.out.println("Car parked");
                         lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
                         System.out.println("Alerting manager that car is repaired.");
@@ -90,7 +90,7 @@ public class Mechanic extends Thread {
                 case 2:
                     if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)
                     {   System.out.println("Going to repair a ne car.Going to park.");
-                        if((idCurrentCar = park.getCar(idCurrentKey)) == -1)
+                        if((idCurrentCar = park.getCar(idCurrentKey, mechanicId, false)) == -1)
                         {   System.out.println("This should not happen!");
                             System.exit(1);
                         }
@@ -107,7 +107,7 @@ public class Mechanic extends Thread {
                         System.out.println("Car fixed");
                         repairArea.concludeCarRepair(idCurrentCar, mechanicId);
                         System.out.println("Repair concluded");
-                        park.parkCar(idCurrentCar);
+                        park.parkCar(idCurrentCar, mechanicId, false);
                         System.out.println("Car parked");
                         lounge.alertManagerRepairDone(idCurrentCar,mechanicId);
                         System.out.println("Manager alerted about repair.");

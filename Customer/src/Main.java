@@ -2,7 +2,7 @@ import Locals.Lounge;
 import Locals.OutsideWorld;
 import Locals.Park;
 import Main.Parameters;
-import  Main.Customer;
+import Main.Customer;
 
 public class Main {
 

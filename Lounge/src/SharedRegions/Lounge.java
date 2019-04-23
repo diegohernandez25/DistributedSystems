@@ -3,6 +3,7 @@ package SharedRegions;
 import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
+import GeneralRep.GeneralRepInformation;
 
 public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
@@ -36,6 +37,11 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
             FIXING_THE_CAR = 1,
             CHECKING_STOCK = 2,
             ALERTING_MANAGER = 3;
+
+    /**
+    * Initialize General Repository Information
+    */
+    private GeneralRepInformation gri;
 
     /**
      *  Current state of Manager
@@ -165,8 +171,12 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @param replacementKeys - array with the replacement Keys.
      * @param numTypes - number of existing car types.
      * */
-    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes)
-    {   this.stateManager = READ_PAPER;
+    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GeneralRepInformation gri)
+    {
+        this.gri = gri;
+        gri.setNumReplacementParked(replacementKeys.length);
+
+        this.stateManager = READ_PAPER;
         this.numTypes = numTypes;
         this.stateCustomers = new int[numCustomers];
         this.customerCarKeys = new int[numCustomers];
@@ -219,12 +229,15 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @param payment - type of attendance. (true/false) Pay for repair/Request repair.
      * */
     public synchronized void enterCustomerQueue(int customerId, boolean payment)
-    {   if(payment)
+    {
+        gri.addCustomersQueue();
+        if(payment)
         {   try {   paymentQueue.write(customerId);}
             catch (MemException e) {  }
         }
         try
         {   stateCustomers[customerId] = WAITING_ATTENDENCE;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             customerQueue.write(customerId);
         } catch (MemException e) { System.exit(1);}
 
@@ -233,6 +246,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
             catch(InterruptedException e){ }
         }
         stateCustomers[customerId] = ATTENDED;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        gri.removeCustomersQueue();
     }
 
     /**
@@ -241,15 +256,20 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
     public synchronized int attendCustomer()
-    {   if (customerQueue.isEmpty())
+    {
+        gri.setStateManager(CALL_CUSTOMER);
+        if (customerQueue.isEmpty())
         {   if(!paymentQueue.isEmpty())
             {   System.exit(1);
             }
+            gri.setStateManager(READ_PAPER);
             return -1; //-1 : No waiting customers.
         }
         try
         {   int customerId = customerQueue.read();
+            gri.setStateManager(ATTEND_CUSTOMER);
             stateCustomers[customerId] = ATTENDING;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             notifyAll();
             if(paymentQueue.numElements()!=0 && paymentQueue.peek() == customerId)
             {   if(paymentQueue.read()!=customerId)
@@ -285,11 +305,13 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
                 }
                 carKeysToRepairQueue.write(toRepairCarKey);
                 customerCarKeys[customerId] = -1;
+                gri.setStateManager(READ_PAPER);
                 return toRepairCarKey;
             }
 
         }
         catch (MemException e) {  }
+        gri.setStateManager(READ_PAPER);
         return -2; // -2 : Customer operation done successful.
     }
 
@@ -299,12 +321,18 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @return the key of the replacement car.
      * */
     public synchronized int getReplacementCarKey(int customerId)
-    {   if(!replacementCarKeys.isEmpty())
+    {
+        gri.setCustomerNeedsReplacement(customerId);
+        gri.addCustomersReplacementQueue();
+
+        if(!replacementCarKeys.isEmpty())
         {   try
             {   int tmp = replacementCarKeys.read();
                 if(tmp - headReplacementKeys < 0) { System.exit(1); }
                 usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
                 stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+                gri.setStateCustomer(customerId, stateCustomers[customerId]);
+                gri.removeCustomersReplacementQueue();
                 return tmp;
             }
             catch (MemException e)
@@ -313,6 +341,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
         }
         try
         {   stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
@@ -323,6 +352,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
             catch (InterruptedException e) { }
         }
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        gri.removeCustomersReplacementQueue();
         try
         {   int tmp = replacementCarKeys.read();
             if(tmp - headReplacementKeys < 0) {System.exit(1); }
@@ -350,6 +381,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
             if(!waitingReplacementKey.isEmpty())
             {   int waitingCustomerId = waitingReplacementKey.read();
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
+                gri.setStateCustomer(customerId, stateCustomers[customerId]);
             }
             notifyAll();
         } catch (MemException e) { System.exit(1); }
@@ -358,7 +390,10 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * Exit Lounge
      * @param customerId - Id of the customer who will exit the lounge
      * */
-    public synchronized void exitLounge(int customerId) { stateCustomers[customerId] = ATTENDED_WO_SUBCAR; }
+    public synchronized void exitLounge(int customerId) {
+        stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+    }
 
     /**
      *  Checks if Customer car keys are empty
@@ -399,6 +434,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     {   if(isCustomerCarKeysEmpty()) { return -1; }
         try
         {   stateMechanics[mechanicId] = FIXING_THE_CAR;
+            gri.setStateMechanic(mechanicId, stateMechanics[mechanicId]);
             int tmpKey = carKeysToRepairQueue.read();
             return tmpKey;
         }
@@ -414,7 +450,10 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *      @param mechanicId   - the id of the mechanic
      * */
     public synchronized void requestPart(int idType, int number, int mechanicId)
-    {   carPartsToRefill[idType] += number;
+    {
+        gri.setFlagMissingPart(idType, "T");
+        gri.setNumCarWaitingPart(idType, 1);
+        carPartsToRefill[idType] += number;
     }
 
     /**
@@ -423,18 +462,23 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      *  @param numberParts number of Car Parts being refilled
      * */
     public synchronized void registerStockRefill(int idType, int numberParts)
-    {   String FUNCTION = "registerStockRefill";
+    {
+        gri.setStateManager(FILL_STOCK);
         if(carPartsToRefill[idType] != 0)
         {
             if(carPartsToRefill[idType] == numberParts) {
                 carPartsToRefill[idType] = 0;
+                gri.setStateManager(READ_PAPER);
             }
             else
             {
                 carPartsToRefill[idType] -= numberParts;
+                gri.setStateManager(READ_PAPER);
             }
             //return true;
         }
+
+        gri.setStateManager(READ_PAPER);
         //return false;
     }
 
@@ -457,7 +501,9 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @param mechanicId    - the id of the mechanic.
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
-    {   if(!customerFixedCarKeys.isEmpty())
+    {
+        gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
+        if(!customerFixedCarKeys.isEmpty())
         {   if(customerFixedCarKeys.containsValue(idKey))
                 System.exit(1);
         }
