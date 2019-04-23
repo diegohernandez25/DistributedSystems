@@ -7,11 +7,11 @@ import Locals.RepairArea;
 public class Main {
 
     public static void main(String[] args)
-    {   Lounge lounge = new Lounge("localhost",22460);
-        Park park = new Park("localhost",22461);
-        RepairArea repairArea = new RepairArea("localhost",22463);
+    {   Lounge lounge = new Lounge(Parameters.loungeHost, Parameters.loungePort);
+        Park park = new Park(Parameters.parkHost, Parameters.parkPort);
+        RepairArea repairArea = new RepairArea(Parameters.raHost, Parameters.raPort);
 
-        int NUM_MECHANICS = 2;
+        int NUM_MECHANICS = Parameters.numMechanics;
 
         Mechanic[] mechanic = new Mechanic[NUM_MECHANICS];
         for(int i = 0; i<NUM_MECHANICS; i++)

@@ -1,10 +1,12 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.SupplierSite;
 import SharedRegions.SupplierSiteProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 22464;  //TODO: Replace by port number.
+    private static final int PORT_NUM = Parameters.ssPort;
 
     /**
      * Service Termination flag;
@@ -14,7 +16,7 @@ public class Main {
     /**
      * Number of car parts.
      * */
-    public static final int numPartTypes = 3;
+    public static final int numPartTypes = Parameters.numCarTypes;
 
     /**
      * Main

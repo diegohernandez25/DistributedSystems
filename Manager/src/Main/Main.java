@@ -8,10 +8,10 @@ import Locals.SupplierSite;
 public class Main {
 
     public static void main(String[] args)
-    {   Lounge lounge = new Lounge("localhost",22460);
-        OutsideWorld outsideWorld = new OutsideWorld("localhost", 22462);
-        RepairArea repairArea = new RepairArea("localhost",22463);
-        SupplierSite supplierSite = new SupplierSite("localhost",22464);
+    {   Lounge lounge = new Lounge(Parameters.loungeHost, Parameters.loungePort);
+        OutsideWorld outsideWorld = new OutsideWorld(Parameters.owHost, Parameters.owPort);
+        RepairArea repairArea = new RepairArea(Parameters.raHost, Parameters.raPort);
+        SupplierSite supplierSite = new SupplierSite(Parameters.ssHost, Parameters.ssPort);
         Manager manager = new Manager(0,lounge,supplierSite,
                 outsideWorld,repairArea);
         manager.start();

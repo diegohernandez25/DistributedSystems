@@ -1,10 +1,12 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.RepairArea;
 import SharedRegions.RepairAreaProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 22463;  //TODO: Replace by port number.
+    private static final int PORT_NUM = Parameters.raPort;
 
     /**
      * Service Termination flag;
@@ -14,22 +16,22 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.numCustomers;
 
     /**
      * Number of car parts.
      * */
-    public static final int numPartTypes = 3;
+    public static final int numPartTypes = Parameters.numCarTypes;
 
     /**
      * Car parts
      */
-    public static final int[] carParts = {0, 0, 0};
+    public static final int[] carParts = Parameters.carParts;
 
     /**
      * Maximum number of storage for each car part
      */
-    public static final int[] maxCarParts = {1, 1, 1};
+    public static final int[] maxCarParts = Parameters.maxCarParts;
 
     /**
      * Main

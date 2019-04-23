@@ -1,10 +1,12 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.OutsideWorld;
 import SharedRegions.OutsideWorldProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 22462;  //TODO: Replace by port number.
+    private static final int PORT_NUM = Parameters.owPort;
 
     /**
      * Service Termination flag;
@@ -14,7 +16,7 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.numCustomers;
 
     /**
      * Main

@@ -2,30 +2,119 @@
 
 echo -e "Starting deployment..."
 
-echo -e "\nChoose how you want to define the parameters"
+echo -e "\nChoose local or remote deployment"
 PS3="Choice: "
-options=("Parameters file" "Interactive" "Default values")
+options=("Local deployment" "Remote deployment")
 
-select op in "${options[@]}"
+select opt in "${options[@]}"
 do
-    case $op in
-        "Parameters file")
+    case $opt in
+        "Local deployment")
+            echo -e "\nChoose how you want to define the parameters"
+            PS3="Choice: "
+            options=("Parameters file" "Interactive" "Default values")
+
+            select op in "${options[@]}"
+            do
+                case $op in
+                    "Parameters file")
+                        #TODO
+                        break
+                        ;;
+                        
+                    "Interactive")
+                        #TODO
+                        break
+                        ;;
+                        
+                    "Default values")
+                        echo -e "\nThe default values are: "
+                        # TODO
+                        echo -e "\nDo you still want to continue?"
+                        PS3="Choice: "
+                        options=("Yes" "No")
+                        
+                        select op in "${options[@]}"
+                        do
+                            case $op in
+                                "Yes")
+                                    #TODO
+                                    break
+                                    ;;
+                                
+                                "No")
+                                    break
+                                    ;;
+                            esac
+                        done
+                        
+                        break
+                        ;;
+                        
+                    *)
+                        echo "Invalid option $REPLY"
+                        ;;
+                esac
+            done
             break
             ;;
+        
+        "Remote deployment")
+            echo -e "\nChoose how you want to define the parameters"
+            PS3="Choice: "
+            options=("Parameters file" "Interactive" "Default values")
+
+            select op in "${options[@]}"
+            do
+                case $op in
+                    "Parameters file")
+                        #TODO
+                        break
+                        ;;
+                        
+                    "Interactive")
+                        #TODO
+                        break
+                        ;;
+                        
+                    "Default values")
+                        echo -e "\nThe default values are: "
+                        #TODO
+                        echo -e "\nDo you still want to continue?"
+                        PS3="Choice: "
+                        options=("Yes" "No")
+                        
+                        select op in "${options[@]}"
+                        do
+                            case $op in
+                                "Yes")
+                                    #TODO
+                                    break
+                                    ;;
+                                
+                                "No")
+                                    break
+                                    ;;
+                            esac
+                        done
+                        
+                        break
+                        ;;
+                        
+                    *)
+                        echo "Invalid option $REPLY"
+                        ;;
+                esac
+            done
             
-        "Interactive")
-            break
-            ;;
-            
-        "Default values")
-            echo -e "\nThe default values are: "
             break
             ;;
             
         *)
             echo "Invalid option $REPLY"
             ;;
-    esac
+            
+    esac    
 done
 
 #echo -e "\n${bold}* Copiar parâmetros de simulação *${normal}"

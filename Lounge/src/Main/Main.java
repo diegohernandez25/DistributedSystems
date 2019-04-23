@@ -1,3 +1,5 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.Lounge;
 import SharedRegions.LoungeProxy;
@@ -6,7 +8,7 @@ import SharedRegions.ServiceProvider;
 import java.net.SocketTimeoutException;
 
 public class Main {
-    private static final int PORT_NUM = 22460 ;
+    private static final int PORT_NUM = Parameters.loungePort ;
 
     /**
      * Service Termination flag;
@@ -16,22 +18,22 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.numCustomers;
 
     /**
      * Number of mechanics
      * */
-    public static final int numMechanics = 2;
+    public static final int numMechanics = Parameters.numMechanics;
 
     /**
      * Number of replacement cars
      * */
-    public static final int numReplacementCars = 3;
+    public static final int numReplacementCars = Parameters.numReplacementCars;
 
     /**
      * Number of car part types.
      * */
-    public static final int numCarTypes = 3;
+    public static final int numCarTypes = Parameters.numCarTypes;
 
     /**
      * Main function.

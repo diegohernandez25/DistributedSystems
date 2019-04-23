@@ -7,10 +7,10 @@ import Locals.Park;
 public class Main {
 
     public static void main(String[] args)
-    {   int NUM_CUSTOMERS = 30;
-        Park park = new Park("localhost",22461);
-        OutsideWorld outsideWorld = new OutsideWorld("localhost",22462);
-        Lounge lounge = new Lounge("localhost",22460);
+    {   int NUM_CUSTOMERS = Parameters.numCustomers;
+        Park park = new Park(Parameters.parkHost, Parameters.parkPort);
+        OutsideWorld outsideWorld = new OutsideWorld(Parameters.owHost,Parameters.owPort);
+        Lounge lounge = new Lounge(Parameters.loungeHost,Parameters.loungePort);
 
         Customer[] customer = new Customer[NUM_CUSTOMERS];
         for(int i =0; i <NUM_CUSTOMERS; i++)

@@ -1,10 +1,12 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.Park;
 import SharedRegions.ParkProxy;
 import SharedRegions.ServiceProvider;
 
 public class Main {
-    private static final int PORT_NUM = 22461;
+    private static final int PORT_NUM = Parameters.parkPort;
 
     /**
      * Service Termination flag;
@@ -14,12 +16,12 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.numCustomers;
 
     /**
      * Number of replacement cars.
      * */
-    public static final int numReplacementCars = 3;
+    public static final int numReplacementCars = Parameters.numReplacementCars;
 
     /**
      * Main

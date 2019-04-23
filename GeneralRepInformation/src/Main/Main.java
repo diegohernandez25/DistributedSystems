@@ -1,3 +1,5 @@
+package Main;
+
 import Communication.ServerCom;
 import SharedRegions.GeneralRepInformation;
 import SharedRegions.GeneralRepInformationProxy;
