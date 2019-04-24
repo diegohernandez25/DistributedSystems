@@ -21,8 +21,8 @@ public class ServiceProvider extends Thread{
 
     /**
      * Service Provider constructor.
-     * @param sc            - object of class type ServerComm
-     * @param sharedRegion  - object of class with implementation SharedRegionInterface
+     * @param sc             object of class type ServerComm
+     * @param sharedRegion   object of class with implementation SharedRegionInterface
      * */
     public ServiceProvider(ServerCom sc, SharedRegionInterface sharedRegion)
     {   this.sc             = sc;
@@ -36,7 +36,6 @@ public class ServiceProvider extends Thread{
     public void run() {
         Message rcvMsg = (Message) sc.readObject();                             //Receive message.
         Message sndMsg = sharedRegion.processMessage(rcvMsg, sc);               //Creates response message.
-        System.out.println("Repair Area Writing message");
         sc.writeObject(sndMsg);                                                 //Send message to source.
         sc.close();                                                             //Closes channel.
     }

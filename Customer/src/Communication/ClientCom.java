@@ -1,5 +1,6 @@
 package Communication;
 
+
 import java.io.*;
 import java.net.*;
 
@@ -13,7 +14,6 @@ public class ClientCom
 {
     /**
      *  Socket de comunicação
-     *    @serialField commSocket
      */
 
     private Socket commSocket = null;

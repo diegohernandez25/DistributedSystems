@@ -6,13 +6,10 @@ import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
+import java.net.SocketTimeoutException;
+
 public class Main {
     private static final int PORT_NUM = Parameters.parkPort;
-
-    /**
-     * Service Termination flag;
-     * */
-    public static boolean serviceEnd = false;
 
     /**
      * Number of customers
@@ -26,7 +23,7 @@ public class Main {
 
     /**
      * Main
-     * @param args  - arguments.
+     * @param args  arguments.
      * */
     public static void main(String[] args)
     {
@@ -45,10 +42,14 @@ public class Main {
         ParkProxy parkProxy = new ParkProxy(park);
         sc = new ServerCom(PORT_NUM);
         sc.start();
-        while(!serviceEnd)
-        {   sci = sc.accept();
-            sp = new ServiceProvider(sci,parkProxy);
-            sp.start();
+        while(!park.finish)
+        {
+            try {
+                sci = sc.accept();
+                sp = new ServiceProvider(sci,parkProxy);
+                sp.start();
+            } catch (SocketTimeoutException e) {}
         }
+        System.out.println("Goodbye!");
     }
 }

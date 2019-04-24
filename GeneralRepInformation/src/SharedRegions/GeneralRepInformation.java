@@ -145,6 +145,11 @@ public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
     private int[] numBoughtPart;
 
     /**
+     * Finish flag
+     * */
+    public volatile boolean finish;
+
+    /**
      *
      *  Instantiation of GeneralRepInformation.
      *
@@ -176,6 +181,8 @@ public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
         this.numCustomers = numCustomers;
         this.numMechanics = numMechanics;
         this.numParts = numParts;
+
+        this.finish = false;
 
         // initialize state of entities
         this.stateManager = 0;
@@ -305,15 +312,6 @@ public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
         this.print();
     }
 
-//    /**
-//     *  Set the number of Customers in queue. It's the length of the queue
-//     *  @param num the number of Customers in queue
-//     * */
-//    public synchronized void setNumCustomersQueue(int num)
-//    {
-//        this.numCustomersQueue = num;
-//    }
-
     /**
      *  Adds a Customer to the queue
      * */
@@ -332,14 +330,6 @@ public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
         this.print();
     }
 
-//    /**
-//     *  Set the number of Customers waiting in queue for a replacement car. It's the length of the queue
-//     *  @param num the number of Customers in queue
-//     * */
-//    public synchronized void setNumCustomersReplacementQueue(int num)
-//    {
-//        this.numCustomersReplacementQueue = num;
-//    }
 
     /**
      *  Adds a Customer to the replacement car queue
@@ -451,6 +441,12 @@ public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
         this.print();
     }
 
+    /**
+     * Terminates General Repository Information Server
+     * */
+    public synchronized void finish()
+    {   this.finish = true;
+    }
     /**
      *  Prints values of Logger on console, and writes it in a file specified beforehand
      * */

@@ -13,34 +13,26 @@ public class Manager extends Thread
     /**
      *  Manager identification
      *
-     *      @serialField managerId
-     *
      * */
     private int managerId;
 
     /**
      *  Lounge
-     *
-     *      @serialField lounge
      * */
     private ManagerLounge lounge;
 
     /**
      *  SupplierSite
-     *
-     *      @serialField supplierSite
      * */
     private ManagerSS supplierSite;
 
     /**
      * Repair Area
-     * @serialField repairArea;
      * */
     private ManagerRA repairArea;
 
     /**
      * Outside World
-     * @serialField outsideWorld;
      * */
     private ManagerOW outsideWorld;
 

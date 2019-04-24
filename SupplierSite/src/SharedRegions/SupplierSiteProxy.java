@@ -23,8 +23,8 @@ public class SupplierSiteProxy implements SharedRegionInterface {
 
   /**
    * Method from the SharedRegionInterface. It is used to receive, process incoming messages and respond to them.
-   * @param msg   - The received message.
-   * @param sc    - object ServerCom to receive and send message to the source of msg.
+   * @param msg   The received message.
+   * @param sc    object ServerCom to receive and send message to the source of msg.
    * @return The reply of the correspondent message.
    * */
   @Override
@@ -33,11 +33,15 @@ public class SupplierSiteProxy implements SharedRegionInterface {
       int resInt;
 
       switch (msg.getType())
-      {
-        case RESTOCK_PART:
-          resInt = this.supplierSite.restockPart(msg.getCarPart(), msg.getNumPart());
-          response = new Message(MessageType.RESTOCK_PART_RES, resInt);
-          break;
+      {   case RESTOCK_PART:
+            resInt = this.supplierSite.restockPart(msg.getCarPart(), msg.getNumPart());
+            response = new Message(MessageType.RESTOCK_PART_RES, resInt);
+            break;
+
+          case FINISH:
+              this.supplierSite.finish();
+              response = new Message(MessageType.OK);
+              break;
 
         default:
           System.out.println("message not expected.");

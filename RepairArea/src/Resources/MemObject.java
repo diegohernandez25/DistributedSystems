@@ -54,5 +54,9 @@ public abstract class MemObject<R>
 
     protected abstract R read () throws MemException;
 
+    /**
+     *  Get memory size.
+     * @return memory size.
+     * */
     public int size(){ return mem.length; }
 }

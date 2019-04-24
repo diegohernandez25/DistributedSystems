@@ -6,8 +6,8 @@ package Interfaces;
 public interface ManagerRA {
     /**
      *      Refill car Part stock
-     *      @param idPart   - ID of car part.
-     *      @param quantity - number of car parts to refill
+     *      @param idPart   ID of car part.
+     *      @param quantity number of car parts to refill
      * */
     void refillCarPartStock(int idPart, int quantity);
 

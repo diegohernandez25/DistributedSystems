@@ -1,19 +1,19 @@
 package Communication;
 
+
 import java.io.*;
 import java.net.*;
 
 /**
-*   Este tipo de dados implementa o canal de comunicação, lado do cliente, para uma comunicação baseada em passagem de
-*   mensagens sobre sockets usando o protocolo TCP.
-*   A transferência de dados é baseada em objectos.
-*/
+ *   Este tipo de dados implementa o canal de comunicação, lado do cliente, para uma comunicação baseada em passagem de
+ *   mensagens sobre sockets usando o protocolo TCP.
+ *   A transferência de dados é baseada em objectos.
+ */
 
 public class ClientCom
 {
     /**
      *  Socket de comunicação
-     *    @serialField commSocket
      */
 
     private Socket commSocket = null;

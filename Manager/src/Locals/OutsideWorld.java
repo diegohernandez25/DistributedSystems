@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.ManagerOW;
@@ -21,8 +22,8 @@ public class OutsideWorld implements ManagerOW {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public OutsideWorld(String server, int port)
     {   this.server = server;
@@ -31,7 +32,7 @@ public class OutsideWorld implements ManagerOW {
 
     /**
      *  Managers alerts customer that car is fixed and it can be retrieved;
-     *  @param customerId - ID of the customer to alert .
+     *  @param customerId ID of the customer to alert .
      * */
     public void alertCustomer(Integer customerId)
     {   ClientCom clientCom = Com.openChannel(server,port);

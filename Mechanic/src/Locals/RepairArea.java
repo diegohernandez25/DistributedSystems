@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.MechanicRA;
@@ -21,8 +22,8 @@ public class RepairArea implements MechanicRA {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public RepairArea(String server, int port)
     {
@@ -33,8 +34,8 @@ public class RepairArea implements MechanicRA {
     /**
      *      Checks the needed parts for the car to repair
      *
-     *      @param idCar    - id of the car to check
-     *      @param mechanicId - id of the mechanic doing the task
+     *      @param idCar    id of the car to check
+     *      @param mechanicId id of the mechanic doing the task
      *
      *      @return the id of the part needed for repair
      * */
@@ -50,9 +51,9 @@ public class RepairArea implements MechanicRA {
     /**
      *      Checks availability of car parts and if available repairs the car
      *
-     *      @param carId    - The Id of car to repair.
-     *      @param partId   - The id of the car part needed for the repair.
-     *      @param mechanicId - id of the mechanic doing the task
+     *      @param carId    The Id of car to repair.
+     *      @param partId   The id of the car part needed for the repair.
+     *      @param mechanicId id of the mechanic doing the task
      *
      *      @return true ready for repair. False otherwise
      * */
@@ -68,7 +69,7 @@ public class RepairArea implements MechanicRA {
     /**
      *      Checks which of the waiting cars are ready for repair
      *
-     *      @param mechanicId - id of the mechanic doing the task
+     *      @param mechanicId id of the mechanic doing the task
      *
      *      @return id of the car ready for repair.
      * */
@@ -83,8 +84,8 @@ public class RepairArea implements MechanicRA {
     /**
      *      Conclude repair of the car.
      *
-     *      @param idCar    - Id of the car.
-     *      @param mechanicId - id of the mechanic doing the task
+     *      @param idCar    Id of the car.
+     *      @param mechanicId id of the mechanic doing the task
      * */
     public void concludeCarRepair(int idCar, int mechanicId) {
       ClientCom clientCom = Com.openChannel(server,port);
@@ -95,7 +96,7 @@ public class RepairArea implements MechanicRA {
 
     /**
      * Get maximum number of a specific part that can be stored on the repairArea
-     * @param partId    - Id of the car part.
+     * @param partId    Id of the car part.
      * @return the maximum number of storage for the part
      * */
     public int getMaxPartStock(int partId)
@@ -109,12 +110,11 @@ public class RepairArea implements MechanicRA {
 
     /**
      *  Mechanic checks what has to do next
-     *  @param mechanicId - id of the mechanic doing the task
+     *  @param mechanicId id of the mechanic doing the task
      *  @return the task that has to be done
      * */
     public int findNextTask(int mechanicId)
-    {   System.out.println("Finding next task");
-      ClientCom clientCom = Com.openChannel(server,port);
+    { ClientCom clientCom = Com.openChannel(server,port);
       Message request = new Message(MessageType.FIND_NEXT_TASK, mechanicId);
       clientCom.writeObject(request);
       Message response = Com.expectMessageType(clientCom, MessageType.FIND_NEXT_TASK_RES);

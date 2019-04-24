@@ -70,4 +70,9 @@ public interface GriLounge {
      *  @param flag the flag signaling if Manager has been adviced (T/F)
      * */
     void setFlagMissingPart(int part, String flag);
+
+    /**
+     * Terminates General Repository Information Server
+     * */
+    void finish();
 }

@@ -4,27 +4,32 @@ import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
 
-public class OutsideWorld implements ManagerOW, CustomerOW {
+public class OutsideWorld implements ManagerOW, CustomerOW, LoungeOW {
 
     /**
      *  Array with the id of the users which are waiting for the car to be repaired.
-     *  @serialField waitingForRepair.
      * */
     private volatile boolean[] waitingForRepair;
 
     /**
      * FIFO of all customers who haven't been arrived yet to the outside world (mainly because it waits for
      * a replacement car key).
-     * @serialField customerNotYetAtOutsideWorld.
      * */
     private volatile MemFIFO<Integer> customersNotYetAtOutsideWorld;
 
+
+    /**
+     * Finish flag
+     * */
+    public volatile boolean finish;
+
     /**
      * Instantiation of the Outside World
-     * @param numClients - Number of clients
+     * @param numClients Number of clients
      * */
     public OutsideWorld(int numClients){
         waitingForRepair = new boolean[numClients];
+        this.finish =false;
         for(int i = 0; i < numClients; i++) { waitingForRepair[i] = false;}
         try {
             customersNotYetAtOutsideWorld = new MemFIFO<>(new Integer[numClients]);
@@ -35,7 +40,7 @@ public class OutsideWorld implements ManagerOW, CustomerOW {
 
     /**
      *  Customer waits until the manager alerts him/her about the end of the service.
-     *  @param customerId - ID of the waiting customer.
+     *  @param customerId ID of the waiting customer.
      * */
     public synchronized void waitForRepair(Integer customerId)
     {   waitingForRepair[customerId] = true;
@@ -48,7 +53,7 @@ public class OutsideWorld implements ManagerOW, CustomerOW {
 
     /**
      *  Managers alerts customer that car is fixed and it can be retrieved;
-     *  @param customerId - ID of the customer to alert .
+     *  @param customerId ID of the customer to alert .
      * */
     public synchronized void alertCustomer(Integer customerId)
     {   if(!waitingForRepair[customerId]) //if customer not yet on the outside world
@@ -89,4 +94,13 @@ public class OutsideWorld implements ManagerOW, CustomerOW {
     public synchronized boolean customersNotYetAtOutsideWorldisEmpty()
     {   return customersNotYetAtOutsideWorld.isEmpty();
     }
+
+    /**
+     * Terminates Outside World Information Server
+     * */
+    public synchronized void finish()
+    {   this.finish = true;
+    }
+
+
 }

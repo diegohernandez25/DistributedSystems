@@ -1,7 +1,10 @@
 package Communication;
 
 import java.io.Serializable;
-
+/**
+ * Message class to create message format for the communication between entities and servers (machines).
+ * Class is serializable.
+ * */
 public class Message implements Serializable {
     /**
      * Serial version of the class.
@@ -119,16 +122,16 @@ public class Message implements Serializable {
     private String flagMissingPart;
 
     /**
-    * Auxiliary integer for id of either Customer or Mechanic, used in Park
-    */
+     * Auxiliary integer for id of either Customer or Mechanic, used in Park
+     */
     private int id;
 
     /**
-    * Flag checking if it was the Customer using the park.
-    * Values can be:
-    *   true  - it was the Customer who used the Park.
-    *   false - it was the Mechanic who used the Park.
-    */
+     * Flag checking if it was the Customer using the park.
+     * Values can be:
+     *   true  - it was the Customer who used the Park.
+     *   false - it was the Mechanic who used the Park.
+     */
     private boolean flagCustomer;
 
     /**
@@ -260,8 +263,8 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ALL_DONE_RES:
-                this.done   = var1;
-                break;
+            this.done   = var1;
+            break;
 
             case ARE_CARS_FIXED_RES:
                 this.availableFixedCars = var1;
@@ -284,6 +287,7 @@ public class Message implements Serializable {
 
     /**
      * Message constructor
+     * @param msgType   - type of the message.
      * @param var1      - first integer variable
      * @param var2      - second integer variable.
      * */
@@ -323,7 +327,7 @@ public class Message implements Serializable {
                 this.customerId = var1;
                 this.state      = var2;
                 break;
-                
+
             case SET_STATE_MECHANIC:
                 this.mechanicId = var1;
                 this.state      = var2;
@@ -353,9 +357,9 @@ public class Message implements Serializable {
     {   this(msgType);
         switch (msgType)
         {   case ENTER_CUSTOMER_QUEUE:
-                this.customerId = var1;
-                this.payment    = var2;
-                break;
+            this.customerId = var1;
+            this.payment    = var2;
+            break;
 
             default:
                 System.out.println("message type not expected.");
@@ -367,6 +371,7 @@ public class Message implements Serializable {
 
     /**
      * Message constructor
+     * @param msgType   - type of the message.
      * @param var1      - first integer variable
      * @param var2      - second integer variable
      * @param var3      - third integer variable.
@@ -397,6 +402,7 @@ public class Message implements Serializable {
 
     /**
      * Message constructor
+     * @param msgType   - type of the message.
      * @param var1      - first integer variable
      * @param var2      - second string variable.
      * */
@@ -422,6 +428,7 @@ public class Message implements Serializable {
 
     /**
      * Message constructor
+     * @param msgType   - type of the message.
      * @param var1      - first integer variable
      * @param var2      - second integer variable
      * @param var3      - third boolean variable.
@@ -566,14 +573,14 @@ public class Message implements Serializable {
     public String getFlagMissingPart() { return flagMissingPart; }
 
     /**
-    * Get id of Customer or Mechanic
-    * @return id of entity
-    */
+     * Get id of Customer or Mechanic
+     * @return id of entity
+     */
     public int getId() { return id; }
 
     /**
-    * Get flag signaling if it was the Customer using the Park
-    * @return flag
-    */
+     * Get flag signaling if it was the Customer using the Park
+     * @return flag
+     */
     public boolean getFlagCustomer() { return flagCustomer; }
 }

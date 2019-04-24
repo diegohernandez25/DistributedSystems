@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.CustomerLounge;
@@ -21,8 +22,8 @@ public class Lounge implements CustomerLounge {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public Lounge(String server, int port)
     {   this.server = server;
@@ -31,8 +32,8 @@ public class Lounge implements CustomerLounge {
 
     /**
      *  Customer enters queue to be attended by the Manager.
-     *  @param customerId - Id of the customer to be attended
-     *  @param payment - type of attendance. (true/false) Pay for repair/Request repair.
+     *  @param customerId Id of the customer to be attended
+     *  @param payment type of attendance. (true/false) Pay for repair/Request repair.
      * */
     public void enterCustomerQueue(int customerId, boolean payment)
     {   ClientCom clientCom = Com.openChannel(server,port);
@@ -43,7 +44,7 @@ public class Lounge implements CustomerLounge {
 
     /**
      * Get replacement car key.
-     * @param customerId - ID of the client who needs the replacement car.
+     * @param customerId ID of the client who needs the replacement car.
      * @return the key of the replacement car.
      * */
     public int getReplacementCarKey(int customerId)
@@ -59,7 +60,6 @@ public class Lounge implements CustomerLounge {
      *  Customer with the need of a replacement car invokes this method.
      *  @param key - Key of the replacement car key.
      *  @param customerId ID of the current Customer returning the replacement car key.
-     *  @return status of the operation.
      * */
     public void returnReplacementCarKey(int key, int customerId)
     {   ClientCom clientCom = Com.openChannel(server,port);
@@ -70,7 +70,7 @@ public class Lounge implements CustomerLounge {
 
     /**
      * Exit Lounge
-     * @param customerId - Id of the customer who will exit the lounge
+     * @param customerId Id of the customer who will exit the lounge
      * */
     public void exitLounge(int customerId)
     {   ClientCom clientCom = Com.openChannel(server,port);
@@ -81,7 +81,7 @@ public class Lounge implements CustomerLounge {
 
     /**
      * Customer gives Manager his/hers car key.
-     * @param key - Customer's car key.
+     * @param key Customer's car key.
      * @param customerId current Customer giving their car key
      */
     public void giveManagerCarKey(int customerId, int key)
@@ -93,7 +93,7 @@ public class Lounge implements CustomerLounge {
 
     /**
      *  Customer pays for the service and retrieves the keys of his/her car.
-     *  @param customerId - ID of the customer.
+     *  @param customerId ID of the customer.
      *  @return the Customer's car key.
      * */
     public int payForTheService(int customerId)

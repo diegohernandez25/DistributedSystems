@@ -6,13 +6,13 @@ import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
-public class Main {
-    private static final int PORT_NUM = Parameters.raPort;
+import java.net.SocketTimeoutException;
 
+public class Main {
     /**
-     * Service Termination flag;
+     * Port number
      * */
-    public static boolean serviceEnd = false;
+    private static final int PORT_NUM = Parameters.raPort;
 
     /**
      * Number of customers
@@ -51,10 +51,14 @@ public class Main {
         RepairAreaProxy repairAreaProxy = new RepairAreaProxy(repairArea);
         sc = new ServerCom(PORT_NUM);
         sc.start();
-        while(!serviceEnd)
-        {   sci = sc.accept();
-            sp = new ServiceProvider(sci,repairAreaProxy);
-            sp.start();
+        while(!repairArea.finish)
+        {
+            try {
+                sci = sc.accept();
+                sp = new ServiceProvider(sci,repairAreaProxy);
+                sp.start();
+            } catch (SocketTimeoutException e) {}
         }
+        System.out.println("Goodbye!");
     }
 }

@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.ManagerSS;
@@ -21,8 +22,8 @@ public class SupplierSite implements ManagerSS {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public SupplierSite(String server, int port)
     {
@@ -33,8 +34,8 @@ public class SupplierSite implements ManagerSS {
     /**
      *      Restocks car part. Always gets 3 of the part.
      *
-     *      @param idType - type of the part to replenish
-     *      @param number - requested number
+     *      @param idType type of the part to replenish
+     *      @param number requested number
      *
      *      @return number of parts that were restocked of the specific type of part
      * */

@@ -9,53 +9,37 @@ public class Customer extends Thread{
     /**
      *  Customer identification.
      *
-     *      @serialField customerId
-     *
      * */
     private int customerId;
 
     /**
      *  Needs a car.
-     *
-     *      @serialField  requiresCar
-     *
      * */
     private boolean requiresCar;
 
     /**
      *  Posses a Car.
-     *
-     *      @serialField hasCar
-     *
      * */
     private boolean hasCar;
 
     /**
      *  Current state of the Customer.
-     *
-     *      @serialField clientState;
      * */
     private int clientState;
 
     /**
      *  Current state of the Customer's Car.
-     *
-     *      @serialField clientState;
      * */
     private int carState;
 
 
     /**
      *  Car that the user posses.
-     *
-     *      @serialField car
      * */
     private Integer car;
 
     /**
      *  Replacement car that the user posses.
-     *
-     *      @serialField repCar
      * */
     private Integer repCar;
 
@@ -76,11 +60,15 @@ public class Customer extends Thread{
 
     /**
      * Customer constructor
-     * @param customerId    - Id of the customer.
-     * @param requiresCar   - requires car flag.
-     * @param car           - id of the car.
+     * @param customerId Id of the customer.
+     * @param requiresCar requires car flag.
+     * @param car id of the car.
+     * @param park park object.
+     * @param outsideWorld outside world object.
+     * @param lounge lounge object.
      * */
-    public Customer(int customerId, boolean requiresCar, int car, CustomerPark park, CustomerOW outsideWorld, CustomerLounge lounge)
+    public Customer(int customerId, boolean requiresCar, int car, CustomerPark park, CustomerOW outsideWorld
+            , CustomerLounge lounge)
     {   this.customerId     = customerId;
         this.requiresCar    = requiresCar;
         this.hasCar         = true;
@@ -106,7 +94,8 @@ public class Customer extends Thread{
         lounge.enterCustomerQueue(this.customerId,false);
         System.out.println(customerId +". Customer attended.");
         System.out.println(customerId +". Customer giving key to manager.");
-        lounge.giveManagerCarKey(key, this.customerId);
+        //lounge.giveManagerCarKey(key, this.customerId);//FIXME
+        lounge.giveManagerCarKey(this.customerId,key);
         System.out.println(customerId +". Customer gave key to manager.");
         key = -1;
         int repKey = -1;
@@ -141,9 +130,8 @@ public class Customer extends Thread{
         key = lounge.payForTheService(this.customerId);
         System.out.println(customerId +". Getting car back");
         car = park.getCar(key, customerId, true);
-        System.out.println(customerId +"Got back car");
-        System.out.println(customerId +"Operation finished!");
-        //System.exit(1);
+        System.out.println(customerId +". Got back car");
+        System.out.println(customerId +". Operation finished!");
     }
 
     /**

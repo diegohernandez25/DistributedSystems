@@ -9,8 +9,8 @@ import Communication.ServerCom;
 public interface SharedRegionInterface {
     /**
      * Method from the SharedRegionInterface. It is used to receive, process incoming messages and respond to them.
-     * @param msg   - The received message.
-     * @param sc    - object ServerCom to receive and send message to the source of msg.
+     * @param msg   The received message.
+     * @param sc    object ServerCom to receive and send message to the source of msg.
      * @return The reply of the correspondent message.
      * */
     Message processMessage(Message msg, ServerCom sc);

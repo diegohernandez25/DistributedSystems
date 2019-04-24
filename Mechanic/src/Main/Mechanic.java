@@ -9,29 +9,21 @@ public class Mechanic extends Thread {
     /**
      *  Mechanic identification
      *
-     *      @serialField mechanicId
-     *
      * */
     private int mechanicId;
 
     /**
      *  Lounge
-     *
-     *      @serialField lounge
      * */
     private MechanicLounge lounge;
 
     /**
      *  Parking Lot
-     *
-     *      @serialField park
      * */
     private MechanicPark park;
 
     /**
      *  Repair Area
-     *
-     *      @serialField repairArea
      * */
     private MechanicRA repairArea;
 
@@ -68,18 +60,18 @@ public class Mechanic extends Thread {
                 */
                 case 1:
                     if((idCurrentCar = repairArea.repairWaitingCarWithPartsAvailable(mechanicId)) != -1)
-                    {   System.out.println("Continuing to repair car");
+                    {   System.out.println(this.mechanicId + ". Continuing to repair car");
                         fixCar();
                         repairArea.concludeCarRepair(idCurrentCar,mechanicId);
-                        System.out.println("Repair concluded");
+                        System.out.println(this.mechanicId + ". Repair concluded");
                         idCurrentKey = idCurrentCar;
                         park.parkCar(idCurrentCar, mechanicId, false);
-                        System.out.println("Car parked");
+                        System.out.println(this.mechanicId + ". Car parked");
                         lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
-                        System.out.println("Alerting manager that car is repaired.");
+                        System.out.println(this.mechanicId + ". Alerting manager that car is repaired.");
                     }
                     else
-                    {   System.out.println("This should not happen!");
+                    {   System.out.println(this.mechanicId + ". This should not happen!");
                         System.exit(1);
                     }
                     break;
@@ -88,45 +80,46 @@ public class Mechanic extends Thread {
                  * */
                 case 2:
                     if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)
-                    {   System.out.println("Going to repair a ne car.Going to park.");
+                    {   System.out.println(this.mechanicId + ". Going to repair a ne car.Going to park.");
                         if((idCurrentCar = park.getCar(idCurrentKey, mechanicId, false)) == -1)
-                        {   System.out.println("This should not happen!");
+                        {   System.out.println(this.mechanicId + ". This should not happen!");
                             System.exit(1);
                         }
-                        System.out.println("Checking car parts...");
+                        System.out.println(this.mechanicId + ". Checking car parts...");
                         int carPart = repairArea.checkCar(idCurrentCar,mechanicId);
-                        System.out.println("Looking if there is parts available");
+                        System.out.println(this.mechanicId + ". Looking if there is parts available");
                         if(!repairArea.repairCar(idCurrentCar,carPart,mechanicId))
                         {   lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart), mechanicId);
-                            System.out.println("Parts not available. Requesting parts.");
+                            System.out.println(this.mechanicId + ". Parts not available. Requesting parts.");
                             continue;
                         }
-                        System.out.println("Fixing car.");
+                        System.out.println(this.mechanicId + ". Fixing car.");
                         fixCar();
-                        System.out.println("Car fixed");
+                        System.out.println(this.mechanicId + ". Car fixed");
                         repairArea.concludeCarRepair(idCurrentCar, mechanicId);
-                        System.out.println("Repair concluded");
+                        System.out.println(this.mechanicId + ". Repair concluded");
                         park.parkCar(idCurrentCar, mechanicId, false);
-                        System.out.println("Car parked");
+                        System.out.println(this.mechanicId + ". Car parked");
                         lounge.alertManagerRepairDone(idCurrentCar,mechanicId);
-                        System.out.println("Manager alerted about repair.");
+                        System.out.println(this.mechanicId + ". Manager alerted about repair.");
                         continue;
                     }
                     break;
                 case 3:
-                    System.out.println("Mechanic has waken up");
+                    System.out.println(this.mechanicId + ". Mechanic has waken up");
                     break;
                 case 4:
                     WORK = false;
-                    System.out.println("Going home.");
+                    System.out.println(this.mechanicId + ". Going home.");
                     break;
                 default:
-                    System.out.println("Option not registered");
+                    System.out.println(this.mechanicId + ". Option not registered");
                     break;
             }
         }
-        System.out.println("FINISHED!");
-        //System.exit(1);
+        this.lounge.finish();
+        System.out.println(this.mechanicId + ". FINISHED!");
+
     }
 
     /**
@@ -139,17 +132,5 @@ public class Mechanic extends Thread {
             sleep((long) (1 + 40 * Math.random()));
         }
         catch (InterruptedException e){ }
-    }
-
-    /**
-     *      Reads paper
-     *
-     * */
-    private void readsPaper()
-    {
-        try{
-            sleep((long) (1 + 40 * Math.random()));
-        }
-        catch(InterruptedException e){}
     }
 }

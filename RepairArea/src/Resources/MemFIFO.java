@@ -30,6 +30,9 @@ public class MemFIFO<R> extends MemObject<R>
 
     private volatile boolean empty;
 
+    /**
+     * Number of element in the FIFO
+     * */
     private int numElem;
 
     /**
@@ -96,12 +99,20 @@ public class MemFIFO<R> extends MemObject<R>
         return val;
     }
 
+    /**
+     * Check if FIFO is empty
+     * @return true, if empty. False, otherwise.
+     * */
     public boolean isEmpty()
     {
         return empty;
     }
 
-
+    /**
+     * Get FIFO peek element.
+     * @throws MemException when the fifo is empty.
+     * @return element.
+     * */
     public R peek () throws MemException
     {
         R val = null;
@@ -125,22 +136,27 @@ public class MemFIFO<R> extends MemObject<R>
         return false;
     }
 
+    /**
+     * Get number of elements
+     * @return number of elements.
+     * */
     public int numElements(){
         return numElem;
     }
 
-
-    @Override
-    public String toString() {
-        return "MemFIFO{" +
-                "mem=" + Arrays.toString(mem) +
-                '}';
-    }
+    /**
+     * Get write pointer of FIFO.
+     * @return pointer.
+     * */
     public int getInPtn()
     {
         return inPnt;
     }
 
+    /**
+     * Get read pointer of FIFO.
+     * @return out pointer.
+     * */
     public int getOutPtn()
     {
         return outPnt;

@@ -15,7 +15,6 @@ public interface ManagerLounge {
      *  register refill of stock
      *  @param idType - the type of Car Part
      *  @param numberParts number of Car Parts being refilled
-     *  @return completed with success
      * */
     void registerStockRefill(int idType, int numberParts);
 

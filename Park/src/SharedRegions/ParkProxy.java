@@ -14,7 +14,7 @@ public class ParkProxy implements SharedRegionInterface {
 
     /**
      * ParkProxy Constructor
-     * @param park  - park object
+     * @param park  park object
      * */
     public ParkProxy(Park park)
     {   this.park = park;
@@ -22,8 +22,8 @@ public class ParkProxy implements SharedRegionInterface {
 
     /**
      * Method from the SharedRegionInterface. It is used to receive, process incoming messages and respond to them.
-     * @param msg   - The received message.
-     * @param sc    - object ServerCom to receive and send message to the source of msg.
+     * @param msg   The received message.
+     * @param sc    object ServerCom to receive and send message to the source of msg.
      * @return The reply of the correspondent message.
      * */
     @Override
@@ -39,6 +39,11 @@ public class ParkProxy implements SharedRegionInterface {
             case GET_CAR:
                 resInt = this.park.getCar(msg.getCarId(), msg.getId(), msg.getFlagCustomer());
                 response = new Message(MessageType.GET_CAR_RES, resInt);
+                break;
+
+            case FINISH:
+                this.park.finish();
+                response = new Message(MessageType.OK);
                 break;
 
             default:

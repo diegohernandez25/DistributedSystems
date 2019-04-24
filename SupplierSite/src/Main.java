@@ -6,13 +6,10 @@ import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
+import java.net.SocketTimeoutException;
+
 public class Main {
     private static final int PORT_NUM = Parameters.ssPort;
-
-    /**
-     * Service Termination flag;
-     * */
-    public static boolean serviceEnd = false;
 
     /**
      * Number of car parts.
@@ -21,12 +18,10 @@ public class Main {
 
     /**
      * Main
-     * @param args  - arguments.
+     * @param args  arguments.
      * */
     public static void main(String[] args)
-    {
-        System.out.println("Starting...");
-
+    {   System.out.println("Starting...");
         ServerCom sc, sci;
         ServiceProvider sp;
 
@@ -36,10 +31,14 @@ public class Main {
         SupplierSiteProxy supplierSiteProxy = new SupplierSiteProxy(supplierSite);
         sc = new ServerCom(PORT_NUM);
         sc.start();
-        while(!serviceEnd)
-        {   sci = sc.accept();
-            sp = new ServiceProvider(sci,supplierSiteProxy);
-            sp.start();
+        while(!supplierSite.finish)
+        {   try {
+                sci = sc.accept();
+                sp = new ServiceProvider(sci,supplierSiteProxy);
+                sp.start();
+            } catch (SocketTimeoutException e) { }
+
         }
+        System.out.println("Goodbye!");
     }
 }

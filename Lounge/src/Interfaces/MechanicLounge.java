@@ -17,7 +17,6 @@ public interface MechanicLounge {
      *      @param idType       - the id of the part to refill stock
      *      @param number       - the number of stock needed
      *      @param mechanicId   - the id of the mechanic
-     *      @return true - request done. false - request has already been made.
      * */
     void requestPart(int idType, int number, int mechanicId);
 
@@ -27,4 +26,9 @@ public interface MechanicLounge {
      * @param mechanicId    - the id of the mechanic.
      * */
     void alertManagerRepairDone(int idKey, int mechanicId);
+
+    /**
+     *  Mechanic declares that he/she is going home. Function is used for the locals/server termination.
+     * */
+    void finish();
 }

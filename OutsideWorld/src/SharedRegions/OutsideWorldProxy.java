@@ -51,6 +51,11 @@ public class OutsideWorldProxy implements SharedRegionInterface {
                 response = new Message(MessageType.IS_CUSTOMER_IN_OW_RES, resBool);
                 break;
 
+            case FINISH:
+                this.outsideWorld.finish();
+                response = new Message(MessageType.OK);
+                break;
+
             default:
                 System.out.println("message not expected.");
                 System.exit(1);

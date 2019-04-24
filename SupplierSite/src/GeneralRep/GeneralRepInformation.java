@@ -1,6 +1,7 @@
 package GeneralRep;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.GriSS;
@@ -21,8 +22,8 @@ public class GeneralRepInformation implements GriSS {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public GeneralRepInformation(String server, int port)
     {

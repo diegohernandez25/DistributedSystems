@@ -3,13 +3,10 @@ import SharedRegions.GeneralRepInformation;
 import SharedRegions.GeneralRepInformationProxy;
 import SharedRegions.ServiceProvider;
 
+import java.net.SocketTimeoutException;
+
 public class Main {
     private static final int PORT_NUM = 22465;  //TODO: Replace by port number.
-
-    /**
-     * Service Termination flag;
-     * */
-    public static boolean serviceEnd = false;
 
     /**
      * Number of customers
@@ -50,10 +47,13 @@ public class Main {
         GeneralRepInformationProxy generalRepInformationProxy = new GeneralRepInformationProxy(generalRepInformation);
         sc = new ServerCom(PORT_NUM);
         sc.start();
-        while(!serviceEnd)
-        {   sci = sc.accept();
-            sp = new ServiceProvider(sci,generalRepInformationProxy);
-            sp.start();
+        while(!generalRepInformation.finish)
+        {   try {
+                sci = sc.accept();
+                sp = new ServiceProvider(sci,generalRepInformationProxy);
+                sp.start();
+            } catch (SocketTimeoutException e) {}
         }
+        System.out.println("Goodbye!");
     }
 }

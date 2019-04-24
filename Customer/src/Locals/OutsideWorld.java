@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.CustomerOW;
@@ -21,8 +22,8 @@ public class OutsideWorld implements CustomerOW {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public OutsideWorld(String server, int port)
     {   this.server = server;
@@ -31,7 +32,7 @@ public class OutsideWorld implements CustomerOW {
 
     /**
      *  Customer waits until the manager alerts him/her about the end of the service.
-     *  @param customerId - ID of the waiting customer.
+     *  @param customerId ID of the waiting customer.
      * */
     public synchronized void waitForRepair(Integer customerId)
     {   ClientCom clientCom = Com.openChannel(server,port);

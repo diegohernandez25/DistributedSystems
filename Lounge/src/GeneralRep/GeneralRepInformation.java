@@ -4,6 +4,7 @@ import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.GriLounge;
+import Communication.Com;
 
 /**
  * Dedicated class to communicate with RepairArea using sockets.
@@ -161,5 +162,12 @@ public class GeneralRepInformation implements GriLounge {
       Message request = new Message(MessageType.SET_FLAG_MISSING_PART, part, flag);
       clientCom.writeObject(request);
       Message response = Com.expectMessageType(clientCom, MessageType.OK);
+    }
+
+    /**
+     * Terminates GeneralRepInformation server
+     * */
+    public void finish()
+    {   Com.finish(this.server, this.port);
     }
 }

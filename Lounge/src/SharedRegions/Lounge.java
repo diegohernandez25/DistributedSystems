@@ -1,6 +1,10 @@
 package SharedRegions;
 
 import Interfaces.*;
+import Locals.OutsideWorld;
+import Locals.Park;
+import Locals.RepairArea;
+import Locals.SupplierSite;
 import Resources.MemException;
 import Resources.MemFIFO;
 import GeneralRep.GeneralRepInformation;
@@ -8,7 +12,7 @@ import GeneralRep.GeneralRepInformation;
 public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
-     *  Type of Manager Tasks FIXME
+     *  Type of Manager Tasks
      * */
     private static final int    READ_PAPER = 0,
                                 ATTEND_CUSTOMER = 1,
@@ -46,7 +50,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Current state of Manager
      *
-     *      @serialField stateManager
      *
      * */
     private volatile int stateManager;
@@ -54,35 +57,30 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Current states of customers.
      *
-     *      @serialField stateCustomers
      * */
     private volatile int[] stateCustomers;
 
     /**
      *  Current states of mechanics.
      *
-     *      @serialField stateMechanics
      * */
     private volatile int[] stateMechanics;
 
     /**
      *  All the Keys of Replacement Cars
      *
-     *      @serialField replacementCarKeys
      *
      * */
     private volatile MemFIFO<Integer> replacementCarKeys; //Car key id == key id
     /**
      *  Record all replacement Keys used by a Customer ID
      *
-     *      @serialField  usedReplacementCarKeys
      * */
     private volatile int[] usedReplacementCarKeys;
 
     /**
      *  All the Keys of Customer Cars
      *
-     *      @serialField customerCarKeys
      *
      * */
 
@@ -91,7 +89,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Queue of Car Keys to be repaired
      *
-     *      @serialField carKeysQueue
      *
      * */
 
@@ -99,7 +96,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Queue of car parts needed to be replenished
      *
-     *      @serialField carPartsQueue
      *
      * */
     private volatile int numTypes;
@@ -107,14 +103,12 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *      All the Keys of Customer Fixed Cars
      *
-     *      @serialField customerFixedCarKeys
      *
      * */
     private volatile MemFIFO<Integer> customerFixedCarKeys;
     /**
      *      Queue of ids of waiting customers
      *
-     *      @serialField customerQueue
      *
      * */
     private volatile MemFIFO<Integer> customerQueue;
@@ -122,7 +116,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *      Queue of customer ids waiting for a replacement key.
      *
-     *          @serialField waitingReplacementKey
      *
      * */
     private volatile MemFIFO<Integer> waitingReplacementKey;
@@ -130,7 +123,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *      Stack of clients which are waiting for payment
-     *      @serialField paymentQueue
      * */
     private volatile MemFIFO<Integer> paymentQueue;
 
@@ -139,39 +131,70 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * Index represents the id of the part to refill stock
      * Value represents the number of stock to refill.
      * Alert: Be careful with concurrency.
-     * @serialField carPartsToRefill
      * */
     private volatile int[] carPartsToRefill;
 
 
     /**
      * Array with the purpose of getting the id of the customer with the car Key id as an index
-     * @serialField memKeyCustomers
      * */
     private volatile int[] memKeysCustomers;
 
     /**
      * Header of the headReplacementKeys.
-     * @serialField headReplacementKeys.
      * */
     private volatile int headReplacementKeys;
 
     /**
      *Array whom index represents de ID of a customer and its value a boolean which tells if service has been concluded.
-     * @serialField customerFinished
      * */
     private volatile boolean[] customerFinished;
 
+    /**
+     * Active mechanics.
+     * */
+    private volatile int activeMechanics;
 
+    /**
+     * Finish flag
+     * */
+    public volatile boolean finish;
+
+    /**
+     * Outside world
+     * */
+    private volatile OutsideWorld outsideWorld;
+
+    /**
+     * Park
+     * */
+    private volatile Park park;
+
+    /**
+     * Repair Area
+     * */
+    private volatile RepairArea repairArea;
+
+    /***
+     * SupplierSite
+     */
+    private volatile SupplierSite supplierSite;
 
     /**
      * Lounge
-     * @param numCustomers - number of customer
-     * @param numMechanics - number of mechanics
-     * @param replacementKeys - array with the replacement Keys.
-     * @param numTypes - number of existing car types.
+     * @param numCustomers      number of customer
+     * @param numMechanics      number of mechanics
+     * @param replacementKeys   array with the replacement Keys.
+     * @param numTypes          number of existing car types.
+     * @param gri               General Repository Information
+     * @param outsideWorld      Outside World
+     * @param park              Park
+     * @param repairArea        Repair Area
+     * @param supplierSite      Supplier Site.
      * */
-    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GriLounge gri)
+    public Lounge(int numCustomers, int numMechanics, int[] replacementKeys, int numTypes,
+                  GriLounge gri, OutsideWorld outsideWorld, Park park, RepairArea repairArea,
+                  SupplierSite supplierSite)
     {
         this.gri = gri;
         gri.setNumReplacementParked(replacementKeys.length);
@@ -182,6 +205,14 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
         this.customerCarKeys = new int[numCustomers];
         this.memKeysCustomers = new int[numCustomers];
         this.customerFinished = new boolean[numCustomers];
+
+        this. activeMechanics = numMechanics;
+        this.finish = false;
+        this.outsideWorld = outsideWorld;
+        this.park = park;
+        this.repairArea = repairArea;
+        this.supplierSite = supplierSite;
+
         for (int i = 0; i<stateCustomers.length; i++) {
             this.stateCustomers[i] = NORMAL_LIFE;
             this.customerCarKeys[i] = -1;
@@ -225,8 +256,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *  Customer enters queue to be attended by the Manager.
-     *  @param customerId - Id of the customer to be attended
-     *  @param payment - type of attendance. (true/false) Pay for repair/Request repair.
+     *  @param customerId Id of the customer to be attended
+     *  @param payment type of attendance. (true/false) Pay for repair/Request repair.
      * */
     public synchronized void enterCustomerQueue(int customerId, boolean payment)
     {
@@ -317,7 +348,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      * Get replacement car key.
-     * @param customerId - ID of the client who needs the replacement car.
+     * @param customerId ID of the client who needs the replacement car.
      * @return the key of the replacement car.
      * */
     public synchronized int getReplacementCarKey(int customerId)
@@ -369,9 +400,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
      *  Return Replacement car key.
      *  Customer with the need of a replacement car invokes this method.
-     *  @param key - Key of the replacement car key.
+     *  @param key Key of the replacement car key.
      *  @param customerId ID of the current Customer returning the replacement car key.
-     *  @return status of the operation.
      * */
     public synchronized void returnReplacementCarKey(int key, int customerId)
     {   if(replacementCarKeys.containsValue(key)) { System.exit(1); }
@@ -388,7 +418,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     }
     /**
      * Exit Lounge
-     * @param customerId - Id of the customer who will exit the lounge
+     * @param customerId Id of the customer who will exit the lounge
      * */
     public synchronized void exitLounge(int customerId) {
         stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
@@ -401,10 +431,9 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * */
     private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
-    //TODO: NOTE: Changed parameters order!!!!!
     /**
      * Customer gives Manager his/hers car key.
-     * @param key - Customer's car key.
+     * @param key Customer's car key.
      * @param customerId current Customer giving their car key
      */
     public synchronized void giveManagerCarKey(int customerId, int key)
@@ -415,7 +444,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *  Customer pays for the service and retrieves the keys of his/her car.
-     *  @param customerId - ID of the customer.
+     *  @param customerId ID of the customer.
      *  @return the Customer's car key.
      * */
     public synchronized int payForTheService(int customerId)
@@ -445,9 +474,9 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *      Mechanic asks for a type of car parts for the repair
-     *      @param idType       - the id of the part to refill stock
-     *      @param number       - the number of stock needed
-     *      @param mechanicId   - the id of the mechanic
+     *      @param idType       the id of the part to refill stock
+     *      @param number       the number of stock needed
+     *      @param mechanicId   the id of the mechanic
      * */
     public synchronized void requestPart(int idType, int number, int mechanicId)
     {
@@ -458,7 +487,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      *  register refill of stock
-     *  @param idType - the type of Car Part
+     *  @param idType the type of Car Part
      *  @param numberParts number of Car Parts being refilled
      * */
     public synchronized void registerStockRefill(int idType, int numberParts)
@@ -486,7 +515,6 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * Manager checks if parts needs to be refilled
      * @return id of the part to refill. Returns -1 if no part is needed to refill
      * */
-    //TODO: Test change
     public synchronized int checksPartsRequest()
     {   for(int i = 0; i<carPartsToRefill.length; i++)
         {   if(carPartsToRefill[i] != 0)
@@ -497,8 +525,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
 
     /**
      * Mechanic return key of the repaired car
-     * @param idKey         - the id of the key (= idCar)
-     * @param mechanicId    - the id of the mechanic.
+     * @param idKey         the id of the key (= idCar)
+     * @param mechanicId    the id of the mechanic.
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
     {
@@ -533,8 +561,8 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     }
 
     /**
-     * Gets customer OKOKgiven the id of the key whom the customer belongs-
-     * @param idKey - id of the key.
+     * Gets customer given the id of the key whom the customer belongs-
+     * @param idKey id of the key.
      * @return the id of the customer
      * */
     public synchronized int getCustomerFromKey(int idKey)
@@ -546,14 +574,14 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     }
     /**
      * Make key ready to give back to customer.
-     * @param idCustomer - id of the customer.
-     * @param idKey - id of the key.
+     * @param idCustomer id of the customer.
+     * @param idKey id of the key.
      * */
     public synchronized void readyToDeliverKey(int idCustomer, int idKey) {   customerCarKeys[idCustomer] = idKey; }
 
     /**
      *  Get the requested number of a part
-     *  @param partId - ID of the part Car.
+     *  @param partId ID of the part Car.
      *  @return number of parts requested.
      * */
     public synchronized int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
@@ -566,5 +594,19 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     {
         for(int i = 0; i<customerFinished.length;i++) {if(!customerFinished[i]) return false; }
         return true;
+    }
+
+    /**
+     *  Mechanic declares that he/she is going home. Function is used for the locals/server termination.
+     * */
+    public synchronized void finish()
+    {   if(--activeMechanics==0)
+        {   this.outsideWorld.finish();
+            this.park.finish();
+            this.repairArea.finish();
+            this.supplierSite.finish();
+            this.gri.finish();
+            this.finish = true;
+        }
     }
 }

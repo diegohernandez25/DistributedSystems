@@ -13,9 +13,8 @@ public interface ManagerLounge {
 
     /**
      *  register refill of stock
-     *  @param idType - the type of Car Part
+     *  @param idType the type of Car Part
      *  @param numberParts number of Car Parts being refilled
-     *  @return completed with success
      * */
     void registerStockRefill(int idType, int numberParts);
 
@@ -27,7 +26,7 @@ public interface ManagerLounge {
 
     /**
      * Checks if there are cars repaired
-     * @return true - customer fixed car keys empty
+     * @return true customer fixed car keys empty
      * */
     boolean isCustomerFixedCarKeysEmpty();
 
@@ -39,21 +38,21 @@ public interface ManagerLounge {
 
     /**
      * Gets customer given the id of the key whom the customer belongs-
-     * @param idKey - id of the key.
+     * @param idKey id of the key.
      * @return the id of the customer
      * */
     int getCustomerFromKey(int idKey);
 
     /**
      * Make key ready to give back to customer.
-     * @param idCustomer - id of the customer.
-     * @param idKey - id of the key.
+     * @param idCustomer id of the customer.
+     * @param idKey id of the key.
      * */
     void readyToDeliverKey(int idCustomer, int idKey);
 
     /**
      *  Get the requested number of a part
-     *  @param partId - ID of the part Car.
+     *  @param partId ID of the part Car.
      *  @return number of parts requested.
      * */
     int requestedNumberPart(int partId);

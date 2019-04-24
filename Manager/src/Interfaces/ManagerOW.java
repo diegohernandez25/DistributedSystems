@@ -7,7 +7,7 @@ public interface ManagerOW {
 
     /**
      *  Managers alerts customer that car is fixed and it can be retrieved;
-     *  @param customerId - ID of the customer to alert .
+     *  @param customerId ID of the customer to alert .
      * */
     void alertCustomer(Integer customerId);
 

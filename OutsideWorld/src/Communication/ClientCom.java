@@ -14,7 +14,6 @@ public class ClientCom
 {
     /**
      *  Socket de comunicação
-     *    @serialField commSocket
      */
 
     private Socket commSocket = null;

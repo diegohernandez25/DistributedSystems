@@ -1,6 +1,7 @@
 package GeneralRep;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.GriPark;
@@ -21,8 +22,8 @@ public class GeneralRepInformation implements GriPark {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public GeneralRepInformation(String server, int port)
     {
@@ -40,7 +41,7 @@ public class GeneralRepInformation implements GriPark {
       ClientCom clientCom = Com.openChannel(server,port);
       Message request = new Message(MessageType.SET_CUSTOMER_VEHICLE, customer, vehicle);
       clientCom.writeObject(request);
-      Message response = Com.expectMessageType(clientCom, MessageType.OK);
+      Com.expectMessageType(clientCom, MessageType.OK);
     }
 
     /**
@@ -52,7 +53,7 @@ public class GeneralRepInformation implements GriPark {
       ClientCom clientCom = Com.openChannel(server,port);
       Message request = new Message(MessageType.SET_NUM_CARS_PARKED, num);
       clientCom.writeObject(request);
-      Message response = Com.expectMessageType(clientCom, MessageType.OK);
+      Com.expectMessageType(clientCom, MessageType.OK);
     }
 
     /**
@@ -64,6 +65,6 @@ public class GeneralRepInformation implements GriPark {
       ClientCom clientCom = Com.openChannel(server,port);
       Message request = new Message(MessageType.SET_NUM_REPLACEMENT_PARKED, num);
       clientCom.writeObject(request);
-      Message response = Com.expectMessageType(clientCom, MessageType.OK);
+      Com.expectMessageType(clientCom, MessageType.OK);
     }
 }

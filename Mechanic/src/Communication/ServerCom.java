@@ -1,10 +1,8 @@
 package Communication;
 
+
 import java.io.*;
-import java.net.BindException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 
 /**
  *   Este tipo de dados implementa o canal de comunicação, lado do servidor, para uma comunicação baseada em passagem de
@@ -16,35 +14,30 @@ public class ServerCom
 {
     /**
      *  Socket de escuta
-     *    @serialField listeningSocket
      */
 
     private ServerSocket listeningSocket = null;
 
     /**
      *  Socket de comunicação
-     *    @serialField commSocket
      */
 
     private Socket commSocket = null;
 
     /**
      *  Número do port de escuta do servidor
-     *    @serialField serverPortNumb
      */
 
     private int serverPortNumb;
 
     /**
      *  Stream de entrada do canal de comunicação
-     *    @serialField in
      */
 
     private ObjectInputStream in = null;
 
     /**
      *  Stream de saída do canal de comunicação
-     *    @serialField out
      */
 
     private ObjectOutputStream out = null;
@@ -83,6 +76,7 @@ public class ServerCom
     {
         try
         { listeningSocket = new ServerSocket (serverPortNumb);
+            listeningSocket.setSoTimeout(1000);
         }
         catch (BindException e)                         // erro fatal --- port já em uso
         { System.out.println (Thread.currentThread ().getName () +
@@ -123,11 +117,11 @@ public class ServerCom
      *  Criação de um canal de comunicação para um pedido pendente.
      *  Instanciação de um socket de comunicação e sua associação ao endereço do cliente.
      *  Abertura dos streams de entrada e de saída do socket.
-     *
+     * @throws SocketTimeoutException after reaching timeout
      *    @return canal de comunicação
      */
 
-    public ServerCom accept ()
+    public ServerCom accept () throws SocketTimeoutException
     {
         ServerCom scon;                                      // canal de comunicação
 
@@ -140,6 +134,9 @@ public class ServerCom
                 " - foi fechado o socket de escuta durante o processo de escuta!");
             e.printStackTrace ();
             System.exit (1);
+        }
+        catch (SocketTimeoutException e)
+        { throw e;
         }
         catch (IOException e)
         { System.out.println (Thread.currentThread ().getName () +
@@ -276,3 +273,4 @@ public class ServerCom
         }
     }
 }
+

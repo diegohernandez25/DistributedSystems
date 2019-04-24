@@ -6,7 +6,7 @@ package Interfaces;
 public interface CustomerOW {
     /**
      *  Customer waits until the manager alerts him/her about the end of the service.
-     *  @param customerId - ID of the waiting customer.
+     *  @param customerId ID of the waiting customer.
      * */
     void waitForRepair(Integer customerId);
 }

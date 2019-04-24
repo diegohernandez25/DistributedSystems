@@ -9,7 +9,6 @@ public interface CustomerLounge {
      *  Customer enters queue to be attended by the Manager.
      *      @param customerId - Id of the customer to be attended
      *      @param payment - type of attendance. (true/false) Pay for repair/Request repair.
-     *      @return operation success so the thread can move on to the next operation.
      * */
     void enterCustomerQueue(int customerId, boolean payment);
 
@@ -27,7 +26,6 @@ public interface CustomerLounge {
      *      @param key - Key of the replacement car key.
      *      @param customerId ID of the current Customer returning the replacement car key
      *
-     *      @return status of the operation.
      * */
     void returnReplacementCarKey(int key, int customerId);
 

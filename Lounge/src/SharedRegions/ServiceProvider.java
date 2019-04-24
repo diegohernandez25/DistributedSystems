@@ -22,8 +22,8 @@ public class ServiceProvider extends Thread{
 
     /**
      * Service Provider constructor.
-     * @param sc            - object of class type ServerComm
-     * @param sharedRegion  - object of class with implementation SharedRegionInterface
+     * @param sc            object of class type ServerComm
+     * @param sharedRegion  object of class with implementation SharedRegionInterface
      * */
     public ServiceProvider(ServerCom sc, SharedRegionInterface sharedRegion)
     {   this.sc             = sc;

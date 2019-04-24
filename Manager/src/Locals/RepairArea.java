@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.ManagerRA;
@@ -21,8 +22,8 @@ public class RepairArea implements ManagerRA {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public RepairArea(String server, int port)
     {
@@ -32,8 +33,8 @@ public class RepairArea implements ManagerRA {
 
     /**
      *      Refill car Part stock
-     *      @param idPart   - ID of car part.
-     *      @param quantity - number of car parts to refill
+     *      @param idPart   ID of car part.
+     *      @param quantity number of car parts to refill
      * */
     public  void  refillCarPartStock(int idPart, int quantity)
     {

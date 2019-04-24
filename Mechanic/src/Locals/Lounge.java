@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.MechanicLounge;
@@ -21,8 +22,8 @@ import Interfaces.MechanicLounge;
 
      /**
       * Lounge constructor
-      * @param server    - server.
-      * @param port      - server port.
+      * @param server    server.
+      * @param port      server port.
       * */
      public Lounge(String server, int port)
      {
@@ -46,9 +47,9 @@ import Interfaces.MechanicLounge;
 
      /**
       *      Mechanic asks for a type of car parts for the repair
-      *      @param idType       - the id of the part to refill stock
-      *      @param number       - the number of stock needed
-      *      @param mechanicId   - the id of the mechanic
+      *      @param idType       the id of the part to refill stock
+      *      @param number       the number of stock needed
+      *      @param mechanicId   the id of the mechanic
       * */
      public void requestPart(int idType, int number, int mechanicId)
      {
@@ -60,8 +61,8 @@ import Interfaces.MechanicLounge;
 
      /**
       * Mechanic return key of the repaired car
-      * @param idKey         - the id of the key (= idCar)
-      * @param mechanicId    - the id of the mechanic.
+      * @param idKey         the id of the key (= idCar)
+      * @param mechanicId    the id of the mechanic.
       * */
      public void alertManagerRepairDone(int idKey, int mechanicId)
      {
@@ -69,5 +70,16 @@ import Interfaces.MechanicLounge;
        Message request = new Message(MessageType.ALERT_MANAGER_REPAIR_DONE, idKey, mechanicId);
        clientCom.writeObject(request);
        Message response = Com.expectMessageType(clientCom, MessageType.OK);
+     }
+
+     /**
+      * Trigger servers termination.
+      * */
+     public void finish()
+     {  ClientCom clientCom = Com.openChannel(server, port);
+        Message request = new Message(MessageType.FINISH);
+        clientCom.writeObject(request);
+        Message response = Com.expectMessageType(clientCom, MessageType.OK);
+
      }
  }

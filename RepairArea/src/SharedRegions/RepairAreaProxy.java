@@ -4,7 +4,9 @@ import Communication.Message;
 import Communication.MessageType;
 import Communication.ServerCom;
 import Interfaces.SharedRegionInterface;
-
+/**
+ * Repair Area Proxy.
+ * */
 public class RepairAreaProxy implements SharedRegionInterface {
 
   /**
@@ -14,7 +16,7 @@ public class RepairAreaProxy implements SharedRegionInterface {
 
   /**
    * RepairAreaProxy Constructor
-   * @param repairArea - repair area object
+   * @param repairArea  repair area object
    * */
   public RepairAreaProxy(RepairArea repairArea)
   {
@@ -23,14 +25,12 @@ public class RepairAreaProxy implements SharedRegionInterface {
 
   /**
    * Method from the SharedRegionInterface. It is used to receive, process incoming messages and respond to them.
-   * @param msg   - The received message.
-   * @param sc    - object ServerCom to receive and send message to the source of msg.
+   * @param msg    The received message.
+   * @param sc     object ServerCom to receive and send message to the source of msg.
    * @return The reply of the correspondent message.
    * */
   @Override
   public Message processMessage(Message msg, ServerCom sc) {
-      System.out.println("PROCESSING MESSAGE.");
-      System.out.println(msg.getType().toString());
       Message response = null;
       int resInt;
       boolean resBool;
@@ -69,18 +69,21 @@ public class RepairAreaProxy implements SharedRegionInterface {
 
         case FIND_NEXT_TASK:
           resInt = this.repairArea.findNextTask(msg.getMechanicId());
-          System.out.println("Response: "+resInt);
           response = new Message(MessageType.FIND_NEXT_TASK_RES, resInt);
           break;
 
         case POST_JOB:
-          System.out.println("Received POST JOB");
           this.repairArea.postJob(msg.getCarId());
           response = new Message(MessageType.OK);
           break;
 
         case SEND_HOME:
           this.repairArea.sendHome();
+          response = new Message(MessageType.OK);
+          break;
+
+        case FINISH:
+          this.repairArea.finish();
           response = new Message(MessageType.OK);
           break;
 

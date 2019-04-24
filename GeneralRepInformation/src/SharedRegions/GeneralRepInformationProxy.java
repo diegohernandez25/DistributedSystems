@@ -5,6 +5,9 @@ import Communication.MessageType;
 import Communication.ServerCom;
 import Interfaces.SharedRegionInterface;
 
+/**
+ * General Repository Information Proxy. Implements Shared Region Interface.
+ * */
 public class GeneralRepInformationProxy implements SharedRegionInterface {
 
     /**
@@ -124,6 +127,11 @@ public class GeneralRepInformationProxy implements SharedRegionInterface {
 
             case SET_NUM_BOUGHT_PART:
                 this.generalRepInformation.setNumBoughtPart(msg.getCarPart(), msg.getNumber());
+                response = new Message(MessageType.OK);
+                break;
+
+            case FINISH:
+                this.generalRepInformation.finish();
                 response = new Message(MessageType.OK);
                 break;
 

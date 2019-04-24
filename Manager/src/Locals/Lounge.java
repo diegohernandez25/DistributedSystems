@@ -1,6 +1,7 @@
 package Locals;
 
 import Communication.ClientCom;
+import Communication.Com;
 import Communication.Message;
 import Communication.MessageType;
 import Interfaces.ManagerLounge;
@@ -21,8 +22,8 @@ public class Lounge implements ManagerLounge {
 
     /**
      * Lounge constructor
-     * @param server    - server.
-     * @param port      - server port.
+     * @param server    server.
+     * @param port      server port.
      * */
     public Lounge(String server, int port)
     {   this.server = server;
@@ -45,7 +46,7 @@ public class Lounge implements ManagerLounge {
 
     /**
      *  register refill of stock
-     *  @param idType - the type of Car Part
+     *  @param idType the type of Car Part
      *  @param numberParts number of Car Parts being refilled
      * */
     public void registerStockRefill(int idType, int numberParts)
@@ -93,7 +94,7 @@ public class Lounge implements ManagerLounge {
 
     /**
      * Gets customer given the id of the key whom the customer belongs-
-     * @param idKey - id of the key.
+     * @param idKey id of the key.
      * @return the id of the customer
      * */
     public int getCustomerFromKey(int idKey)
@@ -106,8 +107,8 @@ public class Lounge implements ManagerLounge {
 
     /**
      * Make key ready to give back to customer.
-     * @param idCustomer - id of the customer.
-     * @param idKey - id of the key.
+     * @param idCustomer id of the customer.
+     * @param idKey id of the key.
      * */
     public void readyToDeliverKey(int idCustomer, int idKey)
     {   ClientCom clientCom = Com.openChannel(server,port);
@@ -118,7 +119,7 @@ public class Lounge implements ManagerLounge {
 
     /**
      *  Get the requested number of a part
-     *  @param partId - ID of the part Car.
+     *  @param partId ID of the part Car.
      *  @return number of parts requested.
      * */
     public int requestedNumberPart(int partId)

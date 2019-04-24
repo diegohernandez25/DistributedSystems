@@ -13,7 +13,7 @@ public class LoungeProxy implements SharedRegionInterface {
 
     /**
      * Lounge constructor.
-     * @param lounge - object lounge.
+     * @param lounge object lounge.
      * */
     public LoungeProxy(Lounge lounge)
     { this.lounge = lounge;
@@ -21,8 +21,8 @@ public class LoungeProxy implements SharedRegionInterface {
 
     /**
      * Method from the SharedRegionInterface. It is used to receive, process incoming messages and respond to them.
-     * @param msg   - The received message.
-     * @param sc    - object ServerCom to receive and send message to the source of msg.
+     * @param msg   The received message.
+     * @param sc    object ServerCom to receive and send message to the source of msg.
      * @return The reply of the correspondent message.
      * */
     @Override
@@ -57,7 +57,6 @@ public class LoungeProxy implements SharedRegionInterface {
                 break;
 
             case IS_CUSTOMER_CAR_KEYS_EMPTY:
-                //FIXME: avoid using it
                 break;
 
             case GIVE_MANAGER_CAR_KEY:
@@ -123,6 +122,11 @@ public class LoungeProxy implements SharedRegionInterface {
             case GET_FIXED_CAR_KEY:
                 resInt      = this.lounge.getFixedCarKey();
                 response    = new Message(MessageType.GET_FIXED_CAR_KEY_RES, resInt);
+                break;
+
+            case FINISH:
+                this.lounge.finish();
+                response    = new Message(MessageType.OK);
                 break;
 
             default:

@@ -14,17 +14,21 @@ public interface MechanicLounge {
 
     /**
      *      Mechanic asks for a type of car parts for the repair
-     *      @param idType       - the id of the part to refill stock
-     *      @param number       - the number of stock needed
-     *      @param mechanicId   - the id of the mechanic
-     *      @return true - request done. false - request has already been made.
+     *      @param idType       the id of the part to refill stock
+     *      @param number       the number of stock needed
+     *      @param mechanicId   the id of the mechanic
      * */
     void requestPart(int idType, int number, int mechanicId);
 
     /**
      * Mechanic return key of the repaired car
-     * @param idKey         - the id of the key (= idCar)
-     * @param mechanicId    - the id of the mechanic.
+     * @param idKey         the id of the key (= idCar)
+     * @param mechanicId    the id of the mechanic.
      * */
     void alertManagerRepairDone(int idKey, int mechanicId);
+
+    /**
+     * Trigger servers termination.
+     * */
+    void finish();
 }
