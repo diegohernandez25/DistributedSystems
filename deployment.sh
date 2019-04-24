@@ -1,6 +1,140 @@
 #!/bin/bash
 
-echo -e "Starting deployment..."
+########### CONSTANTS DEFINITION ##########
+# COLORS
+NORMAL='\033[0m'
+SYSTEM='\033[0;34m'
+WARNING='\033[1;33m'
+ERROR='\033[0;31m'
+SUCCESS='\033[0;32m'
+
+########### FUNCTIONS DEFINITION ##########
+function writeLocalDefault {
+  > test.java
+  echo "test1" >> test.java
+  echo "test2" >> test.java
+}
+
+function writeLocalInteractive {
+  > test.java
+  echo "test1" >> test.java
+  echo "test2" >> test.java
+}
+
+function writeRemoteDefault {
+  > test.java
+  echo "test1" >> test.java
+  echo "test2" >> test.java
+}
+
+function writeRemoteInteractive {
+  > test.java
+  echo "test1" >> test.java
+  echo "test2" >> test.java
+}
+
+function copyFile {
+  echo -e "\n${SYSTEM}Copying Parameters.java file...${NORMAL}"
+  cp Parameters.java Manager/src/Main/Parameters.java
+  cp Parameters.java Mechanic/src/Main/Parameters.java
+  cp Parameters.java Customer/src/Main/Parameters.java
+  cp Parameters.java Lounge/src/Main/Parameters.java
+  cp Parameters.java OutsideWorld/src/Main/Parameters.java
+  cp Parameters.java Park/src/Main/Parameters.java
+  cp Parameters.java RepairArea/src/Main/Parameters.java
+  cp Parameters.java SupplierSite/src/Main/Parameters.java
+  cp Parameters.java GeneralRepInformation/src/Main/Parameters.java
+  echo -e "\n${SUCCESS}Parameters.java copied${NORMAL}"
+}
+
+function compileCode {
+  echo -e "\n${SYSTEM}Compiling the code...${NORMAL}\n"
+
+  cd GeneralRepInformation/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "General Repository Information ${SUCCESS}done${NORMAL}"
+  cd Lounge/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Lounge ${SUCCESS}done${NORMAL}"
+  cd OutsideWorld/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Outside World ${SUCCESS}done${NORMAL}"
+  cd Park/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Park ${SUCCESS}done${NORMAL}"
+  cd RepairArea/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "RepairArea ${SUCCESS}done${NORMAL}"
+  cd SupplierSite/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Supplier Site ${SUCCESS}done${NORMAL}"
+  cd Manager/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Manager ${SUCCESS}done${NORMAL}"
+  cd Mechanic/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Mechanic ${SUCCESS}done${NORMAL}"
+  cd Customer/
+  javac $(find . -name '*.java')
+  cd ..
+  echo -e "Customer ${SUCCESS}done${NORMAL}"
+}
+
+function executeCode {
+  echo -e "\n${SYSTEM}Executing the code...${NORMAL}\n"
+  cd GeneralRepInformation/src/
+  java Main &
+  cd ../..
+  echo -e "General Repository Information ${SUCCESS}done${NORMAL}"
+  cd Lounge/src/
+  java Main &
+  cd ../..
+  echo -e "Lounge ${SUCCESS}done${NORMAL}"
+  cd OutsideWorld/src/
+  java Main &
+  cd ../..
+  echo -e "Outside World ${SUCCESS}done${NORMAL}"
+  cd Park/src/
+  java Main &
+  cd ../..
+  echo -e "Park ${SUCCESS}done${NORMAL}"
+  cd RepairArea/src/
+  java Main &
+  cd ../..
+  echo -e "RepairArea ${SUCCESS}done${NORMAL}"
+  cd SupplierSite/src/
+  java Main &
+  cd ../..
+  echo -e "Supplier Site ${SUCCESS}done${NORMAL}"
+
+  sleep 1
+
+  cd Manager/src/
+  java Main &
+  cd ../..
+  echo -e "Manager ${SUCCESS}done${NORMAL}"
+  cd Mechanic/src/
+  java Main &
+  cd ../..
+  echo -e "Mechanic ${SUCCESS}done${NORMAL}"
+  cd Customer/src/
+  java Main &
+  cd ../..
+  echo -e "Customer ${SUCCESS}done${NORMAL}"
+
+}
+############# END OF FUNCTIONS ############
+echo -e "\n${WARNING}WARNING: Please execute as super user${NORMAL}"
+
+echo -e "\n${SYSTEM}Starting deployment...${NORMAL}"
 
 echo -e "\nChoose local or remote deployment"
 PS3="Choice: "
@@ -10,6 +144,7 @@ select opt in "${options[@]}"
 do
     case $opt in
         "Local deployment")
+            ########## LOCAL DEPLOYMENT ##########
             echo -e "\nChoose how you want to define the parameters"
             PS3="Choice: "
             options=("Parameters file" "Interactive" "Default values")
@@ -18,39 +153,94 @@ do
             do
                 case $op in
                     "Parameters file")
-                        #TODO
-                        break
-                        ;;
-                        
-                    "Interactive")
-                        #TODO
-                        break
-                        ;;
-                        
-                    "Default values")
-                        echo -e "\nThe default values are: "
-                        # TODO
-                        echo -e "\nDo you still want to continue?"
+                        ########## PARAMETERS FILE ##########
+                        echo -e "\n${WARNING}WARNING: Please write your parameters in the Parameters.java class!${NORMAL}\n"
+                        echo "Continue?"
                         PS3="Choice: "
                         options=("Yes" "No")
-                        
+
                         select op in "${options[@]}"
                         do
                             case $op in
                                 "Yes")
-                                    #TODO
+                                    if [ ! -f Parameters.java ]; then
+                                        echo -e "\n${ERROR}ERROR: File Parameters.java not found!${NORMAL}"
+                                        break
+                                    else
+                                        copyFile
+                                        compileCode
+                                        executeCode
+
+                                        echo -e "\n${SYSTEM}Executing...${NORMAL}"
+                                        wait
+                                        echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+                                    fi
                                     break
                                     ;;
-                                
+
                                 "No")
                                     break
                                     ;;
                             esac
                         done
-                        
                         break
                         ;;
-                        
+
+                    "Interactive")
+                        ############ INTERACTIVE ############
+                        #TODO
+                        break
+                        ;;
+
+                    "Default values")
+                        ############## DEFAULT ##############
+                        echo -e "\nThe default values are:"
+                        echo "  Lounge:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22460"
+                        echo "  Park:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22461"
+                        echo "  Outside World:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22462"
+                        echo "  Repair Area:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22463"
+                        echo "  Supplier Site:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22464"
+                        echo "  General Repository Information:"
+                        echo "   -host: localhost"
+                        echo "   -port: 22465"
+                        echo "  Number of Customers: 30"
+                        echo "  Number of Mechanics: 2"
+                        echo "  Number of Replacement Cars: 3"
+                        echo "  Number of Car Parts Types: 3"
+                        echo "  Car Parts in stock: 0 0 0"
+                        echo "  Maximum number of Car Parts: 1 1 1"
+
+                        echo -e "\nDo you still want to continue?"
+                        PS3="Choice: "
+                        options=("Yes" "No")
+
+                        select op in "${options[@]}"
+                        do
+                            case $op in
+                                "Yes")
+                                    #TODO WRITE DEFAULT ON PARAMETERS.JAVA, COPY AND CONTINUE
+                                    break
+                                    ;;
+
+                                "No")
+                                    break
+                                    ;;
+                            esac
+                        done
+
+                        break
+                        ;;
+
                     *)
                         echo "Invalid option $REPLY"
                         ;;
@@ -58,7 +248,7 @@ do
             done
             break
             ;;
-        
+
         "Remote deployment")
             echo -e "\nChoose how you want to define the parameters"
             PS3="Choice: "
@@ -71,19 +261,19 @@ do
                         #TODO
                         break
                         ;;
-                        
+
                     "Interactive")
                         #TODO
                         break
                         ;;
-                        
+
                     "Default values")
                         echo -e "\nThe default values are: "
                         #TODO
                         echo -e "\nDo you still want to continue?"
                         PS3="Choice: "
                         options=("Yes" "No")
-                        
+
                         select op in "${options[@]}"
                         do
                             case $op in
@@ -91,45 +281,33 @@ do
                                     #TODO
                                     break
                                     ;;
-                                
+
                                 "No")
                                     break
                                     ;;
                             esac
                         done
-                        
+
                         break
                         ;;
-                        
+
                     *)
                         echo "Invalid option $REPLY"
                         ;;
                 esac
             done
-            
+
             break
             ;;
-            
+
         *)
             echo "Invalid option $REPLY"
             ;;
-            
-    esac    
+
+    esac
 done
 
-#echo -e "\n${bold}* Copiar parâmetros de simulação *${normal}"
-#cp SimulationParameters/remote_SimulationParameters.java BettingCenter/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Broker/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java ControlCenter/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Horses/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Logger/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Paddock/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java RacingTrack/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Spectators/src/main/java/MainPackage/SimulationParameters.java
-#cp SimulationParameters/remote_SimulationParameters.java Stable/src/main/java/MainPackage/SimulationParameters.java
 
-
-###
 
 #echo -e "\n${bold}* Cópia do código a executar em cada nó *${normal}"
 
