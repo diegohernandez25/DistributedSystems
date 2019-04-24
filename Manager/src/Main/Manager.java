@@ -4,6 +4,7 @@ import Locals.Lounge;
 import Locals.OutsideWorld;
 import Locals.RepairArea;
 import Locals.SupplierSite;
+import Interfaces.*;
 
 public class Manager extends Thread
 {   /**
@@ -22,27 +23,26 @@ public class Manager extends Thread
      *
      *      @serialField lounge
      * */
-    private Lounge lounge;
+    private ManagerLounge lounge;
 
     /**
      *  SupplierSite
      *
      *      @serialField supplierSite
      * */
-    private SupplierSite supplierSite;
+    private ManagerSS supplierSite;
 
     /**
      * Repair Area
      * @serialField repairArea;
      * */
-    private RepairArea repairArea;
-
+    private ManagerRA repairArea;
 
     /**
      * Outside World
      * @serialField outsideWorld;
      * */
-    private OutsideWorld outsideWorld;
+    private ManagerOW outsideWorld;
 
     /**
      *  Instantiation of Manager Thread.
@@ -53,8 +53,8 @@ public class Manager extends Thread
      *      @param outsideWorld used Outside World
      *      @param repairArea used Repair Area
      * */
-    public Manager(int managerId, Lounge lounge, SupplierSite supplierSite,
-                   OutsideWorld outsideWorld, RepairArea repairArea)
+    public Manager(int managerId, ManagerLounge lounge, ManagerSS supplierSite,
+                   ManagerOW outsideWorld, ManagerRA repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;

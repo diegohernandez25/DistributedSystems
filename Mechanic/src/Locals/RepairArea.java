@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.MechanicRA;
 
 /**
  * Dedicated class to communicate with RepairArea using sockets.
  * */
-public class RepairArea {
+public class RepairArea implements MechanicRA {
     /**
      * Server Name
      * */

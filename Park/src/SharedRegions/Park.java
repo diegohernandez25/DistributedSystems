@@ -8,7 +8,7 @@ public class Park implements CustomerPark, MechanicPark {
     /**
     * Initialize General Repository Information
     */
-    private GeneralRepInformation gri;
+    private GriPark gri;
 
     /**
      *  Number of Replacement Cars
@@ -28,7 +28,7 @@ public class Park implements CustomerPark, MechanicPark {
      * @param numSlots - number of slots of the parking lot.
      * @param parkCars - parks that are already parked for default.
      * */
-    public Park(int numSlots, int[] parkCars, GeneralRepInformation gri)
+    public Park(int numSlots, int[] parkCars, GriPark gri)
     {
         this.gri = gri;
 

@@ -41,7 +41,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
     /**
     * Initialize General Repository Information
     */
-    private GeneralRepInformation gri;
+    private GriLounge gri;
 
     /**
      *  Current state of Manager
@@ -171,7 +171,7 @@ public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
      * @param replacementKeys - array with the replacement Keys.
      * @param numTypes - number of existing car types.
      * */
-    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GeneralRepInformation gri)
+    public Lounge(int numCustomers, int numMechanics,int[] replacementKeys, int numTypes, GriLounge gri)
     {
         this.gri = gri;
         gri.setNumReplacementParked(replacementKeys.length);

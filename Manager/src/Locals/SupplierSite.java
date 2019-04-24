@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.ManagerSS;
 
 /**
  * Dedicated class to communicate with SupplierSite using sockets.
  * */
-public class SupplierSite {
+public class SupplierSite implements ManagerSS {
     /**
      * Server Name
      * */

@@ -3,11 +3,12 @@ package GeneralRep;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.GriSS;
 
 /**
  * Dedicated class to communicate with RepairArea using sockets.
  * */
-public class GeneralRepInformation {
+public class GeneralRepInformation implements GriSS {
     /**
      * Server Name
      * */

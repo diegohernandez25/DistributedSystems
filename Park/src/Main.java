@@ -3,6 +3,7 @@ import SharedRegions.Park;
 import SharedRegions.ParkProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
 public class Main {
@@ -40,7 +41,7 @@ public class Main {
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys, gri);
+        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys, (GriPark) gri);
         ParkProxy parkProxy = new ParkProxy(park);
         sc = new ServerCom(PORT_NUM);
         sc.start();

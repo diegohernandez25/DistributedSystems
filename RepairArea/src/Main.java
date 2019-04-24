@@ -3,6 +3,7 @@ import SharedRegions.RepairArea;
 import SharedRegions.RepairAreaProxy;
 import SharedRegions.ServiceProvider;
 import Main.Parameters;
+import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
 public class Main {
@@ -46,7 +47,7 @@ public class Main {
 
         GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
-        RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, gri);
+        RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, (GriRA) gri);
         RepairAreaProxy repairAreaProxy = new RepairAreaProxy(repairArea);
         sc = new ServerCom(PORT_NUM);
         sc.start();

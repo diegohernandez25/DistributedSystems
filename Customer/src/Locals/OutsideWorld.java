@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.CustomerOW;
 
 /**
  * Dedicated class to communicate with OutsideWorld using sockets.
  * */
-public class OutsideWorld {
+public class OutsideWorld implements CustomerOW {
     /**
      * Server Name
      * */

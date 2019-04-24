@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.MechanicPark;
 
 /**
  * Dedicated class to communicate with Park using sockets.
  * */
-public class Park {
+public class Park implements MechanicPark {
     /**
      * Server Name
      * */

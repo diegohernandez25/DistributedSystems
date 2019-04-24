@@ -2,6 +2,7 @@ import Communication.ServerCom;
 import SharedRegions.Lounge;
 import SharedRegions.LoungeProxy;
 import SharedRegions.ServiceProvider;
+import Interfaces.*;
 import Main.Parameters;
 import GeneralRep.GeneralRepInformation;
 
@@ -52,7 +53,7 @@ public class Main {
         {   replacementCarKeys[i - numCustomers] = i;
         }
 
-        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, gri);
+        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, (GriLounge) gri);
         LoungeProxy loungeProxy = new LoungeProxy(lounge);
         sc = new ServerCom(PORT_NUM);
         sc.start();

@@ -2,71 +2,60 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c74d3e1-869e-4d44-bedf-17ca724da191" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Customer/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interfaces/GriLounge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Park/src/Interfaces/GriPark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../RepairArea/src/Interfaces/GriRA.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../SupplierSite/src/Interfaces/GriSS.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/out/production/Customer/Communication/Message$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/out/production/Customer/Communication/Message$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/out/production/Customer/Communication/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/out/production/Customer/Communication/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/out/production/Customer/Locals/Park.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/out/production/Customer/Locals/Park.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/out/production/Customer/Main/Customer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/out/production/Customer/Main/Customer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Customer/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Customer/src/Locals/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Locals/Lounge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Customer/src/Locals/OutsideWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Locals/OutsideWorld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/src/Locals/Park.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Locals/Park.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Customer/src/Main/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Customer/src/Main/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GeneralRepInformation/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../GeneralRepInformation/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../GeneralRepInformation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../GeneralRepInformation/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GeneralRepInformation/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Communication/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GeneralRepInformation/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../GeneralRepInformation/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GeneralRepInformation/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../GeneralRepInformation/log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lounge/GeneralRep/GeneralRepInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lounge/GeneralRep/GeneralRepInformation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Lounge/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lounge/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Lounge/SharedRegions/Lounge.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lounge/SharedRegions/Lounge.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GeneralRep/GeneralRepInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GeneralRep/GeneralRepInformation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SharedRegions/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedRegions/Lounge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/out/production/Manager/Communication/Message$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/out/production/Manager/Communication/Message$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/out/production/Manager/Communication/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/out/production/Manager/Communication/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Communication/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/out/production/Manager/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/out/production/Manager/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/out/production/Manager/Main/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/out/production/Manager/Main/Manager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/Lounge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/OutsideWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/OutsideWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/RepairArea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Locals/SupplierSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Locals/SupplierSite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/Main/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/Main/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Mechanic/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Communication/Message$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Communication/Message$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Communication/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Communication/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Locals/Park.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Locals/Park.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Main/Mechanic.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/out/production/Mechanic/Main/Mechanic.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Locals/Lounge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Locals/Lounge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Mechanic/src/Locals/Park.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Locals/Park.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Locals/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Locals/RepairArea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Mechanic/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Mechanic/src/Main/Mechanic.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Mechanic/src/Main/Mechanic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OutsideWorld/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../OutsideWorld/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/Communication/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../OutsideWorld/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../OutsideWorld/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Park/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/Communication/Message$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/Communication/Message$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/Communication/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/Communication/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/Interfaces/CustomerPark.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/Interfaces/CustomerPark.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/Interfaces/MechanicPark.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/Interfaces/MechanicPark.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/GeneralRep/GeneralRepInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/GeneralRep/GeneralRepInformation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/SharedRegions/Park.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/SharedRegions/Park.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/out/production/Park/SharedRegions/ParkProxy.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/out/production/Park/SharedRegions/ParkProxy.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/Communication/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/src/Interfaces/CustomerPark.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/Interfaces/CustomerPark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/src/Interfaces/MechanicPark.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/Interfaces/MechanicPark.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Park/src/GeneralRep/GeneralRepInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/GeneralRep/GeneralRepInformation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Park/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Park/src/SharedRegions/Park.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/SharedRegions/Park.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Park/src/SharedRegions/ParkProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Park/src/SharedRegions/ParkProxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RepairArea/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../RepairArea/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/GeneralRep/GeneralRepInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/GeneralRep/GeneralRepInformation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/SharedRegions/RepairArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/out/production/RepairArea/SharedRegions/RepairArea.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RepairArea/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../RepairArea/src/GeneralRep/GeneralRepInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/GeneralRep/GeneralRepInformation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../RepairArea/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../RepairArea/src/SharedRegions/RepairArea.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SupplierSite/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SupplierSite/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/GeneralRep/GeneralRepInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/GeneralRep/GeneralRepInformation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/SharedRegions/SupplierSite.class" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/out/production/SupplierSite/SharedRegions/SupplierSite.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/Communication/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/Communication/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SupplierSite/src/GeneralRep/GeneralRepInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/GeneralRep/GeneralRepInformation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SupplierSite/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SupplierSite/src/SharedRegions/SupplierSite.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SupplierSite/src/SharedRegions/SupplierSite.java" afterDir="false" />
     </list>
@@ -81,7 +70,52 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="351">
+              <caret line="55" column="106" selection-start-line="55" selection-start-column="106" selection-end-line="55" selection-end-column="106" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/SharedRegions/Lounge.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="615">
+              <caret line="44" selection-start-line="44" selection-end-line="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/GeneralRep/GeneralRepInformation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerLounge.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Interfaces/GriLounge.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -123,10 +157,10 @@
         <option value="$PROJECT_DIR$/src/SharedRegions/ServiceProvider.java" />
         <option value="$PROJECT_DIR$/src/SharedRegions/LoungeProxy.java" />
         <option value="$PROJECT_DIR$/src/Interfaces/CustomerLounge.java" />
-        <option value="$PROJECT_DIR$/src/SharedRegions/Lounge.java" />
         <option value="$PROJECT_DIR$/src/Communication/MessageType.java" />
         <option value="$PROJECT_DIR$/src/Communication/Message.java" />
         <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/SharedRegions/Lounge.java" />
         <option value="$PROJECT_DIR$/src/GeneralRep/GeneralRepInformation.java" />
       </list>
     </option>
@@ -214,6 +248,11 @@
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Interfaces" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -280,12 +319,12 @@
       <workItem from="1555972565749" duration="47000" />
       <workItem from="1555972658413" duration="2076000" />
       <workItem from="1556015057854" duration="659000" />
-      <workItem from="1556041618356" duration="3676000" />
+      <workItem from="1556041618356" duration="6202000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48997000" />
+    <option name="totallyTimeSpent" value="51523000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="-4" width="1368" height="773" extended-state="6" />
@@ -357,13 +396,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerLounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/EntitiesState/MechanicState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
@@ -382,13 +414,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
           <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/SharedRegions/Lounge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6255">
-          <caret line="419" column="4" selection-start-line="419" selection-start-column="4" selection-end-line="419" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -434,16 +459,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-315">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Communication/ClientCom.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="383">
@@ -476,10 +491,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/ManagerLounge.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Interfaces/GriLounge.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="55" column="106" selection-start-line="55" selection-start-column="106" selection-end-line="55" selection-end-column="106" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SharedRegions/Lounge.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/GeneralRep/GeneralRepInformation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="131" column="5" selection-start-line="131" selection-start-column="5" selection-end-line="131" selection-end-column="5" />
+        <state relative-caret-position="105">
+          <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="55" />
         </state>
       </provider>
     </entry>

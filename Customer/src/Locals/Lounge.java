@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.CustomerLounge;
 
 /**
  * Dedicated class to communicate with Lounge using sockets.
  * */
-public class Lounge {
+public class Lounge implements CustomerLounge {
     /**
      * Server Name
      * */

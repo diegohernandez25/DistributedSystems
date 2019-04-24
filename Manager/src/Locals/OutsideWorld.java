@@ -3,11 +3,12 @@ package Locals;
 import Communication.ClientCom;
 import Communication.Message;
 import Communication.MessageType;
+import Interfaces.ManagerOW;
 
 /**
  * Dedicated class to communicate with Lounge using sockets.
  * */
-public class OutsideWorld {
+public class OutsideWorld implements ManagerOW {
     /**
      * Server Name
      * */

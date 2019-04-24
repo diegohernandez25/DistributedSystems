@@ -3,6 +3,7 @@ package Main;
 import Locals.Lounge;
 import Locals.OutsideWorld;
 import Locals.Park;
+import Interfaces.*;
 
 public class Customer extends Thread{
     /**
@@ -61,17 +62,17 @@ public class Customer extends Thread{
     /**
      *  Park
      * */
-    private Park park;
+    private CustomerPark park;
 
     /**
      *  OutsideWorld
      * */
-    private OutsideWorld outsideWorld;
+    private CustomerOW outsideWorld;
 
     /**
      *  Lounge
      * */
-    private Lounge lounge;
+    private CustomerLounge lounge;
 
     /**
      * Customer constructor
@@ -79,7 +80,7 @@ public class Customer extends Thread{
      * @param requiresCar   - requires car flag.
      * @param car           - id of the car.
      * */
-    public Customer(int customerId, boolean requiresCar, int car, Park park, OutsideWorld outsideWorld, Lounge lounge)
+    public Customer(int customerId, boolean requiresCar, int car, CustomerPark park, CustomerOW outsideWorld, CustomerLounge lounge)
     {   this.customerId     = customerId;
         this.requiresCar    = requiresCar;
         this.hasCar         = true;

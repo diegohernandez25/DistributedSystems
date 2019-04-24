@@ -3,12 +3,12 @@ package SharedRegions;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
 
-public class SupplierSite<R> implements ManagerSS{
+public class SupplierSite<R> implements ManagerSS {
 
     /**
     * Initialize General Repository Information
     */
-    private GeneralRepInformation gri;
+    private GriSS gri;
 
     /**
      *      Stock
@@ -20,7 +20,7 @@ public class SupplierSite<R> implements ManagerSS{
      *  Instantiation of Supplier Site
      *  @param stockType number of total types of parts that are going to be available in stock
      * */
-    public SupplierSite(int stockType, GeneralRepInformation gri)
+    public SupplierSite(int stockType, GriSS gri)
     {
         this.gri = gri;
         this.stockType = stockType;

@@ -2,6 +2,7 @@ import Locals.Lounge;
 import Locals.Park;
 import Locals.RepairArea;
 import Main.Parameters;
+import Interfaces.*;
 import Main.Mechanic;
 
 public class Main {
@@ -15,7 +16,7 @@ public class Main {
 
         Mechanic[] mechanic = new Mechanic[NUM_MECHANICS];
         for(int i = 0; i<NUM_MECHANICS; i++)
-        {   mechanic[i] = new Mechanic(i,lounge,park,repairArea);
+        {   mechanic[i] = new Mechanic(i, (MechanicLounge) lounge, (MechanicPark) park, (MechanicRA) repairArea);
             mechanic[i].start();
         }
 

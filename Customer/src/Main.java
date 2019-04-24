@@ -2,6 +2,7 @@ import Locals.Lounge;
 import Locals.OutsideWorld;
 import Locals.Park;
 import Main.Parameters;
+import Interfaces.*;
 import Main.Customer;
 
 public class Main {
@@ -14,7 +15,7 @@ public class Main {
 
         Customer[] customer = new Customer[NUM_CUSTOMERS];
         for(int i =0; i <NUM_CUSTOMERS; i++)
-        {   customer[i] = new Customer(i, Math.random() < 0.5, i, park, outsideWorld, lounge);
+        {   customer[i] = new Customer(i, Math.random() < 0.5, i, (CustomerPark) park, (CustomerOW) outsideWorld, (CustomerLounge) lounge);
             customer[i].start();
         }
 
