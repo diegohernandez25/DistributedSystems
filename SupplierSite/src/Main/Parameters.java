@@ -12,7 +12,7 @@ public class Parameters {
   /**
   * General Repository Information port number
   */
-  public final static int griPort = 22460;
+  public final static int griPort = 22461;
 
   /**
   * Lounge host name
@@ -22,7 +22,7 @@ public class Parameters {
   /**
   * Lounge port number
   */
-  public final static int loungePort = 22461;
+  public final static int loungePort = 22462;
 
   /**
   * Park host name
@@ -32,7 +32,7 @@ public class Parameters {
   /**
   * Park port number
   */
-  public final static int parkPort = 22462;
+  public final static int parkPort = 22463;
 
   /**
   * Outside World host name
@@ -42,7 +42,7 @@ public class Parameters {
   /**
   * Outside World port number
   */
-  public final static int owPort = 22463;
+  public final static int owPort = 22464;
 
   /**
   * Repair Area host name
@@ -52,7 +52,7 @@ public class Parameters {
   /**
   * Repair Area port number
   */
-  public final static int raPort = 22464;
+  public final static int raPort = 22465;
 
   /**
   * Supplier Site host name
@@ -62,7 +62,7 @@ public class Parameters {
   /**
   * Supplier Site port number
   */
-  public final static int ssPort = 22465;
+  public final static int ssPort = 22466;
 
   /**
   * Manager host name
@@ -95,17 +95,17 @@ public class Parameters {
   public final static int numReplacementCars = 3;
 
   /**
-  * Total number of Car Parts types.
-  * */
-  public static final int numCarTypes = 3;
+  * Total number of Car Parts types
+  */
+  public final static int numCarTypes = 3;
 
   /**
-   * Car parts
-   */
-  public static final int[] carParts = {0, 0, 0};
+  * Car parts
+  */
+  public final static int[] carParts = {0, 0, 0};
 
   /**
-   * Maximum number of storage for each Car Part
-   */
-  public static final int[] maxCarParts = {1, 1, 1};
+  * Maximum number of storage for each Car Part
+  */
+  public final static int[] maxCarParts = {1, 1, 1};
 }

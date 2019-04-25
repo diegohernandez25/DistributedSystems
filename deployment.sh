@@ -22,36 +22,24 @@ MANAGERHOST=''
 MECHANICHOST=''
 CUSTOMERHOST=''
 
-# ENTITIES PORTS
+#ENTITIES PORTS
 GRIPORT=''
 LOUNGEPORT=''
 PARKPORT=''
 OWPORT=''
 RAPORT=''
 SSPORT=''
+
+#VARIABLES VALUES
+NUM_CUSTOMERS=''
+NUM_MECHANICS=''
+NUM_REPLACEMENT=''
+NUM_CAR_TYPES=''
+CAR_PARTS=''
+MAX_CAR_PARTS=''
 ############# END OF CONSTANTS ############
 
 ########### FUNCTIONS DEFINITION ##########
-function writeLocalDefault {
-  > test.java
-  echo "test" >> test.java
-}
-
-function writeLocalInteractive {
-  > test.java
-  echo "test" >> test.java
-}
-
-function writeRemoteDefault {
-  > test.java
-  echo "test" >> test.java
-}
-
-function writeRemoteInteractive {
-  > test.java
-  echo "test" >> test.java
-}
-
 function getMachines {
   while IFS='' read -r line || [[ -n "$line" ]]; do
       # Get General Repository Information machine
@@ -60,15 +48,6 @@ function getMachines {
         for i in "${MACHINE[@]}"; do
           if [[ $i == *"l040101"* ]]; then
             GRIHOST=$i
-          fi
-        done
-      fi
-      # Get General Repository Information port
-      if [[ $line == *"griPort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            GRIPORT=${i::-1}
           fi
         done
       fi
@@ -82,15 +61,6 @@ function getMachines {
           fi
         done
       fi
-      # Get Lounge port
-      if [[ $line == *"loungePort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            LOUNGEPORT=${i::-1}
-          fi
-        done
-      fi
 
       # Get Park machine
       if [[ $line == *"parkHost"* ]]; then
@@ -98,15 +68,6 @@ function getMachines {
         for i in "${MACHINE[@]}"; do
           if [[ $i == *"l040101"* ]]; then
             PARKHOST=$i
-          fi
-        done
-      fi
-      # Get Park port
-      if [[ $line == *"parkPort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            PARKPORT=${i::-1}
           fi
         done
       fi
@@ -120,15 +81,6 @@ function getMachines {
           fi
         done
       fi
-      # Get Outside World port
-      if [[ $line == *"owPort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            OWPORT=${i::-1}
-          fi
-        done
-      fi
 
       # Get Repair Area machine
       if [[ $line == *"raHost"* ]]; then
@@ -139,15 +91,6 @@ function getMachines {
           fi
         done
       fi
-      # Get Repair Area port
-      if [[ $line == *"raPort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            RAPORT=${i::-1}
-          fi
-        done
-      fi
 
       # Get Supplier Site machine
       if [[ $line == *"ssHost"* ]]; then
@@ -155,15 +98,6 @@ function getMachines {
         for i in "${MACHINE[@]}"; do
           if [[ $i == *"l040101"* ]]; then
             SSHOST=$i
-          fi
-        done
-      fi
-      # Get Supplier Site port
-      if [[ $line == *"ssPort"* ]]; then
-        IFS='= ' read -ra MACHINE <<< "$line"
-        for i in "${MACHINE[@]}"; do
-          if [[ $i == *"224"* ]]; then
-            SSPORT=${i::-1}
           fi
         done
       fi
@@ -198,6 +132,139 @@ function getMachines {
         done
       fi
   done < Parameters.java
+}
+
+function writeFile {
+  echo -e "\n${SYSTEM}Generating default Parameters.java file...${NORMAL}"
+
+  > Parameters.java
+  echo "package Main;" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "/**" >> Parameters.java
+  echo "* Parameters for the deployment of Assignment 2 on local or remote machines." >> Parameters.java
+  echo "*/" >> Parameters.java
+  echo "public class Parameters {" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * General Repository Information host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String griHost = \"${GRIHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * General Repository Information port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int griPort = ${GRIPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Lounge host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String loungeHost = \"${LOUNGEHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * Lounge port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int loungePort = ${LOUNGEPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Park host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String parkHost = \"${PARKHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * Park port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int parkPort = ${PARKPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Outside World host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String owHost = \"${OWHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * Outside World port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int owPort = ${OWPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Repair Area host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String raHost = \"${RAHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * Repair Area port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int raPort = ${RAPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Supplier Site host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String ssHost = \"${SSHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+  echo "  /**" >> Parameters.java
+  echo "  * Supplier Site port number" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int ssPort = ${SSPORT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Manager host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String managerHost = \"${MANAGERHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Mechanic host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String mechanicHost = \"${MECHANICHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Customer host name" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static String customerHost = \"${CUSTOMERHOST}\";" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Total number of Customers" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int numCustomers = ${NUM_CUSTOMERS};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Total number of Mechanics" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int numMechanics = ${NUM_MECHANICS};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Total number of Replacement Cars" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int numReplacementCars = ${NUM_REPLACEMENT};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Total number of Car Parts types" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int numCarTypes = ${NUM_CAR_TYPES};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Car parts" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int[] carParts = ${CAR_PARTS};" >> Parameters.java
+  echo "" >> Parameters.java
+
+  echo "  /**" >> Parameters.java
+  echo "  * Maximum number of storage for each Car Part" >> Parameters.java
+  echo "  */" >> Parameters.java
+  echo "  public final static int[] maxCarParts = ${MAX_CAR_PARTS};" >> Parameters.java
+  echo "}" >> Parameters.java
+
+  echo -e "\nDefault Parameters.java file ${SUCCESS}generated${NORMAL}"
 }
 
 function copyFile {
@@ -267,7 +334,7 @@ function compileCodeRemote {
 EOF
   echo -e "General Repository Information ${SUCCESS}compiled${NORMAL}"
   # Lounge
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${LOUNGEHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${LOUNGEHOST} << EOF
     cd Lounge/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -275,7 +342,7 @@ EOF
 EOF
   echo -e "Lounge ${SUCCESS}compiled${NORMAL}"
   # Park
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${PARKHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${PARKHOST} << EOF
     cd Park/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -283,7 +350,7 @@ EOF
 EOF
   echo -e "Park ${SUCCESS}compiled${NORMAL}"
   # Outside World
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${OWHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${OWHOST} << EOF
     cd OutsideWorld/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -291,7 +358,7 @@ EOF
 EOF
   echo -e "Outside World ${SUCCESS}compiled${NORMAL}"
   # Repair Area
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${RAHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${RAHOST} << EOF
     cd RepairArea/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -299,7 +366,7 @@ EOF
 EOF
   echo -e "Repair Area ${SUCCESS}compiled${NORMAL}"
   # Supplier Site
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${SSHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${SSHOST} << EOF
     cd SupplierSite/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -307,7 +374,7 @@ EOF
 EOF
   echo -e "Supplier Site ${SUCCESS}compiled${NORMAL}"
   # Manager
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${MANAGERHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${MANAGERHOST} << EOF
     cd Manager/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -315,7 +382,7 @@ EOF
 EOF
   echo -e "Manager ${SUCCESS}compiled${NORMAL}"
   # Mechanic
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${MECHANICHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${MECHANICHOST} << EOF
     cd Mechanic/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -323,7 +390,7 @@ EOF
 EOF
   echo -e "Mechanic ${SUCCESS}compiled${NORMAL}"
   # Customer
-  sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -T -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} << EOF
     cd Customer/
     find . -name "*.java" > temp.txt
   	javac @temp.txt
@@ -379,57 +446,96 @@ function executeCodeRemote {
   echo -e "\n${SYSTEM}Executing the code...${NORMAL}\n"
 
   # General Repository Information
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${GRIHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${GRIHOST} << EOF
     cd GeneralRepInformation/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "General Repository Information ${SUCCESS}running${NORMAL}"
   # Lounge
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${LOUNGEHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${LOUNGEHOST} << EOF
     cd Lounge/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Lounge ${SUCCESS}running${NORMAL}"
   # Park
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${PARKHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${PARKHOST} << EOF
     cd Park/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Park ${SUCCESS}running${NORMAL}"
   # Outside World
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${OWHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${OWHOST} << EOF
     cd OutsideWorld/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Outside World ${SUCCESS}running${NORMAL}"
   # Repair Area
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${RAHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${RAHOST} << EOF
     cd RepairArea/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Repair Area ${SUCCESS}running${NORMAL}"
   # Supplier Site
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${SSHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${SSHOST} << EOF
     cd SupplierSite/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Supplier Site ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   # Manager
-  sshpass -p ${PASSWORD} ssh  -o StrictHostKeyChecking=no sd0406@${MANAGERHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${MANAGERHOST} << EOF
     cd Manager/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Manager ${SUCCESS}running${NORMAL}"
   # Mechanic
-  sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@${MECHANICHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${MECHANICHOST} << EOF
     cd Mechanic/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar &
+    exit
 EOF
   echo -e "Mechanic ${SUCCESS}running${NORMAL}"
   # Customer
-  sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} << EOF
+  sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} << EOF
     cd Customer/src/
-    nohup java Main &
+    rm Main.jar
+    find . -name "*.class" > temp.txt
+    jar -cvfe Main.jar Main @temp.txt > /dev/null
+    java -jar Main.jar
+    exit
 EOF
   echo -e "Customer ${SUCCESS}running${NORMAL}"
 }
@@ -493,6 +599,16 @@ EOF
   echo -e "Customer ${SUCCESS}copied${NORMAL}"
 }
 
+function getLog {
+  echo -e "\n${SYSTEM}Downloading log.txt...${NORMAL}\n"
+
+  sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@${GRIHOST} << EOF
+    cd GeneralRepInformation/
+    get -r log.txt
+    bye
+EOF
+}
+
 function deleteMachine {
   echo -e "\n${SYSTEM}Cleaning the code from the machines...${NORMAL}\n"
 
@@ -523,7 +639,6 @@ function deleteMachine {
   # Customer
   sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} "rm -rf Customer"
   echo -e "Customer ${SUCCESS}removed${NORMAL}"
-
 }
 ############# END OF FUNCTIONS ############
 
@@ -533,25 +648,179 @@ echo -e "\n${WARNING}WARNING: Please execute as super user and make sure you hav
 
 echo -e "\n${SYSTEM}Starting deployment...${NORMAL}"
 
-echo -e "\nChoose local or remote deployment"
-PS3="Choice: "
-options=("Local deployment" "Remote deployment")
-
-select opt in "${options[@]}"
+while true
 do
-    case $opt in
-        "Local deployment")
-            ########## LOCAL DEPLOYMENT ##########
-            echo -e "\nChoose how you want to define the parameters"
-            PS3="Choice: "
-            options=("Parameters file" "Interactive" "Default values")
+  echo -e "\nChoose local or remote deployment"
+  PS3="Choice: "
+  options=("Local deployment" "Remote deployment" "Exit")
 
-            select op in "${options[@]}"
-            do
-                case $op in
-                    "Parameters file")
+  select opt in "${options[@]}"
+  do
+      case $opt in
+          "Local deployment")
+              ########## LOCAL DEPLOYMENT ##########
+              echo -e "\nChoose how you want to define the parameters"
+              PS3="Choice: "
+              options=("Parameters file" "Interactive" "Default values" "Back")
+
+              select op in "${options[@]}"
+              do
+                  case $op in
+                      "Parameters file")
+                          ########## PARAMETERS FILE ##########
+                          echo -e "\n${WARNING}WARNING: Please write your parameters in the Parameters.java file, and do not change the variables names!${NORMAL}\n"
+                          echo "Continue?"
+                          PS3="Choice: "
+                          options=("Yes" "No")
+
+                          select op in "${options[@]}"
+                          do
+                              case $op in
+                                  "Yes")
+                                      if [ ! -f Parameters.java ]; then
+                                          echo -e "\n${ERROR}ERROR: File Parameters.java not found!${NORMAL}"
+                                          break
+                                      else
+                                          copyFile
+                                          compileCodeLocal
+                                          executeCodeLocal
+
+                                          echo -e "\n${SYSTEM}Executing...${NORMAL}"
+                                          wait
+                                          echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+                                      fi
+                                      break
+                                      ;;
+
+                                  "No")
+                                      break
+                                      ;;
+
+                                  *)
+                                      echo "Invalid option $REPLY"
+                                      ;;
+                              esac
+                          done
+                          break
+                          ;;
+
+                      "Interactive")
+                          ############ INTERACTIVE ############
+                          #TODO
+                          break
+                          ;;
+
+                      "Default values")
+                          ############## DEFAULT ##############
+                          echo -e "\nThe default values are:"
+                          echo "  General Repository Information:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22460"
+                          echo "  Lounge:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22461"
+                          echo "  Park:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22462"
+                          echo "  Outside World:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22463"
+                          echo "  Repair Area:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22464"
+                          echo "  Supplier Site:"
+                          echo "   -host: localhost"
+                          echo "   -port: 22465"
+                          echo "  Manager:"
+                          echo "   -host: localhost"
+                          echo "  Mechanic:"
+                          echo "   -host: localhost"
+                          echo "  Customer:"
+                          echo "   -host: localhost"
+                          echo "  Number of Customers: 30"
+                          echo "  Number of Mechanics: 2"
+                          echo "  Number of Replacement Cars: 3"
+                          echo "  Number of Car Parts Types: 3"
+                          echo "  Car Parts in stock: 0 0 0"
+                          echo "  Maximum number of Car Parts: 1 1 1"
+
+                          echo -e "\nDo you still want to continue?"
+                          PS3="Choice: "
+                          options=("Yes" "No")
+
+                          select op in "${options[@]}"
+                          do
+                              case $op in
+                                  "Yes")
+                                      GRIHOST="localhost"
+                                      GRIPORT="22460"
+                                      LOUNGEHOST="localhost"
+                                      LOUNGEPORT="22461"
+                                      PARKHOST="localhost"
+                                      PARKPORT="22462"
+                                      OWHOST="localhost"
+                                      OWPORT="22463"
+                                      RAHOST="localhost"
+                                      RAPORT="22464"
+                                      SSHOST="localhost"
+                                      SSPORT="22465"
+                                      MANAGERHOST="localhost"
+                                      MECHANICHOST="localhost"
+                                      CUSTOMERHOST="localhost"
+
+                                      NUM_CUSTOMERS="30"
+                                      NUM_MECHANICS="2"
+                                      NUM_REPLACEMENT="3"
+                                      NUM_CAR_TYPES="3"
+                                      CAR_PARTS="{0, 0, 0}"
+                                      MAX_CAR_PARTS="{1, 1, 1}"
+
+                                      writeFile
+
+                                      copyFile
+                                      compileCodeLocal
+                                      executeCodeLocal
+
+                                      echo -e "\n${SYSTEM}Executing...${NORMAL}"
+                                      wait
+                                      echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                                      break
+                                      ;;
+
+                                  "No")
+                                      break
+                                      ;;
+                              esac
+                          done
+
+                          break
+                          ;;
+
+                      "Back")
+                          break
+                          ;;
+
+                      *)
+                          echo "Invalid option $REPLY"
+                          ;;
+                  esac
+              done
+              break
+              ;;
+
+          "Remote deployment")
+              ########## REMOTE DEPLOYMENT ##########
+              echo -e "\nChoose how you want to define the parameters"
+              PS3="Choice: "
+              options=("Parameters file" "Interactive" "Default values" "Back")
+
+              select op in "${options[@]}"
+              do
+                  case $op in
+                      "Parameters file")
                         ########## PARAMETERS FILE ##########
-                        echo -e "\n${WARNING}WARNING: Please write your parameters in the Parameters.java class!${NORMAL}\n"
+                        echo -e "\n${WARNING}WARNING: Please write your parameters in the Parameters.java file, and do not change the variables names!${NORMAL}\n"
                         echo "Continue?"
                         PS3="Choice: "
                         options=("Yes" "No")
@@ -565,12 +834,56 @@ do
                                         break
                                     else
                                         copyFile
-                                        compileCodeLocal
-                                        executeCodeLocal
+                                        getMachines
+                                        deleteMachine
+                                        copyMachine
+                                        compileCodeRemote
+                                        executeCodeRemote
 
-                                        echo -e "\n${SYSTEM}Executing...${NORMAL}"
                                         wait
                                         echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                                        echo -e "\nDo you want to download the log file?"
+                                        PS3="Choice: "
+                                        options=("Yes" "No")
+                                        select op in "${options[@]}"
+                                        do
+                                            case $op in
+                                                "Yes")
+                                                  getLog
+
+                                                  echo -e "\nDo you want to delete the code from the machines?"
+                                                  PS3="Choice: "
+                                                  options=("Yes" "No")
+                                                  select op in "${options[@]}"
+                                                  do
+                                                      case $op in
+                                                          "Yes")
+                                                              deleteMachine
+                                                              break
+                                                              ;;
+
+                                                          "No")
+                                                              break
+                                                              ;;
+
+                                                          *)
+                                                              echo "Invalid option $REPLY"
+                                                              ;;
+                                                      esac
+                                                  done
+                                                  break
+                                                  ;;
+
+                                                "No")
+                                                  break
+                                                  ;;
+
+                                                *)
+                                                  echo "Invalid option $REPLY"
+                                                  ;;
+                                            esac
+                                        done
                                     fi
                                     break
                                     ;;
@@ -580,100 +893,84 @@ do
                                     ;;
 
                                 *)
-                                    echo "Invalid option $REPLY"
-                                    ;;
+                                  echo "Invalid option $REPLY"
+                                  ;;
                             esac
                         done
                         break
                         ;;
 
-                    "Interactive")
-                        ############ INTERACTIVE ############
-                        #TODO
-                        break
-                        ;;
+                      "Interactive")
+                          #TODO
+                          break
+                          ;;
 
-                    "Default values")
-                        ############## DEFAULT ##############
-                        echo -e "\nThe default values are:"
-                        echo "  Lounge:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22460"
-                        echo "  Park:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22461"
-                        echo "  Outside World:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22462"
-                        echo "  Repair Area:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22463"
-                        echo "  Supplier Site:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22464"
-                        echo "  General Repository Information:"
-                        echo "   -host: localhost"
-                        echo "   -port: 22465"
-                        echo "  Number of Customers: 30"
-                        echo "  Number of Mechanics: 2"
-                        echo "  Number of Replacement Cars: 3"
-                        echo "  Number of Car Parts Types: 3"
-                        echo "  Car Parts in stock: 0 0 0"
-                        echo "  Maximum number of Car Parts: 1 1 1"
+                      "Default values")
+                          ############## DEFAULT ##############
+                          echo -e "\nThe default values are:"
+                          echo "  General Repository Information:"
+                          echo "   -host: l040101-ws01.ua.pt"
+                          echo "   -port: 22461"
+                          echo "  Lounge:"
+                          echo "   -host: l040101-ws02.ua.pt"
+                          echo "   -port: 22462"
+                          echo "  Park:"
+                          echo "   -host: l040101-ws03.ua.pt"
+                          echo "   -port: 22463"
+                          echo "  Outside World:"
+                          echo "   -host: l040101-ws04.ua.pt"
+                          echo "   -port: 22464"
+                          echo "  Repair Area:"
+                          echo "   -host: l040101-ws05.ua.pt"
+                          echo "   -port: 22465"
+                          echo "  Supplier Site:"
+                          echo "   -host: l040101-ws06.ua.pt"
+                          echo "   -port: 22466"
+                          echo "  Manager:"
+                          echo "   -host: l040101-ws07.ua.pt"
+                          echo "  Mechanic:"
+                          echo "   -host: l040101-ws08.ua.pt"
+                          echo "  Customer:"
+                          echo "   -host: l040101-ws09.ua.pt"
+                          echo "  Number of Customers: 30"
+                          echo "  Number of Mechanics: 2"
+                          echo "  Number of Replacement Cars: 3"
+                          echo "  Number of Car Parts Types: 3"
+                          echo "  Car Parts in stock: 0 0 0"
+                          echo "  Maximum number of Car Parts: 1 1 1"
 
-                        echo -e "\nDo you still want to continue?"
-                        PS3="Choice: "
-                        options=("Yes" "No")
+                          echo -e "\nDo you still want to continue?"
+                          PS3="Choice: "
+                          options=("Yes" "No")
 
-                        select op in "${options[@]}"
-                        do
-                            case $op in
-                                "Yes")
-                                    #TODO WRITE DEFAULT ON PARAMETERS.JAVA, COPY AND CONTINUE
-                                    break
-                                    ;;
+                          select op in "${options[@]}"
+                          do
+                              case $op in
+                                  "Yes")
+                                      GRIHOST="l040101-ws01.ua.pt"
+                                      GRIPORT="22461"
+                                      LOUNGEHOST="l040101-ws02.ua.pt"
+                                      LOUNGEPORT="22462"
+                                      PARKHOST="l040101-ws03.ua.pt"
+                                      PARKPORT="22463"
+                                      OWHOST="l040101-ws04.ua.pt"
+                                      OWPORT="22464"
+                                      RAHOST="l040101-ws05.ua.pt"
+                                      RAPORT="22465"
+                                      SSHOST="l040101-ws06.ua.pt"
+                                      SSPORT="22466"
+                                      MANAGERHOST="l040101-ws07.ua.pt"
+                                      MECHANICHOST="l040101-ws08.ua.pt"
+                                      CUSTOMERHOST="l040101-ws09.ua.pt"
 
-                                "No")
-                                    break
-                                    ;;
-                            esac
-                        done
+                                      NUM_CUSTOMERS="30"
+                                      NUM_MECHANICS="2"
+                                      NUM_REPLACEMENT="3"
+                                      NUM_CAR_TYPES="3"
+                                      CAR_PARTS="{0, 0, 0}"
+                                      MAX_CAR_PARTS="{1, 1, 1}"
 
-                        break
-                        ;;
-
-                    *)
-                        echo "Invalid option $REPLY"
-                        ;;
-                esac
-            done
-            break
-            ;;
-
-        "Remote deployment")
-            ########## REMOTE DEPLOYMENT ##########
-            echo -e "\nChoose how you want to define the parameters"
-            PS3="Choice: "
-            options=("Parameters file" "Interactive" "Default values")
-
-            select op in "${options[@]}"
-            do
-                case $op in
-                    "Parameters file")
-                      ########## PARAMETERS FILE ##########
-                      echo -e "\n${WARNING}WARNING: Please write your parameters in the Parameters.java class!${NORMAL}\n"
-                      echo "Continue?"
-                      PS3="Choice: "
-                      options=("Yes" "No")
-
-                      select op in "${options[@]}"
-                      do
-                          case $op in
-                              "Yes")
-                                  if [ ! -f Parameters.java ]; then
-                                      echo -e "\n${ERROR}ERROR: File Parameters.java not found!${NORMAL}"
-                                      break
-                                  else
+                                      writeFile
                                       copyFile
                                       getMachines
                                       deleteMachine
@@ -681,91 +978,83 @@ do
                                       compileCodeRemote
                                       executeCodeRemote
 
-                                      echo -e "\n${SYSTEM}Executing...${NORMAL}"
                                       wait
                                       echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
 
-                                      echo -e "\nDo you want to delete the code from the machines?"
+                                      echo -e "\nDo you want to download the log file?"
                                       PS3="Choice: "
                                       options=("Yes" "No")
                                       select op in "${options[@]}"
                                       do
                                           case $op in
                                               "Yes")
-                                                  deleteMachine
-                                                  break
-                                                  ;;
+                                                getLog
+
+                                                echo -e "\nDo you want to delete the code from the machines?"
+                                                PS3="Choice: "
+                                                options=("Yes" "No")
+                                                select op in "${options[@]}"
+                                                do
+                                                    case $op in
+                                                        "Yes")
+                                                            deleteMachine
+                                                            break
+                                                            ;;
+
+                                                        "No")
+                                                            break
+                                                            ;;
+
+                                                        *)
+                                                            echo "Invalid option $REPLY"
+                                                            ;;
+                                                    esac
+                                                done
+                                                break
+                                                ;;
 
                                               "No")
-                                                  break
-                                                  ;;
+                                                break
+                                                ;;
 
                                               *)
-                                                  echo "Invalid option $REPLY"
-                                                  ;;
+                                                echo "Invalid option $REPLY"
+                                                ;;
                                           esac
                                       done
-                                  fi
-                                  break
-                                  ;;
+                                      break
+                                      ;;
 
-                              "No")
-                                  break
-                                  ;;
+                                  "No")
+                                      break
+                                      ;;
+                              esac
+                          done
 
-                              *)
-                                echo "Invalid option $REPLY"
-                                ;;
-                          esac
-                      done
-                      break
-                      ;;
+                          break
+                          ;;
 
-                    "Interactive")
-                        #TODO
-                        break
-                        ;;
+                      "Back")
+                          break
+                          ;;
 
-                    "Default values")
-                        echo -e "\nThe default values are: "
-                        #TODO
-                        echo -e "\nDo you still want to continue?"
-                        PS3="Choice: "
-                        options=("Yes" "No")
+                      *)
+                          echo "Invalid option $REPLY"
+                          ;;
+                  esac
+              done
 
-                        select op in "${options[@]}"
-                        do
-                            case $op in
-                                "Yes")
-                                    #TODO
-                                    break
-                                    ;;
+              break
+              ;;
 
-                                "No")
-                                    break
-                                    ;;
+          "Exit")
+              break 2
+              ;;
 
-                                *)
-                                    echo "Invalid option $REPLY"
-                                    ;;
-                            esac
-                        done
+          *)
+              echo "Invalid option $REPLY"
+              ;;
 
-                        break
-                        ;;
-
-                    *)
-                        echo "Invalid option $REPLY"
-                        ;;
-                esac
-            done
-
-            break
-            ;;
-
-        *)
-            echo "Invalid option $REPLY"
-            ;;
-
-    esac
+      esac
+  done
 done
