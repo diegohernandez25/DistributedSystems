@@ -27,7 +27,7 @@ public class Main {
      * */
     public static void main(String[] args)
     {
-        System.out.println("Starting...");
+        System.out.println("Park starting...");
 
         ServerCom sc, sci;
         ServiceProvider sp;
@@ -50,6 +50,6 @@ public class Main {
                 sp.start();
             } catch (SocketTimeoutException e) {}
         }
-        System.out.println("Goodbye!");
+        System.out.println("Park finished!");
     }
 }

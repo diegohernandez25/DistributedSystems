@@ -2,11 +2,12 @@ import Communication.ServerCom;
 import SharedRegions.GeneralRepInformation;
 import SharedRegions.GeneralRepInformationProxy;
 import SharedRegions.ServiceProvider;
+import Main.Parameters;
 
 import java.net.SocketTimeoutException;
 
 public class Main {
-    private static final int PORT_NUM = 22465;  //TODO: Replace by port number.
+    private static final int PORT_NUM = Parameters.griPort;
 
     /**
      * Number of customers
@@ -39,7 +40,7 @@ public class Main {
      * */
     public static void main(String[] args)
     {
-        System.out.println("Starting...");
+        System.out.println("General Repository Information starting...");
 
         ServerCom sc, sci;
         ServiceProvider sp;
@@ -54,6 +55,6 @@ public class Main {
                 sp.start();
             } catch (SocketTimeoutException e) {}
         }
-        System.out.println("Goodbye!");
+        System.out.println("General Repository Information finished!");
     }
 }

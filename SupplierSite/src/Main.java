@@ -21,7 +21,7 @@ public class Main {
      * @param args  arguments.
      * */
     public static void main(String[] args)
-    {   System.out.println("Starting...");
+    {   System.out.println("Supplier Site starting...");
         ServerCom sc, sci;
         ServiceProvider sp;
 
@@ -39,6 +39,6 @@ public class Main {
             } catch (SocketTimeoutException e) { }
 
         }
-        System.out.println("Goodbye!");
+        System.out.println("Supplier Site finished!");
     }
 }

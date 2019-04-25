@@ -20,7 +20,7 @@ public class Main {
      * */
     public static void main(String[] args)
     {
-        System.out.println("Starting...");
+        System.out.println("Outside World starting...");
         ServerCom sc, sci;
         ServiceProvider sp;
         OutsideWorld outsideWorld = new OutsideWorld(numCustomers);
@@ -34,6 +34,6 @@ public class Main {
                 sp.start();
             } catch (SocketTimeoutException e) {}
         }
-        System.out.println("Goodbye!");
+        System.out.println("Outside World finished!");
     }
 }
