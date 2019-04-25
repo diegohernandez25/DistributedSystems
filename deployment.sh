@@ -282,6 +282,45 @@ function copyFile {
 }
 
 function compileCodeLocal {
+  echo -e "\n${SYSTEM}Removing previous compilations...${NORMAL}\n"
+
+  cd GeneralRepInformation/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "General Repository Information ${SUCCESS}cleaned${NORMAL}"
+  cd Lounge/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Lounge ${SUCCESS}cleaned${NORMAL}"
+  cd OutsideWorld/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Park ${SUCCESS}cleaned${NORMAL}"
+  cd RepairArea/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Outside World ${SUCCESS}cleaned${NORMAL}"
+  cd Park/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "RepairArea ${SUCCESS}cleaned${NORMAL}"
+  cd SupplierSite/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Supplier Site ${SUCCESS}cleaned${NORMAL}"
+  cd Manager/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Manager ${SUCCESS}cleaned${NORMAL}"
+  cd Mechanic/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Mechanic ${SUCCESS}cleaned${NORMAL}"
+  cd Customer/
+  find src -type f -name "*.class" -delete
+  cd ..
+  echo -e "Customer ${SUCCESS}cleaned${NORMAL}"
+
   echo -e "\n${SYSTEM}Compiling the code...${NORMAL}\n"
 
   cd GeneralRepInformation/
@@ -405,6 +444,9 @@ function executeCodeLocal {
   java Main &
   cd ../..
   echo -e "General Repository Information ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   cd Lounge/src/
   java Main &
   cd ../..
@@ -432,10 +474,16 @@ function executeCodeLocal {
   java Main &
   cd ../..
   echo -e "Manager ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   cd Mechanic/src/
   java Main &
   cd ../..
   echo -e "Mechanic ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   cd Customer/src/
   java Main &
   cd ../..
@@ -455,6 +503,9 @@ function executeCodeRemote {
     exit
 EOF
   echo -e "General Repository Information ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   # Lounge
   sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${LOUNGEHOST} << EOF
     cd Lounge/src/
@@ -518,6 +569,9 @@ EOF
     exit
 EOF
   echo -e "Manager ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   # Mechanic
   sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${MECHANICHOST} << EOF
     cd Mechanic/src/
@@ -528,6 +582,9 @@ EOF
     exit
 EOF
   echo -e "Mechanic ${SUCCESS}running${NORMAL}"
+
+  sleep 1
+
   # Customer
   sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} << EOF
     cd Customer/src/
@@ -607,6 +664,8 @@ function getLog {
     get -r log.txt
     bye
 EOF
+
+  echo -e "Log ${SUCCESS}obtained${NORMAL}"
 }
 
 function deleteMachine {
@@ -640,9 +699,104 @@ function deleteMachine {
   sshpass -p ${PASSWORD} ssh -t -o StrictHostKeyChecking=no sd0406@${CUSTOMERHOST} "rm -rf Customer"
   echo -e "Customer ${SUCCESS}removed${NORMAL}"
 }
-############# END OF FUNCTIONS ############
 
-# TODO: back/exit; get log file
+function getVarsLocal {
+  echo -e "\nEnter the values for each parameter:"
+
+  GRIHOST="localhost"
+  read -p "  General Repository Information port number: " GRIPORT
+  LOUNGEHOST="localhost"
+  read -p "  Lounge port number: " LOUNGEPORT
+  PARKHOST="localhost"
+  read -p "  Park port number: " PARKPORT
+  OWHOST="localhost"
+  read -p "  Outside World port number: " OWPORT
+  RAHOST="localhost"
+  read -p "  Repair Area port number: " RAPORT
+  SSHOST="localhost"
+  read -p "  Supplier Site port number: " SSPORT
+  MANAGERHOST="localhost"
+  MECHANICHOST="localhost"
+  CUSTOMERHOST="localhost"
+  read -p "  Number of Customers: " NUM_CUSTOMERS
+  read -p "  Number of Mechanics: " NUM_MECHANICS
+  read -p "  Number of Replacement Cars: " NUM_REPLACEMENT
+  read -p "  Number of Car Parts types: " NUM_CAR_TYPES
+
+  CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Car Part $i starting stock: " N
+      if [[ $i == 1 ]]; then
+        CAR_PARTS="$CAR_PARTS$N"
+      else
+        CAR_PARTS="$CAR_PARTS, $N"
+      fi
+  done
+  CAR_PARTS="$CAR_PARTS}"
+
+  MAX_CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Maximum number of stock Car Part $i can have: " N
+      if [[ $i == 1 ]]; then
+        MAX_CAR_PARTS="$MAX_CAR_PARTS$N"
+      else
+        MAX_CAR_PARTS="$MAX_CAR_PARTS, $N"
+      fi
+  done
+  MAX_CAR_PARTS="$MAX_CAR_PARTS}"
+}
+
+function getVarsRemote {
+  echo -e "\nEnter the values for each parameter:"
+
+  read -p "  General Repository Information host name: " GRIHOST
+  read -p "  General Repository Information port number: " GRIPORT
+  read -p "  Lounge host name: " LOUNGEHOST
+  read -p "  Lounge port number: " LOUNGEPORT
+  read -p "  Park host name: " PARKHOST
+  read -p "  Park port number: " PARKPORT
+  read -p "  Outside World host name: " OWHOST
+  read -p "  Outside World port number: " OWPORT
+  read -p "  Repair Area host name: " RAHOST
+  read -p "  Repair Area port number: " RAPORT
+  read -p "  Supplier Site host name: " SSHOST
+  read -p "  Supplier Site port number: " SSPORT
+  read -p "  Manager host name: " MANAGERHOST
+  read -p "  Mechanic host name: " MECHANICHOST
+  read -p "  Customer host name: " CUSTOMERHOST
+  echo ""
+  read -p "  Number of Customers: " NUM_CUSTOMERS
+  read -p "  Number of Mechanics: " NUM_MECHANICS
+  read -p "  Number of Replacement Cars: " NUM_REPLACEMENT
+  read -p "  Number of Car Parts types: " NUM_CAR_TYPES
+
+  CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Car Part $i starting stock: " N
+      if [[ $i == 1 ]]; then
+        CAR_PARTS="$CAR_PARTS$N"
+      else
+        CAR_PARTS="$CAR_PARTS, $N"
+      fi
+  done
+  CAR_PARTS="$CAR_PARTS}"
+
+  MAX_CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Maximum number of stock Car Part $i can have: " N
+      if [[ $i == 1 ]]; then
+        MAX_CAR_PARTS="$MAX_CAR_PARTS$N"
+      else
+        MAX_CAR_PARTS="$MAX_CAR_PARTS, $N"
+      fi
+  done
+  MAX_CAR_PARTS="$MAX_CAR_PARTS}"
+}
+############# END OF FUNCTIONS ############
 
 echo -e "\n${WARNING}WARNING: Please execute as super user and make sure you have sshpass installed!${NORMAL}"
 
@@ -677,7 +831,7 @@ do
                           do
                               case $op in
                                   "Yes")
-                                      if [ ! -f Parameters.java ]; then
+                                      if [[ ! -f Parameters.java ]]; then
                                           echo -e "\n${ERROR}ERROR: File Parameters.java not found!${NORMAL}"
                                           break
                                       else
@@ -706,7 +860,17 @@ do
 
                       "Interactive")
                           ############ INTERACTIVE ############
-                          #TODO
+                          getVarsLocal
+                          writeFile
+
+                          copyFile
+                          compileCodeLocal
+                          executeCodeLocal
+
+                          echo -e "\n${SYSTEM}Executing...${NORMAL}"
+                          wait
+                          echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
                           break
                           ;;
 
@@ -791,9 +955,12 @@ do
                                   "No")
                                       break
                                       ;;
+
+                                  *)
+                                      echo "Invalid option $REPLY"
+                                      ;;
                               esac
                           done
-
                           break
                           ;;
 
@@ -829,61 +996,68 @@ do
                         do
                             case $op in
                                 "Yes")
-                                    if [ ! -f Parameters.java ]; then
+                                    if [[ ! -f Parameters.java ]]; then
                                         echo -e "\n${ERROR}ERROR: File Parameters.java not found!${NORMAL}"
                                         break
                                     else
-                                        copyFile
                                         getMachines
-                                        deleteMachine
-                                        copyMachine
-                                        compileCodeRemote
-                                        executeCodeRemote
 
-                                        wait
-                                        echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+                                        if [[ $GRIHOST == *"localhost"* ]]; then
+                                          echo "\n${ERROR}ERROR: File Parameters.java is likely to be run locally!${NORMAL}"
+                                          break
+                                        else
 
-                                        echo -e "\nDo you want to download the log file?"
-                                        PS3="Choice: "
-                                        options=("Yes" "No")
-                                        select op in "${options[@]}"
-                                        do
-                                            case $op in
-                                                "Yes")
-                                                  getLog
+                                          copyFile
+                                          deleteMachine
+                                          copyMachine
+                                          compileCodeRemote
+                                          executeCodeRemote
 
-                                                  echo -e "\nDo you want to delete the code from the machines?"
-                                                  PS3="Choice: "
-                                                  options=("Yes" "No")
-                                                  select op in "${options[@]}"
-                                                  do
-                                                      case $op in
-                                                          "Yes")
-                                                              deleteMachine
-                                                              break
-                                                              ;;
+                                          wait
+                                          echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
 
-                                                          "No")
-                                                              break
-                                                              ;;
+                                          echo -e "\nDo you want to download the log file?"
+                                          PS3="Choice: "
+                                          options=("Yes" "No")
+                                          select op in "${options[@]}"
+                                          do
+                                              case $op in
+                                                  "Yes")
+                                                    getLog
 
-                                                          *)
-                                                              echo "Invalid option $REPLY"
-                                                              ;;
-                                                      esac
-                                                  done
-                                                  break
-                                                  ;;
+                                                    echo -e "\nDo you want to delete the code from the machines?"
+                                                    PS3="Choice: "
+                                                    options=("Yes" "No")
+                                                    select op in "${options[@]}"
+                                                    do
+                                                        case $op in
+                                                            "Yes")
+                                                                deleteMachine
+                                                                break
+                                                                ;;
 
-                                                "No")
-                                                  break
-                                                  ;;
+                                                            "No")
+                                                                break
+                                                                ;;
 
-                                                *)
-                                                  echo "Invalid option $REPLY"
-                                                  ;;
-                                            esac
-                                        done
+                                                            *)
+                                                                echo "Invalid option $REPLY"
+                                                                ;;
+                                                        esac
+                                                    done
+                                                    break
+                                                    ;;
+
+                                                  "No")
+                                                    break
+                                                    ;;
+
+                                                  *)
+                                                    echo "Invalid option $REPLY"
+                                                    ;;
+                                              esac
+                                          done
+                                        fi
                                     fi
                                     break
                                     ;;
@@ -901,138 +1075,196 @@ do
                         ;;
 
                       "Interactive")
-                          #TODO
-                          break
-                          ;;
+                          getVarsRemote
+                          writeFile
 
-                      "Default values")
-                          ############## DEFAULT ##############
-                          echo -e "\nThe default values are:"
-                          echo "  General Repository Information:"
-                          echo "   -host: l040101-ws01.ua.pt"
-                          echo "   -port: 22461"
-                          echo "  Lounge:"
-                          echo "   -host: l040101-ws02.ua.pt"
-                          echo "   -port: 22462"
-                          echo "  Park:"
-                          echo "   -host: l040101-ws03.ua.pt"
-                          echo "   -port: 22463"
-                          echo "  Outside World:"
-                          echo "   -host: l040101-ws04.ua.pt"
-                          echo "   -port: 22464"
-                          echo "  Repair Area:"
-                          echo "   -host: l040101-ws05.ua.pt"
-                          echo "   -port: 22465"
-                          echo "  Supplier Site:"
-                          echo "   -host: l040101-ws06.ua.pt"
-                          echo "   -port: 22466"
-                          echo "  Manager:"
-                          echo "   -host: l040101-ws07.ua.pt"
-                          echo "  Mechanic:"
-                          echo "   -host: l040101-ws08.ua.pt"
-                          echo "  Customer:"
-                          echo "   -host: l040101-ws09.ua.pt"
-                          echo "  Number of Customers: 30"
-                          echo "  Number of Mechanics: 2"
-                          echo "  Number of Replacement Cars: 3"
-                          echo "  Number of Car Parts Types: 3"
-                          echo "  Car Parts in stock: 0 0 0"
-                          echo "  Maximum number of Car Parts: 1 1 1"
+                          copyFile
+                          getMachines
+                          deleteMachine
+                          copyMachine
+                          compileCodeRemote
+                          executeCodeRemote
 
-                          echo -e "\nDo you still want to continue?"
+                          wait
+                          echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                          echo -e "\nDo you want to download the log file?"
                           PS3="Choice: "
                           options=("Yes" "No")
-
                           select op in "${options[@]}"
                           do
                               case $op in
                                   "Yes")
-                                      GRIHOST="l040101-ws01.ua.pt"
-                                      GRIPORT="22461"
-                                      LOUNGEHOST="l040101-ws02.ua.pt"
-                                      LOUNGEPORT="22462"
-                                      PARKHOST="l040101-ws03.ua.pt"
-                                      PARKPORT="22463"
-                                      OWHOST="l040101-ws04.ua.pt"
-                                      OWPORT="22464"
-                                      RAHOST="l040101-ws05.ua.pt"
-                                      RAPORT="22465"
-                                      SSHOST="l040101-ws06.ua.pt"
-                                      SSPORT="22466"
-                                      MANAGERHOST="l040101-ws07.ua.pt"
-                                      MECHANICHOST="l040101-ws08.ua.pt"
-                                      CUSTOMERHOST="l040101-ws09.ua.pt"
+                                    getLog
 
-                                      NUM_CUSTOMERS="30"
-                                      NUM_MECHANICS="2"
-                                      NUM_REPLACEMENT="3"
-                                      NUM_CAR_TYPES="3"
-                                      CAR_PARTS="{0, 0, 0}"
-                                      MAX_CAR_PARTS="{1, 1, 1}"
-
-                                      writeFile
-                                      copyFile
-                                      getMachines
-                                      deleteMachine
-                                      copyMachine
-                                      compileCodeRemote
-                                      executeCodeRemote
-
-                                      wait
-                                      echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
-
-                                      echo -e "\nDo you want to download the log file?"
-                                      PS3="Choice: "
-                                      options=("Yes" "No")
-                                      select op in "${options[@]}"
-                                      do
-                                          case $op in
-                                              "Yes")
-                                                getLog
-
-                                                echo -e "\nDo you want to delete the code from the machines?"
-                                                PS3="Choice: "
-                                                options=("Yes" "No")
-                                                select op in "${options[@]}"
-                                                do
-                                                    case $op in
-                                                        "Yes")
-                                                            deleteMachine
-                                                            break
-                                                            ;;
-
-                                                        "No")
-                                                            break
-                                                            ;;
-
-                                                        *)
-                                                            echo "Invalid option $REPLY"
-                                                            ;;
-                                                    esac
-                                                done
+                                    echo -e "\nDo you want to delete the code from the machines?"
+                                    PS3="Choice: "
+                                    options=("Yes" "No")
+                                    select op in "${options[@]}"
+                                    do
+                                        case $op in
+                                            "Yes")
+                                                deleteMachine
                                                 break
                                                 ;;
 
-                                              "No")
+                                            "No")
                                                 break
                                                 ;;
 
-                                              *)
+                                            *)
                                                 echo "Invalid option $REPLY"
                                                 ;;
-                                          esac
-                                      done
-                                      break
-                                      ;;
+                                        esac
+                                    done
+                                    break
+                                    ;;
 
                                   "No")
-                                      break
-                                      ;;
+                                    break
+                                    ;;
+
+                                  *)
+                                    echo "Invalid option $REPLY"
+                                    ;;
                               esac
                           done
+                      break
+                      ;;
 
-                          break
-                          ;;
+                      "Default values")
+                      ############## DEFAULT ##############
+                      echo -e "\nThe default values are:"
+                      echo "  General Repository Information:"
+                      echo "   -host: l040101-ws01.ua.pt"
+                      echo "   -port: 22461"
+                      echo "  Lounge:"
+                      echo "   -host: l040101-ws02.ua.pt"
+                      echo "   -port: 22462"
+                      echo "  Park:"
+                      echo "   -host: l040101-ws03.ua.pt"
+                      echo "   -port: 22463"
+                      echo "  Outside World:"
+                      echo "   -host: l040101-ws04.ua.pt"
+                      echo "   -port: 22464"
+                      echo "  Repair Area:"
+                      echo "   -host: l040101-ws05.ua.pt"
+                      echo "   -port: 22465"
+                      echo "  Supplier Site:"
+                      echo "   -host: l040101-ws06.ua.pt"
+                      echo "   -port: 22466"
+                      echo "  Manager:"
+                      echo "   -host: l040101-ws07.ua.pt"
+                      echo "  Mechanic:"
+                      echo "   -host: l040101-ws08.ua.pt"
+                      echo "  Customer:"
+                      echo "   -host: l040101-ws09.ua.pt"
+                      echo "  Number of Customers: 30"
+                      echo "  Number of Mechanics: 2"
+                      echo "  Number of Replacement Cars: 3"
+                      echo "  Number of Car Parts Types: 3"
+                      echo "  Car Parts in stock: 0 0 0"
+                      echo "  Maximum number of Car Parts: 1 1 1"
+
+                      echo -e "\nDo you still want to continue?"
+                      PS3="Choice: "
+                      options=("Yes" "No")
+
+                      select op in "${options[@]}"
+                      do
+                          case $op in
+                              "Yes")
+                                  GRIHOST="l040101-ws01.ua.pt"
+                                  GRIPORT="22461"
+                                  LOUNGEHOST="l040101-ws02.ua.pt"
+                                  LOUNGEPORT="22462"
+                                  PARKHOST="l040101-ws03.ua.pt"
+                                  PARKPORT="22463"
+                                  OWHOST="l040101-ws04.ua.pt"
+                                  OWPORT="22464"
+                                  RAHOST="l040101-ws05.ua.pt"
+                                  RAPORT="22465"
+                                  SSHOST="l040101-ws06.ua.pt"
+                                  SSPORT="22466"
+                                  MANAGERHOST="l040101-ws07.ua.pt"
+                                  MECHANICHOST="l040101-ws08.ua.pt"
+                                  CUSTOMERHOST="l040101-ws09.ua.pt"
+
+                                  NUM_CUSTOMERS="30"
+                                  NUM_MECHANICS="2"
+                                  NUM_REPLACEMENT="3"
+                                  NUM_CAR_TYPES="3"
+                                  CAR_PARTS="{0, 0, 0}"
+                                  MAX_CAR_PARTS="{1, 1, 1}"
+
+                                  writeFile
+
+                                  copyFile
+                                  getMachines
+                                  deleteMachine
+                                  copyMachine
+                                  compileCodeRemote
+                                  executeCodeRemote
+
+                                  wait
+                                  echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                                  echo -e "\nDo you want to download the log file?"
+                                  PS3="Choice: "
+                                  options=("Yes" "No")
+                                  select op in "${options[@]}"
+                                  do
+                                      case $op in
+                                          "Yes")
+                                            getLog
+
+                                            echo -e "\nDo you want to delete the code from the machines?"
+                                            PS3="Choice: "
+                                            options=("Yes" "No")
+                                            select op in "${options[@]}"
+                                            do
+                                                case $op in
+                                                    "Yes")
+                                                        deleteMachine
+                                                        break
+                                                        ;;
+
+                                                    "No")
+                                                        break
+                                                        ;;
+
+                                                    *)
+                                                        echo "Invalid option $REPLY"
+                                                        ;;
+                                                esac
+                                            done
+                                            break
+                                            ;;
+
+                                          "No")
+                                            break
+                                            ;;
+
+                                          *)
+                                            echo "Invalid option $REPLY"
+                                            ;;
+                                      esac
+                                  done
+                                  break
+                                  ;;
+
+                              "No")
+                                  break
+                                  ;;
+
+                              *)
+                                echo "Invalid option $REPLY"
+                                ;;
+                          esac
+                      done
+
+                      break
+                      ;;
 
                       "Back")
                           break

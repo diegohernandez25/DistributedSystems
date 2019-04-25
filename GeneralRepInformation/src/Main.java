@@ -12,22 +12,22 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.numCustomers;
 
     /**
      * Number of mecahnics
      * */
-    public static final int numMechanics = 2;
+    public static final int numMechanics = Parameters.numMechanics;
 
     /**
      * Number of car parts types
      * */
-    public static final int numPartTypes = 3;
+    public static final int numPartTypes = Parameters.numCarTypes;
 
     /**
      * Stock of car parts for each type
      * */
-    public static final int[] carParts = {0, 0, 0};
+    public static final int[] carParts = Parameters.carParts;
 
     /**
      * Name of the logger file
