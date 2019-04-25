@@ -1,7 +1,7 @@
 import Communication.ServerCom;
 import SharedRegions.RepairArea;
 import SharedRegions.RepairAreaProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
@@ -43,7 +43,7 @@ public class Main {
         System.out.println("Repair Area starting...");
 
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
 
         GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
@@ -55,8 +55,8 @@ public class Main {
         {
             try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,repairAreaProxy);
-                sp.start();
+                mh = new MessageHandler(sci,repairAreaProxy);
+                mh.start();
             } catch (SocketTimeoutException e) {}
         }
         System.out.println("Repair Area finished!");

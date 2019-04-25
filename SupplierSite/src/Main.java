@@ -1,7 +1,7 @@
 import Communication.ServerCom;
 import SharedRegions.SupplierSite;
 import SharedRegions.SupplierSiteProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
@@ -23,7 +23,7 @@ public class Main {
     public static void main(String[] args)
     {   System.out.println("Supplier Site starting...");
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
 
         GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
@@ -34,8 +34,8 @@ public class Main {
         while(!supplierSite.finish)
         {   try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,supplierSiteProxy);
-                sp.start();
+                mh = new MessageHandler(sci,supplierSiteProxy);
+                mh.start();
             } catch (SocketTimeoutException e) { }
 
         }

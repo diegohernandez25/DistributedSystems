@@ -5,7 +5,7 @@ import Locals.RepairArea;
 import Locals.SupplierSite;
 import SharedRegions.Lounge;
 import SharedRegions.LoungeProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Interfaces.*;
 import Main.Parameters;
 import GeneralRep.GeneralRepInformation;
@@ -47,7 +47,7 @@ public class Main {
         System.out.println("Lounge starting...");
 
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
 
         GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
         OutsideWorld outsideWorld = new OutsideWorld(Parameters.owHost, Parameters.owPort);
@@ -69,8 +69,8 @@ public class Main {
         while(!lounge.finish)
         {   try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,loungeProxy);
-                sp.start();
+                mh = new MessageHandler(sci,loungeProxy);
+                mh.start();
             } catch (SocketTimeoutException e) {
             }
         }

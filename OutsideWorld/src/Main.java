@@ -1,7 +1,7 @@
 import Communication.ServerCom;
 import SharedRegions.OutsideWorld;
 import SharedRegions.OutsideWorldProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Main.Parameters;
 
 import java.net.SocketTimeoutException;
@@ -22,7 +22,7 @@ public class Main {
     {
         System.out.println("Outside World starting...");
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
         OutsideWorld outsideWorld = new OutsideWorld(numCustomers);
         OutsideWorldProxy outsideWorldProxy = new OutsideWorldProxy(outsideWorld);
         sc = new ServerCom(PORT_NUM);
@@ -30,8 +30,8 @@ public class Main {
         while(!outsideWorld.finish)
         {   try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,outsideWorldProxy);
-                sp.start();
+                mh = new MessageHandler(sci,outsideWorldProxy);
+                mh.start();
             } catch (SocketTimeoutException e) {}
         }
         System.out.println("Outside World finished!");

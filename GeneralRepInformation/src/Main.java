@@ -1,7 +1,7 @@
 import Communication.ServerCom;
 import SharedRegions.GeneralRepInformation;
 import SharedRegions.GeneralRepInformationProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Main.Parameters;
 
 import java.net.SocketTimeoutException;
@@ -43,7 +43,7 @@ public class Main {
         System.out.println("General Repository Information starting...");
 
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
         GeneralRepInformation generalRepInformation = new GeneralRepInformation(numCustomers, numMechanics, numPartTypes, carParts, fileName);
         GeneralRepInformationProxy generalRepInformationProxy = new GeneralRepInformationProxy(generalRepInformation);
         sc = new ServerCom(PORT_NUM);
@@ -51,8 +51,8 @@ public class Main {
         while(!generalRepInformation.finish)
         {   try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,generalRepInformationProxy);
-                sp.start();
+                mh = new MessageHandler(sci,generalRepInformationProxy);
+                mh.start();
             } catch (SocketTimeoutException e) {}
         }
         System.out.println("General Repository Information finished!");

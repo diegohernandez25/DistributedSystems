@@ -1,7 +1,7 @@
 import Communication.ServerCom;
 import SharedRegions.Park;
 import SharedRegions.ParkProxy;
-import SharedRegions.ServiceProvider;
+import SharedRegions.MessageHandler;
 import Main.Parameters;
 import Interfaces.*;
 import GeneralRep.GeneralRepInformation;
@@ -30,7 +30,7 @@ public class Main {
         System.out.println("Park starting...");
 
         ServerCom sc, sci;
-        ServiceProvider sp;
+        MessageHandler mh;
 
         GeneralRepInformation gri = new GeneralRepInformation(Parameters.griHost, Parameters.griPort);
 
@@ -46,8 +46,8 @@ public class Main {
         {
             try {
                 sci = sc.accept();
-                sp = new ServiceProvider(sci,parkProxy);
-                sp.start();
+                mh = new MessageHandler(sci,parkProxy);
+                mh.start();
             } catch (SocketTimeoutException e) {}
         }
         System.out.println("Park finished!");
