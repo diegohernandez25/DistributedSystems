@@ -5,7 +5,7 @@ import Communication.ServerCom;
 import Interfaces.SharedRegionInterface;
 
 /**
- * Service Provider:    Thread that processes and replies to an unique incoming message. Each message will invoke a
+ * Message Handler:    Thread that processes and replies to an unique incoming message. Each message will invoke a
  *                      thread of type of this class.
  * */
 public class MessageHandler extends Thread{
@@ -20,7 +20,7 @@ public class MessageHandler extends Thread{
     private final SharedRegionInterface sharedRegion;
 
     /**
-     * Service Provider constructor.
+     * Message Handler constructor.
      * @param sc            object of class type ServerComm
      * @param sharedRegion  object of class with implementation SharedRegionInterface
      * */
