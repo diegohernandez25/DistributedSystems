@@ -60,7 +60,7 @@ public class LoungeProxy implements SharedRegionInterface {
                 break;
 
             case GIVE_MANAGER_CAR_KEY:
-                this.lounge.giveManagerCarKey(msg.getCustomerKey(),msg.getCustomerId());
+                this.lounge.giveManagerCarKey(msg.getCustomerId(), msg.getCustomerKey());
                 response    = new Message(MessageType.OK);
                 break;
 

@@ -1,9 +1,5 @@
 package Communication;
 
-import Communication.ClientCom;
-import Communication.Message;
-import Communication.MessageType;
-
 /**
  * Common communication functions used by the proxies.
  * */

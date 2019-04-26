@@ -5,6 +5,9 @@ import Main.Parameters;
 import Interfaces.*;
 import Main.Customer;
 
+/**
+ * Main class.
+ * */
 public class Main {
 
     public static void main(String[] args)

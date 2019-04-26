@@ -94,7 +94,6 @@ public class Customer extends Thread{
         lounge.enterCustomerQueue(this.customerId,false);
         System.out.println(customerId +". Customer attended.");
         System.out.println(customerId +". Customer giving key to manager.");
-        //lounge.giveManagerCarKey(key, this.customerId);//FIXME
         lounge.giveManagerCarKey(this.customerId,key);
         System.out.println(customerId +". Customer gave key to manager.");
         key = -1;
