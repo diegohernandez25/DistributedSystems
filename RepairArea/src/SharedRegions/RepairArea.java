@@ -3,14 +3,13 @@ package SharedRegions;
 import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
-import GeneralRep.GeneralRepInformation;
 
 import java.util.Random;
 
 /**
  * Repair Area Class. Used by Manager and Mechanics.
  * */
-public class RepairArea implements ManagerRA, MechanicRA, LoungeRA {
+public class RepairArea{
 
     /**
      *      States of the cars.

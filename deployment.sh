@@ -281,7 +281,7 @@ function copyFile {
   echo -e "\n${SUCCESS}Parameters.java copied${NORMAL}"
 }
 
-function compileCodeLocal {
+function cleanLocal {
   echo -e "\n${SYSTEM}Removing previous compilations...${NORMAL}\n"
 
   cd GeneralRepInformation/
@@ -320,6 +320,9 @@ function compileCodeLocal {
   find src -type f -name "*.class" -delete
   cd ..
   echo -e "Customer ${SUCCESS}cleaned${NORMAL}"
+}
+
+function compileCodeLocal {
 
   echo -e "\n${SYSTEM}Compiling the code...${NORMAL}\n"
 
@@ -836,12 +839,37 @@ do
                                           break
                                       else
                                           copyFile
+                                          cleanLocal
                                           compileCodeLocal
                                           executeCodeLocal
 
                                           echo -e "\n${SYSTEM}Executing...${NORMAL}"
                                           wait
                                           echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                                          echo -e "\nThe log file can be found in the GeneralRepInformation folder."
+
+                                          echo -e "\nDo you want to delete the compiled code?"
+                                          PS3="Choice: "
+                                          options=("Yes" "No")
+                                          select op in "${options[@]}"
+                                          do
+                                              case $op in
+                                                  "Yes")
+                                                      cleanLocal
+                                                      break
+                                                      ;;
+
+                                                  "No")
+                                                      break
+                                                      ;;
+
+                                                  *)
+                                                      echo "Invalid option $REPLY"
+                                                      ;;
+                                              esac
+                                          done
+                                          break
                                       fi
                                       break
                                       ;;
@@ -864,12 +892,36 @@ do
                           writeFile
 
                           copyFile
+                          cleanLocal
                           compileCodeLocal
                           executeCodeLocal
 
                           echo -e "\n${SYSTEM}Executing...${NORMAL}"
                           wait
                           echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
+
+                          echo -e "\nThe log file can be found in the GeneralRepInformation folder."
+
+                          echo -e "\nDo you want to delete the compiled code?"
+                          PS3="Choice: "
+                          options=("Yes" "No")
+                          select op in "${options[@]}"
+                          do
+                              case $op in
+                                  "Yes")
+                                      cleanLocal
+                                      break
+                                      ;;
+
+                                  "No")
+                                      break
+                                      ;;
+
+                                  *)
+                                      echo "Invalid option $REPLY"
+                                      ;;
+                              esac
+                          done
 
                           break
                           ;;
@@ -942,6 +994,7 @@ do
                                       writeFile
 
                                       copyFile
+                                      cleanLocal
                                       compileCodeLocal
                                       executeCodeLocal
 
@@ -949,6 +1002,28 @@ do
                                       wait
                                       echo -e "\n${SUCCESS}Finished successfully!${NORMAL}"
 
+                                      echo -e "\nThe log file can be found in the GeneralRepInformation folder."
+
+                                      echo -e "\nDo you want to delete the compiled code?"
+                                      PS3="Choice: "
+                                      options=("Yes" "No")
+                                      select op in "${options[@]}"
+                                      do
+                                          case $op in
+                                              "Yes")
+                                                  cleanLocal
+                                                  break
+                                                  ;;
+
+                                              "No")
+                                                  break
+                                                  ;;
+
+                                              *)
+                                                  echo "Invalid option $REPLY"
+                                                  ;;
+                                          esac
+                                      done
                                       break
                                       ;;
 

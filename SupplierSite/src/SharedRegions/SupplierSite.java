@@ -1,9 +1,8 @@
 package SharedRegions;
 
 import Interfaces.*;
-import GeneralRep.GeneralRepInformation;
 
-public class SupplierSite<R> implements ManagerSS, LoungeSS  {
+public class SupplierSite<R>  {
 
     /**
     * Initialize General Repository Information

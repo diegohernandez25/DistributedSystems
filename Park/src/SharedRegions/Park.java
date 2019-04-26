@@ -1,9 +1,8 @@
 package SharedRegions;
 
 import Interfaces.*;
-import GeneralRep.GeneralRepInformation;
 
-public class Park implements CustomerPark, MechanicPark, LoungePark {
+public class Park {
 
     /**
     * Initialize General Repository Information

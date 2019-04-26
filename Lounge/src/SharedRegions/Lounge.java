@@ -7,9 +7,8 @@ import Locals.RepairArea;
 import Locals.SupplierSite;
 import Resources.MemException;
 import Resources.MemFIFO;
-import GeneralRep.GeneralRepInformation;
 
-public class Lounge implements ManagerLounge, CustomerLounge, MechanicLounge {
+public class Lounge {
 
     /**
      *  Type of Manager Tasks

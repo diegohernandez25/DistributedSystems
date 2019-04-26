@@ -1,10 +1,9 @@
 package SharedRegions;
 
-import Interfaces.*;
 import Resources.MemException;
 import Resources.MemFIFO;
 
-public class OutsideWorld implements ManagerOW, CustomerOW, LoungeOW {
+public class OutsideWorld {
 
     /**
      *  Array with the id of the users which are waiting for the car to be repaired.

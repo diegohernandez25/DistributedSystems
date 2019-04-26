@@ -1,9 +1,8 @@
 package SharedRegions;
 
 import java.io.*;
-import Interfaces.*;
 
-public class GeneralRepInformation implements GriLounge, GriPark, GriRA, GriSS {
+public class GeneralRepInformation {
 
     /**
      *  Manager state abbreviation (each index is the corresponding state in integer). 4 chars max
