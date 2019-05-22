@@ -1,4 +1,4 @@
-package interfaces;
+package Interfaces;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -9,7 +9,9 @@ import java.rmi.RemoteException;
  *  This data type defines the operational interface of a remote object of type RegisterRemoteObject.
  *  It provides the functionality to register remote objects in the local registry service.
  */
-public interface Register extends Remote {
+
+public interface Register extends Remote
+{
     /**
      *  Binds a remote reference to the specified name in this registry.
      *
