@@ -1,5 +1,6 @@
 package Main;
 
+
 import Interfaces.*;
 
 import java.rmi.AlreadyBoundException;
@@ -12,13 +13,33 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Main {
     /**
-     * Number of car parts.
+     * Number of customers
+     * */
+    public static final int numCustomers = Parameters.NUM_CUSTOMERS;
+
+    /**
+     * Number of mecahnics
+     * */
+    public static final int numMechanics = Parameters.NUM_MECHANICS;
+
+    /**
+     * Number of car parts types
      * */
     public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
 
     /**
-     * Main.Main
-     * @param args  arguments.
+     * Stock of car parts for each type
+     * */
+    public static final int[] carParts = Parameters.CAR_PARTS;
+
+    /**
+     * Name of the logger file
+     */
+    public static final String fileName = Parameters.LOG_NAME;
+
+    /**
+     * Main
+     * @param args  - arguments.
      * */
     public static void main(String[] args)
     {
@@ -37,27 +58,11 @@ public class Main {
             System.exit(1);
         }
 
-        GriSS griSS = null;
-
-        // General Repository Information
-        try {
-            griSS = (GriSS) registry.lookup(Parameters.GENERALREP_NAME);
-        }
-        catch (RemoteException e) {
-            System.out.println("Remote Exception error @griSS");
-            e.printStackTrace();
-        }
-        catch (NotBoundException e) {
-            System.out.println("Bound Exception error @griSS");
-            e.printStackTrace();
-        }
-
-
-        SupplierSite supplierSite = new SupplierSite(numPartTypes, griSS);
-        SupplierSiteInterface supplierSiteInterface = null;
+        GeneralRepInformation generalRepInformation = new GeneralRepInformation(numCustomers, numMechanics, numPartTypes, carParts, fileName);
+        GeneralRepInterface generalRepInterface = null;
 
         try {
-            supplierSiteInterface = (SupplierSiteInterface) UnicastRemoteObject.exportObject(supplierSiteInterface,Parameters.SS_PORT);
+            generalRepInterface = (GeneralRepInterface) UnicastRemoteObject.exportObject(generalRepInformation,Parameters.GENERALREP_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
@@ -79,48 +84,48 @@ public class Main {
         }
 
         try {
-            register.bind(Parameters.SS_NAME, supplierSiteInterface);
+            register.bind(Parameters.GENERALREP_NAME, generalRepInterface);
         } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @ssInterface");
+            System.out.println("ERROR: Remote Exception @register, @generalRep");
             e.printStackTrace();
             System.exit(1);
         } catch (AlreadyBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @ssInterface");
+            System.out.println("ERROR: AlreadyBoundException @register, @generalRep");
             e.printStackTrace();
             System.exit(1);
         }
 
-        System.out.println("Supplier Site registered.");
+        System.out.println("General Repository Information registered.");
 
-        while(!supplierSite.finish)
+        while(!generalRepInformation.finish)
         {
             try {
-                supplierSite.wait();
+                generalRepInformation.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Supplier Site finished.");
+        System.out.println("General Repository Information finished.");
 
         try {
-            register.unbind(Parameters.SS_NAME);
+            register.unbind(Parameters.GENERALREP_NAME);
         } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @supplierSite");
+            System.out.println("ERROR: Remote Exception @register, @generalRep");
             e.printStackTrace();
             System.exit(1);
         } catch (NotBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @supplierSite");
+            System.out.println("ERROR: AlreadyBoundException @register, @generalRep");
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unregistered.");
+        System.out.println("General Repository Information unregistered.");
 
         try {
-            UnicastRemoteObject.unexportObject(supplierSite,false);
+            UnicastRemoteObject.unexportObject(generalRepInformation,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unexported.");
+        System.out.println("General Repository Information unexported.");
     }
 }

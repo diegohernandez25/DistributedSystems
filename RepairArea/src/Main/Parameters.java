@@ -38,5 +38,6 @@ public class Parameters {
   public final static int NUM_REPLACEMENT = 4;
   public final static int NUM_CAR_TYPES   = 3;
   public final static int[] CAR_PARTS     = {1, 1, 1};
+  public final static int[] MAX_CAR_PARTS = {1, 1, 1};
   public final static String LOG_NAME     = "log.txt";
 }

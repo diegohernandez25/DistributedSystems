@@ -12,13 +12,33 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Main {
     /**
+     * Port number
+     * */
+    private static final int PORT_NUM = Parameters.REPAIRAREA_PORT;
+
+    /**
+     * Number of customers
+     * */
+    public static final int numCustomers = Parameters.NUM_CUSTOMERS;
+
+    /**
      * Number of car parts.
      * */
     public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
 
     /**
-     * Main.Main
-     * @param args  arguments.
+     * Car parts
+     */
+    public static final int[] carParts = Parameters.CAR_PARTS;
+
+    /**
+     * Maximum number of storage for each car part
+     */
+    public static final int[] maxCarParts = Parameters.MAX_CAR_PARTS;
+
+    /**
+     * Main
+     * @param args  - arguments.
      * */
     public static void main(String[] args)
     {
@@ -37,27 +57,26 @@ public class Main {
             System.exit(1);
         }
 
-        GriSS griSS = null;
+        GriRA griRA = null;
 
         // General Repository Information
         try {
-            griSS = (GriSS) registry.lookup(Parameters.GENERALREP_NAME);
+            griRA = (GriRA) registry.lookup(Parameters.GENERALREP_NAME);
         }
         catch (RemoteException e) {
-            System.out.println("Remote Exception error @griSS");
+            System.out.println("Remote Exception error @griRA");
             e.printStackTrace();
         }
         catch (NotBoundException e) {
-            System.out.println("Bound Exception error @griSS");
+            System.out.println("Bound Exception error @griRA");
             e.printStackTrace();
         }
 
-
-        SupplierSite supplierSite = new SupplierSite(numPartTypes, griSS);
-        SupplierSiteInterface supplierSiteInterface = null;
+        RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, griRA);
+        RepairAreaInterface repairAreaInterface = null;
 
         try {
-            supplierSiteInterface = (SupplierSiteInterface) UnicastRemoteObject.exportObject(supplierSiteInterface,Parameters.SS_PORT);
+            repairAreaInterface = (RepairAreaInterface) UnicastRemoteObject.exportObject(repairAreaInterface,Parameters.REPAIRAREA_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
@@ -79,48 +98,49 @@ public class Main {
         }
 
         try {
-            register.bind(Parameters.SS_NAME, supplierSiteInterface);
+            register.bind(Parameters.REPAIRAREA_NAME, repairAreaInterface);
         } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @ssInterface");
+            System.out.println("ERROR: Remote Exception @register, @raInterface");
             e.printStackTrace();
             System.exit(1);
         } catch (AlreadyBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @ssInterface");
+            System.out.println("ERROR: AlreadyBoundException @register, @raInterface");
             e.printStackTrace();
             System.exit(1);
         }
 
-        System.out.println("Supplier Site registered.");
+        System.out.println("Repair Area registered.");
 
-        while(!supplierSite.finish)
+
+        while(!repairArea.finish)
         {
             try {
-                supplierSite.wait();
+                repairArea.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Supplier Site finished.");
+        System.out.println("Repair Area finished.");
 
         try {
-            register.unbind(Parameters.SS_NAME);
+            register.unbind(Parameters.REPAIRAREA_NAME);
         } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @supplierSite");
+            System.out.println("ERROR: Remote Exception @register, @repairArea");
             e.printStackTrace();
             System.exit(1);
         } catch (NotBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @supplierSite");
+            System.out.println("ERROR: AlreadyBoundException @register, @repairArea");
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unregistered.");
+        System.out.println("Repair Area unregistered.");
 
         try {
-            UnicastRemoteObject.unexportObject(supplierSite,false);
+            UnicastRemoteObject.unexportObject(repairArea,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unexported.");
+        System.out.println("Repair Area unexported.");
     }
 }
