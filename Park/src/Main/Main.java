@@ -1,6 +1,6 @@
 package Main;
 
-import Interfaces.GriPack;
+import Interfaces.GriPark;
 import Interfaces.ParkInterface;
 import Interfaces.Register;
 
@@ -41,11 +41,23 @@ public class Main {
             System.exit(1);
         }
 
+        GriPark griPark = null;
+        try {
+            griPark = (GriPark) registry.lookup(Parameters.GENERALREP_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+        }
+
+
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys);
+        Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys,griPark);
         ParkInterface parkInterface = null;
 
 

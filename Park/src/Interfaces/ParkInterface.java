@@ -2,7 +2,7 @@ package Interfaces;
 
 import java.rmi.Remote;
 
-public interface ParkInterface extends Remote {
+public interface ParkInterface extends Remote, ParkLoungeInterface{
 
     /**
      *  Park Car.
@@ -20,13 +20,4 @@ public interface ParkInterface extends Remote {
      *  @return id of the car
      * */
     Integer getCar(Integer carId, int id, boolean customerGet);
-
-    /**
-     * Terminates Park Information Server
-     * */
-    void finish();
-
-
-
-
 }

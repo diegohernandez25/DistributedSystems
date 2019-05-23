@@ -55,6 +55,17 @@ public class Main {
             System.exit(1);
         }
 
+        try {
+            griLounge = (GriLounge) registry.lookup(Parameters.GENERALREP_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+        }
+
+
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;

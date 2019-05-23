@@ -3,7 +3,7 @@ package Interfaces;
 /**
  *  Interface for Park for the use of the General Repository
  * */
-public interface GriPack {
+public interface GriPark {
     /**
      *  Set the vehicle currently used by a Customer
      *  @param customer the Customer who is changing vehicles
