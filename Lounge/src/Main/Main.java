@@ -15,22 +15,22 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.NUM_CUSTOMERS;
 
     /**
      * Number of mechanics
      * */
-    public static final int numMechanics = 2;
+    public static final int numMechanics = Parameters.NUM_MECHANICS;
 
     /**
      * Number of replacement cars
      * */
-    public static final int numReplacementCars = 4;
+    public static final int numReplacementCars = Parameters.NUM_REPLACEMENT;
 
     /**
      * Number of car part types.
      * */
-    public static final int numCarTypes = 3;
+    public static final int numCarTypes = Parameters.NUM_CAR_TYPES;
 
 
 
@@ -120,7 +120,12 @@ public class Main {
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, griLounge, owLounge,parkLounge,raLounge,ssLounge);
+        Lounge lounge = null;
+        try {
+            lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, griLounge, owLounge,parkLounge,raLounge,ssLounge);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         LoungeInterface loungeInterface = null;
 
         try {
@@ -159,7 +164,7 @@ public class Main {
 
         System.out.println("Lounge registered.");
 
-        /*while(!lounge.finish)
+        while(!lounge.finish)
         {   try {
             synchronized (lounge) {
                 lounge.wait();
@@ -189,6 +194,5 @@ public class Main {
             System.exit(1);
         }
         System.out.println("Park  Unexported");
-        */
     }
 }

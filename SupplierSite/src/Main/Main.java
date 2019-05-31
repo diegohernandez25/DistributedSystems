@@ -15,7 +15,7 @@ public class Main {
      * Number of car parts.
      * */
     //TODO: public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
-    public static final int numPartTypes = 3;
+    public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
 
     /**
      * Main.Main

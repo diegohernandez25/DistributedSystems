@@ -52,57 +52,33 @@ public class Mechanic extends Thread {
     {   int idCurrentCar;
         int idCurrentKey;
         boolean WORK = true;
-        while(WORK)
-        {   int task = 0;
-            try {
-                task = repairArea.findNextTask(mechanicId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            //switch (repairArea.findNextTask(mechanicId)) TODO: Works??
-            switch (task)
-            {
-            /**
-            *   Continue repair car.
-            */
-            case 1:
-                try {
+        try{
+            while(WORK)
+            {   switch (repairArea.findNextTask(mechanicId))
+            {   /**
+             *   Continue repair car.
+             */
+                case 1:
                     if((idCurrentCar = repairArea.repairWaitingCarWithPartsAvailable(mechanicId)) != -1)
                     {   System.out.println(this.mechanicId + ". Continuing to repair car");
                         fixCar();
-                        try {
-                            repairArea.concludeCarRepair(idCurrentCar,mechanicId);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        repairArea.concludeCarRepair(idCurrentCar,mechanicId);
                         System.out.println(this.mechanicId + ". Repair concluded");
                         idCurrentKey = idCurrentCar;
-                        try {
-                            park.parkCar(idCurrentCar, mechanicId, false);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        park.parkCar(idCurrentCar, mechanicId, false);
                         System.out.println(this.mechanicId + ". Car parked");
-                        try {
-                            lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
                         System.out.println(this.mechanicId + ". Alerting manager that car is repaired.");
                     }
                     else
                     {   System.out.println(this.mechanicId + ". This should not happen!");
                         System.exit(1);
                     }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            /**
-             *  Repair new car.
-             * */
-            case 2:
-                try {
+                    break;
+                /**
+                 *  Repair new car.
+                 * */
+                case 2:
                     if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)
                     {   System.out.println(this.mechanicId + ". Going to repair a ne car.Going to park.");
                         if((idCurrentCar = park.getCar(idCurrentKey, mechanicId, false)) == -1)
@@ -128,28 +104,25 @@ public class Mechanic extends Thread {
                         System.out.println(this.mechanicId + ". Manager alerted about repair.");
                         continue;
                     }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case 3:
-                System.out.println(this.mechanicId + ". Mechanic has waken up");
-                break;
-            case 4:
-                WORK = false;
-                System.out.println(this.mechanicId + ". Going home.");
-                break;
-            default:
-                System.out.println(this.mechanicId + ". Option not registered");
-                break;
-        }
-        }
-        try {
+                    break;
+                case 3:
+                    System.out.println(this.mechanicId + ". Mechanic has waken up");
+                    break;
+                case 4:
+                    WORK = false;
+                    System.out.println(this.mechanicId + ". Going home.");
+                    break;
+                default:
+                    System.out.println(this.mechanicId + ". Option not registered");
+                    break;
+            }
+            }
             this.lounge.finish();
-        } catch (RemoteException e) {
+            System.out.println(this.mechanicId + ". FINISHED!");
+
+        }catch (RemoteException e) {
             e.printStackTrace();
         }
-        System.out.println(this.mechanicId + ". FINISHED!");
 
     }
 

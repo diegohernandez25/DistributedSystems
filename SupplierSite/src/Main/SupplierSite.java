@@ -7,8 +7,8 @@ import java.rmi.RemoteException;
 public class SupplierSite<R>  implements SupplierSiteInterface {
 
     /**
-    * Initialize General Repository Information
-    */
+     * Initialize General Repository Information
+     */
     private GeneralRepInterface gri;
 
     /**
@@ -41,21 +41,12 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *
      *      @return number of parts that were restocked of the specific type of part
      * */
-    public synchronized int restockPart(int idType, int number)
-    {   if(idType<=stockType && idType>=0)
-        {
-            try {
-                gri.setNumBoughtPart(idType, number);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                gri.setFlagMissingPart(idType, "F");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            return number;
-        }
+    public synchronized int restockPart(int idType, int number) throws RemoteException {   if(idType<=stockType && idType>=0)
+    {
+        gri.setNumBoughtPart(idType, number);
+        gri.setFlagMissingPart(idType, "F");
+        return number;
+    }
         return 0;
     }
 

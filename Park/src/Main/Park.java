@@ -5,7 +5,6 @@ import Interfaces.*;
 import java.rmi.RemoteException;
 
 public class Park implements ParkInterface{
-
     /**
      * Initialize General Repository Information
      */
@@ -57,8 +56,7 @@ public class Park implements ParkInterface{
      *  @param id customer id.
      *  @param customerPark flag if it was a customer who parked the car
      * */
-    public synchronized void parkCar(Integer carId, int id, boolean customerPark)
-    {   assert(carId < cars.length);
+    public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {   assert(carId < cars.length);
         if(cars[carId])
         {   System.out.println("Error: Car is already parked.");
             System.exit(1);
@@ -69,38 +67,18 @@ public class Park implements ParkInterface{
         {
             if (carId <= cars.length - numReplacement)      // if the parked car was the Customers
             {
-                try {
-                    gri.setNumCarsParked(1);                    // Logs Customer parked his car
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have their car anymore
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setNumCarsParked(1);                    // Logs Customer parked his car
+                gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have their car anymore
             }
             else                                            // if the parked car was a Replacement
             {
-                try {
-                    gri.setNumReplacementParked(1);             // Logs replacement car parking in park
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have replacement car anymore
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setNumReplacementParked(1);             // Logs replacement car parking in park
+                gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have replacement car anymore
             }
         }
         else                                                // if it was the Mechanic who parked
         {
-            try {
-                gri.setNumCarsParked(1);                        // Log Customer car parked (the Mechanic only parks
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setNumCarsParked(1);                        // Log Customer car parked (the Mechanic only parks
             // Customer's Cars, not Replacements)
         }
     }
@@ -112,8 +90,7 @@ public class Park implements ParkInterface{
      *  @param customerGet flag if it was a customer who got the car
      *  @return id of the car
      * */
-    public synchronized Integer getCar(Integer carId, int id, boolean customerGet)
-    {   assert(carId < cars.length);
+    public synchronized Integer getCar(Integer carId, int id, boolean customerGet) throws RemoteException {   assert(carId < cars.length);
         if(!cars[carId])
         {   System.out.println("Error: car is not parked.");
             System.exit(1);
@@ -124,39 +101,19 @@ public class Park implements ParkInterface{
         {
             if (carId <= cars.length - numReplacement)          // if the car was the Customers
             {
-                try {
-                    gri.setNumCarsParked(-1);                       // Logs Customer removed their car from park
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    gri.setCustomerVehicle(id, String.valueOf(id)); // Logs Customer has their own car again
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setNumCarsParked(-1);                       // Logs Customer removed their car from park
+                gri.setCustomerVehicle(id, String.valueOf(id)); // Logs Customer has their own car again
             }
             else                                                // if the car was a Replacement
             {
-                try {
-                    gri.setNumReplacementParked(-1);                // Logs replacement car removed from park
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    gri.setCustomerVehicle(id,                      // Logs Customer changing cars to a replacement car
-                            "R"+(carId-(cars.length - numReplacement)));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setNumReplacementParked(-1);                // Logs replacement car removed from park
+                gri.setCustomerVehicle(id,                      // Logs Customer changing cars to a replacement car
+                        "R"+(carId-(cars.length - numReplacement)));
             }
         }
         else                                                    // if it was the Mechanic who got the car
         {
-            try {
-                gri.setNumCarsParked(-1);                           // Log Customer car removed (the Mechanic only removes
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setNumCarsParked(-1);                           // Log Customer car removed (the Mechanic only removes
             // Customer's Cars, not Replacements)
         }
 

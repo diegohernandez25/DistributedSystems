@@ -17,14 +17,14 @@ public class RepairArea implements RepairAreaInterface {
      *
      * */
     private static int  NOT_REGISTERED  = 0,
-                        CHECKED         = 1,
-                        WAITING_PARTS   = 2,
-                        ON_REPAIR       = 3,
-                        REPAIRED        = 4;
+            CHECKED         = 1,
+            WAITING_PARTS   = 2,
+            ON_REPAIR       = 3,
+            REPAIRED        = 4;
 
     /**
-    * Initialize General Repository Information
-    */
+     * Initialize General Repository Information
+     */
     private GeneralRepInterface gri;
 
     /**
@@ -156,8 +156,7 @@ public class RepairArea implements RepairAreaInterface {
      *
      *      @return true ready for repair. False otherwise
      * */
-    public synchronized boolean repairCar(int carId, int partId, int mechanicId)
-    {   assert (partId <= rangeCarPartTypes);
+    public synchronized boolean repairCar(int carId, int partId, int mechanicId) throws RemoteException {   assert (partId <= rangeCarPartTypes);
         int count = 0;
         for(int i = 0; i< carNeededPart.length; i++)
         {
@@ -169,11 +168,7 @@ public class RepairArea implements RepairAreaInterface {
             statusOfCars[carId] = ON_REPAIR;
             carNeededPart[carId] = -1;
             carParts[partId]--;
-            try {
-                gri.removeNumPartAvailable(partId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.removeNumPartAvailable(partId);
             return true;
         }
         statusOfCars[carId] = WAITING_PARTS;
@@ -199,8 +194,7 @@ public class RepairArea implements RepairAreaInterface {
      *
      *      @return id of the car ready for repair.
      * */
-    public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId)
-    {   int length = carsWaitingForParts.numElements();
+    public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId) throws RemoteException {   int length = carsWaitingForParts.numElements();
         int tmp = -1;
         int res = -1;
         boolean flag = false;
@@ -212,11 +206,7 @@ public class RepairArea implements RepairAreaInterface {
                 if(reserveCarPart[tmp] != -1 && !flag)
                 {   res = tmp;
                     statusOfCars[tmp] = ON_REPAIR;
-                    try {
-                        gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                    gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);
                     reserveCarPart[tmp] = -1; //part car taken
                     flag=true;
                     continue; //does not put back
@@ -238,18 +228,14 @@ public class RepairArea implements RepairAreaInterface {
      *      @param idCar    Id of the car.
      *      @param mechanicId id of the mechanic doing the task
      * */
-    public synchronized void concludeCarRepair(int idCar, int mechanicId) {
+    public synchronized void concludeCarRepair(int idCar, int mechanicId) throws RemoteException {
         if (statusOfCars[idCar] == REPAIRED)
         {
             System.exit(1);
         }
         statusOfCars[idCar] = REPAIRED;
-        try {
-            gri.setCustomerCarRepaired(idCar);
-            gri.setNumCarsRepaired();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setCustomerCarRepaired(idCar);
+        gri.setNumCarsRepaired();
     }
 
     /**
@@ -257,16 +243,11 @@ public class RepairArea implements RepairAreaInterface {
      *      @param idPart   ID of car part.
      *      @param quantity number of car parts to refill
      * */
-    public synchronized  void  refillCarPartStock(int idPart, int quantity)
-    {   assert idPart <= rangeCarPartTypes;
+    public synchronized  void  refillCarPartStock(int idPart, int quantity) throws RemoteException {   assert idPart <= rangeCarPartTypes;
 
         carParts[idPart] += quantity;
         workToDo = true;
-        try {
-            gri.addNumPartAvailable(idPart, quantity);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.addNumPartAvailable(idPart, quantity);
         notifyAll();        //notify sleeping mechanics
     }
 
@@ -299,12 +280,12 @@ public class RepairArea implements RepairAreaInterface {
                     int tmpPart;
                     if((tmpPart= carNeededPart[tmpCar]) != -1)
                     {   if(carParts[tmpPart] != 0) {
-                            carNeededPart[tmpCar] = -1;
-                            reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
-                            carParts[tmpPart]--;
-                            flag = true;
-                            break;
-                        }
+                        carNeededPart[tmpCar] = -1;
+                        reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
+                        carParts[tmpPart]--;
+                        flag = true;
+                        break;
+                    }
                     }
                     if(carsWaitingForParts.numElements() == 0)
                     {
@@ -345,13 +326,7 @@ public class RepairArea implements RepairAreaInterface {
      * Alerts that a new car needs to be checked.
      * @param carID the ID of the car that needs to be repaired
      * */
-    public synchronized void postJob(int carID)
-    {
-        try {
-            gri.setNumPostJobs();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized void postJob(int carID) throws RemoteException {   gri.setNumPostJobs();
         carsNeedsCheck[carID] = true;
         workToDo = true;                        //notify sleeping mechanics
         notifyAll();

@@ -48,15 +48,6 @@ public class Lounge implements LoungeInterface {
      */
     private GeneralRepInterface gri;
 
-    private OutsideWorldInterface outsideWorld;
-
-    private ParkInterface park;
-
-    private RepairAreaInterface repairArea;
-
-    private  SupplierSiteInterface supplierSite;
-
-
     /**
      *  Current state of Manager
      *
@@ -170,6 +161,25 @@ public class Lounge implements LoungeInterface {
      * */
     public volatile boolean finish;
 
+    /**
+     * Outside world
+     * */
+    private volatile OutsideWorldInterface outsideWorld;
+
+    /**
+     * Park
+     * */
+    private volatile ParkInterface park;
+
+    /**
+     * Repair Area
+     * */
+    private volatile RepairAreaInterface repairArea;
+
+    /***
+     * SupplierSite
+     */
+    private volatile SupplierSiteInterface supplierSite;
 
     /**
      * Lounge
@@ -177,22 +187,17 @@ public class Lounge implements LoungeInterface {
      * @param numMechanics      number of mechanics
      * @param replacementKeys   array with the replacement Keys.
      * @param numTypes          number of existing car types.
-     * @param gri               General Repository Information.
+     * @param gri               General Repository Information
+     * @param outsideWorld      Outside World
+     * @param park              Park
+     * @param repairArea        Repair Area
+     * @param supplierSite      Supplier Site.
      * */
     public Lounge(int numCustomers, int numMechanics, int[] replacementKeys, int numTypes,
-                  GeneralRepInterface gri, OutsideWorldInterface outsideWorld, ParkInterface park,
-                  RepairAreaInterface repairArea, SupplierSiteInterface supplierSite)
-    {
+                  GeneralRepInterface gri, OutsideWorldInterface outsideWorld, ParkInterface park, RepairAreaInterface repairArea,
+                  SupplierSiteInterface supplierSite) throws RemoteException {
         this.gri = gri;
-        this.outsideWorld = outsideWorld;
-        this.park = park;
-        this.repairArea = repairArea;
-        this.supplierSite = supplierSite;
-        try {
-            gri.setNumReplacementParked(replacementKeys.length);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setNumReplacementParked(replacementKeys.length);
 
         this.stateManager = READ_PAPER;
         this.numTypes = numTypes;
@@ -203,7 +208,10 @@ public class Lounge implements LoungeInterface {
 
         this. activeMechanics = numMechanics;
         this.finish = false;
-
+        this.outsideWorld = outsideWorld;
+        this.park = park;
+        this.repairArea = repairArea;
+        this.supplierSite = supplierSite;
 
         for (int i = 0; i<stateCustomers.length; i++) {
             this.stateCustomers[i] = NORMAL_LIFE;
@@ -251,37 +259,25 @@ public class Lounge implements LoungeInterface {
      *  @param customerId Id of the customer to be attended
      *  @param payment type of attendance. (true/false) Pay for repair/Request repair.
      * */
-    public synchronized void enterCustomerQueue(int customerId, boolean payment)
-    {
-        try {
-            gri.addCustomersQueue();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized void enterCustomerQueue(int customerId, boolean payment) throws RemoteException {
+        gri.addCustomersQueue();
         if(payment)
         {   try {   paymentQueue.write(customerId);}
-        catch (MemException e) {  }
+            catch (MemException e) {  }
         }
         try
         {   stateCustomers[customerId] = WAITING_ATTENDENCE;
             gri.setStateCustomer(customerId, stateCustomers[customerId]);
             customerQueue.write(customerId);
         } catch (MemException e) { System.exit(1);}
-        catch (RemoteException e) {
-            e.printStackTrace();
-        }
 
         while (stateCustomers[customerId] != ATTENDING)
         {   try { wait();}
         catch(InterruptedException e){ }
         }
         stateCustomers[customerId] = ATTENDED;
-        try {
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
-            gri.removeCustomersQueue();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        gri.removeCustomersQueue();
     }
 
     /**
@@ -289,49 +285,33 @@ public class Lounge implements LoungeInterface {
      *  Manager invokes this method.
      *  @return success of the operation so the Mechanic can move on or not to the next operation.
      * */
-    public synchronized int attendCustomer()
-    {
-        try {
-            gri.setStateManager(CALL_CUSTOMER);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized int attendCustomer() throws RemoteException {
+        gri.setStateManager(CALL_CUSTOMER);
         if (customerQueue.isEmpty())
         {   if(!paymentQueue.isEmpty())
             {   System.exit(1);
             }
-            try {
-                gri.setStateManager(READ_PAPER);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setStateManager(READ_PAPER);
             return -1; //-1 : No waiting customers.
         }
         try
         {   int customerId = customerQueue.read();
-            try {
-                gri.setStateManager(ATTEND_CUSTOMER);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setStateManager(ATTEND_CUSTOMER);
             stateCustomers[customerId] = ATTENDING;
-            try {
-                gri.setStateCustomer(customerId, stateCustomers[customerId]);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             notifyAll();
             if(paymentQueue.numElements()!=0 && paymentQueue.peek() == customerId)
             {   if(paymentQueue.read()!=customerId)
-            {   System.exit(1);
-            }
+                {   System.out.println("ERROR: PaymentQueue is not customer.");
+                    System.exit(1);
+                }
                 boolean flag = false;
                 int i = 0;
                 for(;i<usedReplacementCarKeys.length;i++)
                 {   if (usedReplacementCarKeys[i] == customerId)
-                {   flag = true;
-                    break;
-                }
+                    {   flag = true;
+                        break;
+                    }
                 }
                 if(flag)
                 {   while (usedReplacementCarKeys[i] == customerId
@@ -355,21 +335,13 @@ public class Lounge implements LoungeInterface {
                 }
                 carKeysToRepairQueue.write(toRepairCarKey);
                 customerCarKeys[customerId] = -1;
-                try {
-                    gri.setStateManager(READ_PAPER);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setStateManager(READ_PAPER);
                 return toRepairCarKey;
             }
 
         }
         catch (MemException e) {  }
-        try {
-            gri.setStateManager(READ_PAPER);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setStateManager(READ_PAPER);
         return -2; // -2 : Customer operation done successful.
     }
 
@@ -378,14 +350,9 @@ public class Lounge implements LoungeInterface {
      * @param customerId ID of the client who needs the replacement car.
      * @return the key of the replacement car.
      * */
-    public synchronized int getReplacementCarKey(int customerId)
-    {
-        try {
-            gri.setCustomerNeedsReplacement(customerId);
-            gri.addCustomersReplacementQueue();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized int getReplacementCarKey(int customerId) throws RemoteException {
+        gri.setCustomerNeedsReplacement(customerId);
+        gri.addCustomersReplacementQueue();
 
         if(!replacementCarKeys.isEmpty())
         {   try
@@ -393,12 +360,8 @@ public class Lounge implements LoungeInterface {
             if(tmp - headReplacementKeys < 0) { System.exit(1); }
             usedReplacementCarKeys[tmp - headReplacementKeys] = customerId;
             stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-            try {
-                gri.setStateCustomer(customerId, stateCustomers[customerId]);
-                gri.removeCustomersReplacementQueue();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
+            gri.removeCustomersReplacementQueue();
             return tmp;
         }
         catch (MemException e)
@@ -407,27 +370,21 @@ public class Lounge implements LoungeInterface {
         }
         try
         {   stateCustomers[customerId] = WAITING_REPLACEMENT_CAR;
-            try {
-                gri.setStateCustomer(customerId, stateCustomers[customerId]);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            gri.setStateCustomer(customerId, stateCustomers[customerId]);
             waitingReplacementKey.write(customerId);
         }
         catch (MemException e)
         {   System.exit(1);
         }
         while (stateCustomers[customerId] != GET_REPLACEMENT_CAR)
-        {   try { wait(); }
+        {   System.out.println("WAITING FOR REPLACEMENT CAR KEY");
+            try { wait(); }
         catch (InterruptedException e) { }
         }
+        System.out.println("got REPLACEMENT CAR KEY");
         stateCustomers[customerId] = ATTENDED_W_SUBCAR;
-        try {
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
-            gri.removeCustomersReplacementQueue();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
+        gri.removeCustomersReplacementQueue();
         try
         {   int tmp = replacementCarKeys.read();
             if(tmp - headReplacementKeys < 0) {System.exit(1); }
@@ -446,7 +403,7 @@ public class Lounge implements LoungeInterface {
      *  @param key Key of the replacement car key.
      *  @param customerId ID of the current Customer returning the replacement car key.
      * */
-    public synchronized void returnReplacementCarKey(int key, int customerId)
+    public synchronized void returnReplacementCarKey(int key, int customerId) throws RemoteException
     {   if(replacementCarKeys.containsValue(key)) { System.exit(1); }
         try
         {   replacementCarKeys.write(key);
@@ -454,11 +411,7 @@ public class Lounge implements LoungeInterface {
             if(!waitingReplacementKey.isEmpty())
             {   int waitingCustomerId = waitingReplacementKey.read();
                 stateCustomers[waitingCustomerId] = GET_REPLACEMENT_CAR;
-                try {
-                    gri.setStateCustomer(customerId, stateCustomers[customerId]);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setStateCustomer(customerId, stateCustomers[customerId]);
             }
             notifyAll();
         } catch (MemException e) { System.exit(1); }
@@ -467,20 +420,16 @@ public class Lounge implements LoungeInterface {
      * Exit Lounge
      * @param customerId Id of the customer who will exit the lounge
      * */
-    public synchronized void exitLounge(int customerId) {
+    public synchronized void exitLounge(int customerId) throws RemoteException {
         stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
-        try {
-            gri.setStateCustomer(customerId, stateCustomers[customerId]);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        gri.setStateCustomer(customerId, stateCustomers[customerId]);
     }
 
     /**
      *  Checks if Customer car keys are empty
      *  @return boolean (true/false) Available customers cars/No customers cars.
      * */
-    public boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
+    private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
 
     /**
      * Customer gives Manager his/hers car key.
@@ -529,15 +478,17 @@ public class Lounge implements LoungeInterface {
      *      @param number       the number of stock needed
      *      @param mechanicId   the id of the mechanic
      * */
-    public synchronized void requestPart(int idType, int number, int mechanicId)
-    {
-        try {
-            gri.setFlagMissingPart(idType, "T");
-            gri.setNumCarWaitingPart(idType, 1);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+    public synchronized void requestPart(int idType, int number, int mechanicId) throws RemoteException {
+        gri.setFlagMissingPart(idType, "T");
+        gri.setNumCarWaitingPart(idType, 1);
+        System.out.println("DEBUG: Requesting increase of parts. the number of parts: "+number+". type: "+ idType);
+        //TODO: UNCOMMENT -> carPartsToRefill[idType] += number;
+        carPartsToRefill[idType] += 1;
+        System.out.println("Car parts to refill: ");
+        for(int i = 0; i< carPartsToRefill.length; i++){
+            System.out.println(i+" ."+carPartsToRefill[i]);
         }
-        carPartsToRefill[idType] += number;
+        System.out.println();
     }
 
     /**
@@ -545,41 +496,21 @@ public class Lounge implements LoungeInterface {
      *  @param idType the type of Car Part
      *  @param numberParts number of Car Parts being refilled
      * */
-    public synchronized void registerStockRefill(int idType, int numberParts)
-    {
-        try {
-            gri.setStateManager(FILL_STOCK);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized void registerStockRefill(int idType, int numberParts) throws RemoteException {
+        gri.setStateManager(FILL_STOCK);
         if(carPartsToRefill[idType] != 0)
-        {
-            if(carPartsToRefill[idType] == numberParts) {
+        {   if(carPartsToRefill[idType] == numberParts) {
                 carPartsToRefill[idType] = 0;
-                try {
-                    gri.setStateManager(READ_PAPER);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setStateManager(READ_PAPER);
             }
             else
             {
                 carPartsToRefill[idType] -= numberParts;
-                try {
-                    gri.setStateManager(READ_PAPER);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                gri.setStateManager(READ_PAPER);
             }
-            //return true;
         }
 
-        try {
-            gri.setStateManager(READ_PAPER);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        //return false;
+        gri.setStateManager(READ_PAPER);
     }
 
     /**
@@ -588,9 +519,11 @@ public class Lounge implements LoungeInterface {
      * */
     public synchronized int checksPartsRequest()
     {   for(int i = 0; i<carPartsToRefill.length; i++)
-    {   if(carPartsToRefill[i] != 0)
-        return i;
-    }
+        {   if(carPartsToRefill[i] != 0) {
+                System.out.println("Will refill this part: "+i);
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -599,16 +532,12 @@ public class Lounge implements LoungeInterface {
      * @param idKey         the id of the key (= idCar)
      * @param mechanicId    the id of the mechanic.
      * */
-    public synchronized void alertManagerRepairDone(int idKey, int mechanicId)
-    {
-        try {
-            gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public synchronized void alertManagerRepairDone(int idKey, int mechanicId) throws RemoteException {
+        gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
         if(!customerFixedCarKeys.isEmpty())
-        {   if(customerFixedCarKeys.containsValue(idKey))
-            System.exit(1);
+        {   if(customerFixedCarKeys.containsValue(idKey)) {
+                System.exit(1);
+            }
         }
         try { customerFixedCarKeys.write(idKey); }
         catch (MemException e) { System.exit(1); }
@@ -626,12 +555,12 @@ public class Lounge implements LoungeInterface {
      * */
     public synchronized int getFixedCarKey()
     {   if(!isCustomerCarKeysEmpty())
-    {   try
-    {   return customerFixedCarKeys.read();
-    } catch (MemException e)
-    {   System.exit(1);
-    }
-    }
+        {   try
+            {   return customerFixedCarKeys.read();
+            } catch (MemException e)
+            {   System.exit(1);
+            }
+        }
         return -1;
     }
 
@@ -641,8 +570,9 @@ public class Lounge implements LoungeInterface {
      * @return the id of the customer
      * */
     public synchronized int getCustomerFromKey(int idKey)
-    {   if(memKeysCustomers[idKey] == -1)
+    {   if(memKeysCustomers[idKey] == -1) {
         System.exit(1);
+        }
         int customerId = memKeysCustomers[idKey];
         memKeysCustomers[idKey] = -1;
         return customerId;
@@ -674,22 +604,13 @@ public class Lounge implements LoungeInterface {
     /**
      *  Mechanic declares that he/she is going home. Function is used for the locals/server termination.
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   if(--activeMechanics==0)
-        {
-            try {
-                this.outsideWorld.finish();
-                this.park.finish();
-                this.repairArea.finish();
-                this.supplierSite.finish();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                this.gri.finish();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+        {   this.outsideWorld.finish();
+            this.park.finish();
+            this.repairArea.finish();
+            this.supplierSite.finish();
+            this.gri.finish();
             this.finish = true;
         }
     }

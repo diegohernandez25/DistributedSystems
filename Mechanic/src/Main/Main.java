@@ -13,7 +13,7 @@ public class Main
     {   String rmiRegHostName   = Parameters.REGISTRY_HOST;
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
 
-        LoungeInterface mechanicLounge   = null;
+        LoungeInterface mechanicLounge = null;
         ParkInterface mechanicPark       = null;
         RepairAreaInterface mechanicRA           = null;
 
@@ -24,6 +24,7 @@ public class Main
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         System.out.println("Registry created.");
 

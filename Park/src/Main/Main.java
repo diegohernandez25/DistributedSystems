@@ -17,12 +17,12 @@ public class Main {
     /**
      * Number of customers
      * */
-    public static final int numCustomers = 30;
+    public static final int numCustomers = Parameters.NUM_CUSTOMERS;
 
     /**
      * Number of replacement cars.
      * */
-    public static final int numReplacementCars = 4;
+    public static final int numReplacementCars = Parameters.NUM_REPLACEMENT;
 
 
     public static void main(String[] args)

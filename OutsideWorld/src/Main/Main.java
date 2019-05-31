@@ -12,10 +12,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Main {
-    /**
-     * Number of customers
-     * */
-    public static final int numCustomers = 30;
+
 
     public static void main(String[] args)
     {   String rmiRegHostName = Parameters.REGISTRY_HOST;
@@ -34,7 +31,7 @@ public class Main {
             System.exit(1);
         }
 
-        OutsideWorld outsideWorld = new OutsideWorld(numCustomers);
+        OutsideWorld outsideWorld = new OutsideWorld(Parameters.NUM_CUSTOMERS);
         OutsideWorldInterface outsideWorldInterface = null;
 
         try {
