@@ -3,6 +3,8 @@ package Main;
 
 import Interfaces.*;
 
+import java.rmi.RemoteException;
+
 public class Customer extends Thread{
     /**
      *  Customer identification.
@@ -44,17 +46,17 @@ public class Customer extends Thread{
     /**
      *  Park
      * */
-    private CustomerPark park;
+    private ParkInterface park;
 
     /**
      *  OutsideWorld
      * */
-    private CustomerOW outsideWorld;
+    private OutsideWorldInterface outsideWorld;
 
     /**
      *  Lounge
      * */
-    private CustomerLounge lounge;
+    private LoungeInterface lounge;
 
     /**
      * Customer constructor
@@ -65,8 +67,8 @@ public class Customer extends Thread{
      * @param outsideWorld outside world object.
      * @param lounge lounge object.
      * */
-    public Customer(int customerId, boolean requiresCar, int car, CustomerPark park, CustomerOW outsideWorld
-            , CustomerLounge lounge)
+    public Customer(int customerId, boolean requiresCar, int car, ParkInterface park, OutsideWorldInterface outsideWorld
+            , LoungeInterface lounge)
     {   this.customerId     = customerId;
         this.requiresCar    = requiresCar;
         this.hasCar         = true;
@@ -85,48 +87,96 @@ public class Customer extends Thread{
     {   int key = car;
         livingNormalLife();
         System.out.println(customerId +". Going to park car.");
-        park.parkCar(this.car, customerId, true);
+        try {
+            park.parkCar(this.car, customerId, true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         this.car = null;
         System.out.println(customerId +". Car Parked.");
         System.out.println(customerId +". Entering Customer queue.");
-        lounge.enterCustomerQueue(this.customerId,false);
+        try {
+            lounge.enterCustomerQueue(this.customerId,false);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(customerId +". Customer attended.");
         System.out.println(customerId +". Customer giving key to manager.");
-        lounge.giveManagerCarKey(this.customerId,key);
+        try {
+            lounge.giveManagerCarKey(this.customerId,key);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(customerId +". Customer gave key to manager.");
         key = -1;
         int repKey = -1;
         if(this.requiresCar)
         {   System.out.println(customerId +". Customer wants rental key.");
-            repKey = lounge.getReplacementCarKey(this.customerId);
+            try {
+                repKey = lounge.getReplacementCarKey(this.customerId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             System.out.println(customerId +". Customer has rental key. Going to park");
-            repCar = park.getCar(repKey, customerId, true);
+            try {
+                repCar = park.getCar(repKey, customerId, true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             System.out.println(customerId +". Customer got car.");
         }
         else
         {   System.out.println(customerId +". Exiting lounge.");
-            lounge.exitLounge(this.customerId);
+            try {
+                lounge.exitLounge(this.customerId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println(customerId +". Waiting for repair.");
-        outsideWorld.waitForRepair(this.customerId);
+        try {
+            outsideWorld.waitForRepair(this.customerId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(customerId +". Repair done getting back to the office.");
         if(repCar != -1)
         {   System.out.println(customerId +". Parking car");
-            park.parkCar(repCar, customerId, true);
+            try {
+                park.parkCar(repCar, customerId, true);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             repCar = -1;
             System.out.println(customerId +". Car parked.");
         }
         System.out.println(customerId +". Entering queue to pay.");
-        lounge.enterCustomerQueue(this.customerId,true);
+        try {
+            lounge.enterCustomerQueue(this.customerId,true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         if(repKey != -1)
         {   System.out.println(customerId +". Giving back replacement key.");
-            lounge.returnReplacementCarKey(repKey,this.customerId);
+            try {
+                lounge.returnReplacementCarKey(repKey,this.customerId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             repKey = -1;
         }
         System.out.println(customerId +". Paying for the service.");
-        key = lounge.payForTheService(this.customerId);
+        try {
+            key = lounge.payForTheService(this.customerId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(customerId +". Getting car back");
-        car = park.getCar(key, customerId, true);
+        try {
+            car = park.getCar(key, customerId, true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(customerId +". Got back car");
         System.out.println(customerId +". Operation finished!");
     }

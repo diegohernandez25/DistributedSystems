@@ -4,7 +4,7 @@ import Interfaces.*;
 import java.io.*;
 import java.rmi.Remote;
 
-public class GeneralRepInformation implements Remote, GriLounge, GriPark, GriRA, GriSS {
+public class GeneralRepInformation implements Remote,GeneralRepInterface {
 
     /**
      *  Manager state abbreviation (each index is the corresponding state in integer). 4 chars max

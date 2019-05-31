@@ -2,6 +2,8 @@ package Main;
 
 import Interfaces.*;
 
+import java.rmi.RemoteException;
+
 public class Manager extends Thread
 {   /**
  *  Life cycle of Manager
@@ -15,22 +17,22 @@ public class Manager extends Thread
     /**
      *  Lounge
      * */
-    private ManagerLounge lounge;
+    private LoungeInterface lounge;
 
     /**
      *  SupplierSite
      * */
-    private ManagerSS supplierSite;
+    private SupplierSiteInterface supplierSite;
 
     /**
      * Repair Area
      * */
-    private ManagerRA repairArea;
+    private RepairAreaInterface repairArea;
 
     /**
      * Outside World
      * */
-    private ManagerOW outsideWorld;
+    private OutsideWorldInterface outsideWorld;
 
     /**
      *  Instantiation of Manager Thread.
@@ -41,8 +43,8 @@ public class Manager extends Thread
      *      @param outsideWorld used Outside World
      *      @param repairArea used Repair Area
      * */
-    public Manager(int managerId, ManagerLounge lounge, ManagerSS supplierSite,
-                   ManagerOW outsideWorld, ManagerRA repairArea)
+    public Manager(int managerId, LoungeInterface lounge, SupplierSiteInterface supplierSite,
+                   OutsideWorldInterface outsideWorld, RepairAreaInterface repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;
@@ -63,55 +65,71 @@ public class Manager extends Thread
         /**
          *  Refill car parts stock;
          * */
-        if((indexPart = lounge.checksPartsRequest()) != -1)
-        {   System.out.println("Parts to refill");
-            int numberParts = supplierSite.restockPart(indexPart,
-                    lounge.requestedNumberPart(indexPart));
-            System.out.println("Parts bought");
-            repairArea.refillCarPartStock(indexPart,numberParts);
-            System.out.println("Parts restocked");
-            lounge.registerStockRefill(indexPart,numberParts);
-            System.out.println("Parts restocked registered");
-            continue;
+        try {
+            if((indexPart = lounge.checksPartsRequest()) != -1)
+            {   System.out.println("Parts to refill");
+                int numberParts = supplierSite.restockPart(indexPart,
+                        lounge.requestedNumberPart(indexPart));
+                System.out.println("Parts bought");
+                repairArea.refillCarPartStock(indexPart,numberParts);
+                System.out.println("Parts restocked");
+                lounge.registerStockRefill(indexPart,numberParts);
+                System.out.println("Parts restocked registered");
+                continue;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
         /**
          *  Alert remaining customers to get their fixed cars
          * */
-        if(!outsideWorld.customersNotYetAtOutsideWorldisEmpty())
-        {   System.out.println("Alerting remaining customers");
-            outsideWorld.alertRemainingCustomers();
+        try {
+            if(!outsideWorld.customersNotYetAtOutsideWorldisEmpty())
+            {   System.out.println("Alerting remaining customers");
+                outsideWorld.alertRemainingCustomers();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
         /**
          *      Alert Current Customer.
          * */
-        if(!lounge.isCustomerFixedCarKeysEmpty())
-        {   System.out.println("Parts restocked registered");
-            int keyId = lounge.getFixedCarKey();
-            System.out.println("Getting key");
-            int customerId = lounge.getCustomerFromKey(keyId);
-            System.out.println("Getting customer");
-            lounge.readyToDeliverKey(customerId,keyId);
-            System.out.println("Ready to deliver key to customer");
-            outsideWorld.alertCustomer(customerId);
-            System.out.println("Alerting customer");
+        try {
+            if(!lounge.isCustomerFixedCarKeysEmpty())
+            {   System.out.println("Parts restocked registered");
+                int keyId = lounge.getFixedCarKey();
+                System.out.println("Getting key");
+                int customerId = lounge.getCustomerFromKey(keyId);
+                System.out.println("Getting customer");
+                lounge.readyToDeliverKey(customerId,keyId);
+                System.out.println("Ready to deliver key to customer");
+                outsideWorld.alertCustomer(customerId);
+                System.out.println("Alerting customer");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
         /**
          *      Attend Customer
          * */
-        if((val = lounge.attendCustomer())!=-1)                    // Attends customer
-        {   System.out.println("Customer attended");
-            if(val == -2)
-            {   if(lounge.allDone())
-            {   System.out.println("All done");
-                repairArea.sendHome();
-                break;
+        try {
+            if((val = lounge.attendCustomer())!=-1)                    // Attends customer
+            {   System.out.println("Customer attended");
+                if(val == -2)
+                {   if(lounge.allDone())
+                {   System.out.println("All done");
+                    repairArea.sendHome();
+                    break;
+                }
+                }
+                else
+                {   System.out.println("Posting job to mechanics");
+                    repairArea.postJob(val);
+                    System.out.println("Posting job done.");
+                }
             }
-            }
-            else
-            {   System.out.println("Posting job to mechanics");
-                repairArea.postJob(val);
-                System.out.println("Posting job done.");
-            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
         System.out.println("FINISHED!");

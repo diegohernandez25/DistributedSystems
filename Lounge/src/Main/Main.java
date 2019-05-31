@@ -159,7 +159,7 @@ public class Main {
 
         System.out.println("Lounge registered.");
 
-        while(!lounge.finish)
+        /*while(!lounge.finish)
         {   try {
             synchronized (lounge) {
                 lounge.wait();
@@ -189,5 +189,6 @@ public class Main {
             System.exit(1);
         }
         System.out.println("Park  Unexported");
+        */
     }
 }

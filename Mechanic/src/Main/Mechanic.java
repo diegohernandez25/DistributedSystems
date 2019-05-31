@@ -2,6 +2,8 @@ package Main;
 
 import Interfaces.*;
 
+import java.rmi.RemoteException;
+
 public class Mechanic extends Thread {
     /**
      *  Mechanic identification
@@ -12,17 +14,17 @@ public class Mechanic extends Thread {
     /**
      *  Lounge
      * */
-    private MechanicLounge lounge;
+    private LoungeInterface lounge;
 
     /**
      *  Parking Lot
      * */
-    private MechanicPark park;
+    private ParkInterface park;
 
     /**
      *  Repair Area
      * */
-    private MechanicRA repairArea;
+    private RepairAreaInterface repairArea;
 
     /**
      *  Instantiation of Mechanic Thread.
@@ -34,7 +36,7 @@ public class Mechanic extends Thread {
      * */
 
 
-    public Mechanic(int mechanicId, MechanicLounge lounge, MechanicPark park, MechanicRA repairArea)
+    public Mechanic(int mechanicId, LoungeInterface lounge, ParkInterface park, RepairAreaInterface repairArea)
     {   this.mechanicId = mechanicId;
         this.lounge = lounge;
         this.park = park;
@@ -51,55 +53,83 @@ public class Mechanic extends Thread {
         int idCurrentKey;
         boolean WORK = true;
         while(WORK)
-        {   switch (repairArea.findNextTask(mechanicId))
-        {   /**
-         *   Continue repair car.
-         */
+        {   int task = 0;
+            try {
+                task = repairArea.findNextTask(mechanicId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //switch (repairArea.findNextTask(mechanicId)) TODO: Works??
+            switch (task)
+            {
+            /**
+            *   Continue repair car.
+            */
             case 1:
-                if((idCurrentCar = repairArea.repairWaitingCarWithPartsAvailable(mechanicId)) != -1)
-                {   System.out.println(this.mechanicId + ". Continuing to repair car");
-                    fixCar();
-                    repairArea.concludeCarRepair(idCurrentCar,mechanicId);
-                    System.out.println(this.mechanicId + ". Repair concluded");
-                    idCurrentKey = idCurrentCar;
-                    park.parkCar(idCurrentCar, mechanicId, false);
-                    System.out.println(this.mechanicId + ". Car parked");
-                    lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
-                    System.out.println(this.mechanicId + ". Alerting manager that car is repaired.");
-                }
-                else
-                {   System.out.println(this.mechanicId + ". This should not happen!");
-                    System.exit(1);
+                try {
+                    if((idCurrentCar = repairArea.repairWaitingCarWithPartsAvailable(mechanicId)) != -1)
+                    {   System.out.println(this.mechanicId + ". Continuing to repair car");
+                        fixCar();
+                        try {
+                            repairArea.concludeCarRepair(idCurrentCar,mechanicId);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(this.mechanicId + ". Repair concluded");
+                        idCurrentKey = idCurrentCar;
+                        try {
+                            park.parkCar(idCurrentCar, mechanicId, false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(this.mechanicId + ". Car parked");
+                        try {
+                            lounge.alertManagerRepairDone(idCurrentKey,mechanicId);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(this.mechanicId + ". Alerting manager that car is repaired.");
+                    }
+                    else
+                    {   System.out.println(this.mechanicId + ". This should not happen!");
+                        System.exit(1);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
                 break;
             /**
              *  Repair new car.
              * */
             case 2:
-                if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)
-                {   System.out.println(this.mechanicId + ". Going to repair a ne car.Going to park.");
-                    if((idCurrentCar = park.getCar(idCurrentKey, mechanicId, false)) == -1)
-                    {   System.out.println(this.mechanicId + ". This should not happen!");
-                        System.exit(1);
-                    }
-                    System.out.println(this.mechanicId + ". Checking car parts...");
-                    int carPart = repairArea.checkCar(idCurrentCar,mechanicId);
-                    System.out.println(this.mechanicId + ". Looking if there is parts available");
-                    if(!repairArea.repairCar(idCurrentCar,carPart,mechanicId))
-                    {   lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart), mechanicId);
-                        System.out.println(this.mechanicId + ". Parts not available. Requesting parts.");
+                try {
+                    if((idCurrentKey = lounge.getCarToRepairKey(mechanicId)) != -1)
+                    {   System.out.println(this.mechanicId + ". Going to repair a ne car.Going to park.");
+                        if((idCurrentCar = park.getCar(idCurrentKey, mechanicId, false)) == -1)
+                        {   System.out.println(this.mechanicId + ". This should not happen!");
+                            System.exit(1);
+                        }
+                        System.out.println(this.mechanicId + ". Checking car parts...");
+                        int carPart = repairArea.checkCar(idCurrentCar,mechanicId);
+                        System.out.println(this.mechanicId + ". Looking if there is parts available");
+                        if(!repairArea.repairCar(idCurrentCar,carPart,mechanicId))
+                        {   lounge.requestPart(carPart, repairArea.getMaxPartStock(carPart), mechanicId);
+                            System.out.println(this.mechanicId + ". Parts not available. Requesting parts.");
+                            continue;
+                        }
+                        System.out.println(this.mechanicId + ". Fixing car.");
+                        fixCar();
+                        System.out.println(this.mechanicId + ". Car fixed");
+                        repairArea.concludeCarRepair(idCurrentCar, mechanicId);
+                        System.out.println(this.mechanicId + ". Repair concluded");
+                        park.parkCar(idCurrentCar, mechanicId, false);
+                        System.out.println(this.mechanicId + ". Car parked");
+                        lounge.alertManagerRepairDone(idCurrentCar,mechanicId);
+                        System.out.println(this.mechanicId + ". Manager alerted about repair.");
                         continue;
                     }
-                    System.out.println(this.mechanicId + ". Fixing car.");
-                    fixCar();
-                    System.out.println(this.mechanicId + ". Car fixed");
-                    repairArea.concludeCarRepair(idCurrentCar, mechanicId);
-                    System.out.println(this.mechanicId + ". Repair concluded");
-                    park.parkCar(idCurrentCar, mechanicId, false);
-                    System.out.println(this.mechanicId + ". Car parked");
-                    lounge.alertManagerRepairDone(idCurrentCar,mechanicId);
-                    System.out.println(this.mechanicId + ". Manager alerted about repair.");
-                    continue;
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
                 break;
             case 3:
@@ -114,7 +144,11 @@ public class Mechanic extends Thread {
                 break;
         }
         }
-        this.lounge.finish();
+        try {
+            this.lounge.finish();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         System.out.println(this.mechanicId + ". FINISHED!");
 
     }

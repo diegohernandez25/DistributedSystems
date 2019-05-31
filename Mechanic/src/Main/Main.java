@@ -1,8 +1,6 @@
 package Main;
 
-import Interfaces.MechanicLounge;
-import Interfaces.MechanicPark;
-import Interfaces.MechanicRA;
+import Interfaces.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -12,12 +10,12 @@ import java.rmi.registry.Registry;
 public class Main
 {
     public static void main(String args[])
-    {   String rmiRegHostName   = Parameters.REGISTRY_NAME;
+    {   String rmiRegHostName   = Parameters.REGISTRY_HOST;
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
 
-        MechanicLounge mechanicLounge   = null;
-        MechanicPark mechanicPark       = null;
-        MechanicRA mechanicRA           = null;
+        LoungeInterface mechanicLounge   = null;
+        ParkInterface mechanicPark       = null;
+        RepairAreaInterface mechanicRA           = null;
 
         Registry registry = null;
 
@@ -36,7 +34,7 @@ public class Main
          * Lounge
          * */
         try {
-            mechanicLounge = (MechanicLounge) registry.lookup(Parameters.LOUNGE_NAME);
+            mechanicLounge = (LoungeInterface) registry.lookup(Parameters.LOUNGE_NAME);
         } catch (RemoteException e) {
             System.out.println("Remote Exception error @mechanicLounge");
             e.printStackTrace();
@@ -52,7 +50,7 @@ public class Main
          * */
 
         try {
-            mechanicPark = (MechanicPark) registry.lookup(Parameters.PARK_NAME);
+            mechanicPark = (ParkInterface) registry.lookup(Parameters.PARK_NAME);
         } catch (RemoteException e) {
             System.out.println("Remote Exception error @mechanicPark");
             e.printStackTrace();
@@ -64,7 +62,7 @@ public class Main
         }
 
         try {
-            mechanicRA = (MechanicRA) registry.lookup(Parameters.REPAIRAREA_NAME);
+            mechanicRA = (RepairAreaInterface) registry.lookup(Parameters.REPAIRAREA_NAME);
         } catch (RemoteException e) {
             System.out.println("Remote Exception error @mechanicRA");
             e.printStackTrace();

@@ -38,7 +38,7 @@ public class Main {
         OutsideWorldInterface outsideWorldInterface = null;
 
         try {
-            outsideWorldInterface = (OutsideWorldInterface) UnicastRemoteObject.exportObject(outsideWorld,Parameters.LOUNGE_PORT);
+            outsideWorldInterface = (OutsideWorldInterface) UnicastRemoteObject.exportObject(outsideWorld,Parameters.OW_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);

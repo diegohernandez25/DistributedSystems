@@ -1,8 +1,6 @@
 package Main;
 
-import Interfaces.CustomerLounge;
-import Interfaces.CustomerOW;
-import Interfaces.CustomerPark;
+import Interfaces.*;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -11,23 +9,19 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Main {
-    static int PORT= 8080;
-    static String NAME_SERVER = "localhost";
-
 
     public static void main(String args[])
-    {   String rmiRegHostName = NAME_SERVER;
-        int rmiRegPortNumb = PORT;
+    {   String rmiRegHostName   = Parameters.REGISTRY_HOST;
+        int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
         Registry registry = null;
 
-        CustomerLounge customerLounge = null;
-        CustomerOW customerOW = null;
-        CustomerPark customerPark = null;
+        LoungeInterface managerLounge = null;
+        OutsideWorldInterface customerOW = null;
+        ParkInterface customerPark = null;
 
-        try{
-            registry = LocateRegistry.getRegistry(rmiRegHostName,rmiRegPortNumb);
-        }
-        catch (RemoteException e) {
+        try {
+            registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+        } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -37,21 +31,24 @@ public class Main {
         /**
          * Lounge
          * */
-        try {
-            customerLounge = (CustomerLounge) registry.lookup("Lounge");
-        } catch (RemoteException e) {
-            System.out.println("Remote Exception error @customerLounge");
+        try{
+            managerLounge = (LoungeInterface) registry.lookup(Parameters.LOUNGE_NAME);
+        }catch (RemoteException e) {
+            System.out.println("Remote Exception error @managerLounge");
             e.printStackTrace();
+            System.exit(1);
         } catch (NotBoundException e) {
-            System.out.println("Bound Exception error @customerLounge");
+            System.out.println("Bound Exception error @managerLounge");
             e.printStackTrace();
+            System.exit(1);
         }
+
 
         /**
          * Outside World
          * */
         try {
-            customerOW = (CustomerOW) registry.lookup("Outside World");
+            customerOW = (OutsideWorldInterface) registry.lookup(Parameters.OW_NAME);
         }
         catch (RemoteException e) {
             System.out.println("Remote Exception error @customerOW");
@@ -61,12 +58,14 @@ public class Main {
             System.out.println("Bound Exception error @customerOW");
             e.printStackTrace();
         }
+        System.out.println("OW created.");
+
 
         /**
          * Park
          * */
         try {
-            customerPark = (CustomerPark) registry.lookup("Park");
+            customerPark = (ParkInterface) registry.lookup(Parameters.PARK_NAME);
         }
         catch (RemoteException e) {
             System.out.println("Remote Exception error @customerPark");
@@ -76,10 +75,11 @@ public class Main {
             System.out.println("Bound Exception error @customerPark");
             e.printStackTrace();
         }
+        System.out.println("Park created.");
 
         Customer[] customers = new Customer[30];
         for(int i = 0; i< customers.length; i++)
-        {   customers[i] = new Customer(i,Math.random() < 0.5,i,customerPark,customerOW,customerLounge);
+        {   customers[i] = new Customer(i,Math.random() < 0.5,i,customerPark,customerOW,managerLounge);
             customers[i].start();
         }
         for (int i=0; i<30; i++)

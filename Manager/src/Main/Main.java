@@ -1,9 +1,6 @@
 package Main;
 
-import Interfaces.ManagerLounge;
-import Interfaces.ManagerOW;
-import Interfaces.ManagerRA;
-import Interfaces.ManagerSS;
+import Interfaces.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -13,13 +10,13 @@ import java.time.LocalTime;
 
 public class Main {
     public static void main(String args[])
-    {   String rmiRegHostName   = Parameters.REGISTRY_NAME;
+    {   String rmiRegHostName   = Parameters.REGISTRY_HOST;
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
 
-        ManagerLounge managerLounge = null;
-        ManagerOW managerOW         = null;
-        ManagerRA managerRA         = null;
-        ManagerSS managerSS         = null;
+        LoungeInterface managerLounge = null;
+        OutsideWorldInterface managerOW         = null;
+        RepairAreaInterface managerRA         = null;
+        SupplierSiteInterface managerSS         = null;
 
         Registry registry = null;
 
@@ -38,7 +35,7 @@ public class Main {
          * Lounge
          * */
         try{
-            managerLounge = (ManagerLounge) registry.lookup(Parameters.LOUNGE_NAME);
+            managerLounge = (LoungeInterface) registry.lookup(Parameters.LOUNGE_NAME);
         }catch (RemoteException e) {
             System.out.println("Remote Exception error @managerLounge");
             e.printStackTrace();
@@ -53,7 +50,7 @@ public class Main {
          * ManagerOutside World
          * */
         try{
-            managerOW = (ManagerOW) registry.lookup(Parameters.OW_NAME);
+            managerOW = (OutsideWorldInterface) registry.lookup(Parameters.OW_NAME);
         }catch(RemoteException e){
             System.out.println("Remote Exception error @managerOW");
             e.printStackTrace();
@@ -68,7 +65,7 @@ public class Main {
          * Manager Repair Area
          * */
         try{
-            managerRA = (ManagerRA) registry.lookup(Parameters.REPAIRAREA_NAME);
+            managerRA = (RepairAreaInterface) registry.lookup(Parameters.REPAIRAREA_NAME);
         }catch(RemoteException e){
             System.out.println("Remote Exception error @managerRA");
             e.printStackTrace();
@@ -83,7 +80,7 @@ public class Main {
          * Manager SupplierSite
          * */
         try{
-            managerSS = (ManagerSS) registry.lookup(Parameters.SS_NAME);
+            managerSS = (SupplierSiteInterface) registry.lookup(Parameters.SS_NAME);
         }catch(RemoteException e){
             System.out.println("Remote Exception error @managerSS");
             e.printStackTrace();
