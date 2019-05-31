@@ -1,4 +1,5 @@
-java -Djava.rmi.server.codebase="file:///home/diego/Workspace/ECT/4ano/SD/pratica/sd-assingment3/ra"\
+CUR_PATH=$(pwd)
+java -Djava.rmi.server.codebase="file://$CUR_PATH"\
      -Djava.rmi.server.useCodebaseOnly=false\
      -Djava.security.policy=java.policy\
      Main.Main

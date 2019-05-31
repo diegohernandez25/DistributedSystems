@@ -34,7 +34,7 @@ public class Main {
     /**
      * Maximum number of storage for each car part
      */
-    public static final int[] maxCarParts = Parameters.CAR_PARTS;
+    public static final int[] maxCarParts = Parameters.MAX_CAR_PARTS;
 
     /**
      * Main

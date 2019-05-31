@@ -482,8 +482,8 @@ public class Lounge implements LoungeInterface {
         gri.setFlagMissingPart(idType, "T");
         gri.setNumCarWaitingPart(idType, 1);
         System.out.println("DEBUG: Requesting increase of parts. the number of parts: "+number+". type: "+ idType);
-        //TODO: UNCOMMENT -> carPartsToRefill[idType] += number;
-        carPartsToRefill[idType] += 1;
+        carPartsToRefill[idType] += number;
+        //carPartsToRefill[idType] += 1;
         System.out.println("Car parts to refill: ");
         for(int i = 0; i< carPartsToRefill.length; i++){
             System.out.println(i+" ."+carPartsToRefill[i]);
