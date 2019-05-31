@@ -57,7 +57,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        System.out.println("registry done!");
         GeneralRepInformation generalRepInformation = new GeneralRepInformation(numCustomers, numMechanics, numPartTypes, carParts, fileName);
         GeneralRepInterface generalRepInterface = null;
 
@@ -67,12 +67,14 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("object exported!");
+
 
         /**
          * Register it with the general registry service
          * */
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register");
             e.printStackTrace();
@@ -82,6 +84,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("got register!");
 
         try {
             register.bind(Parameters.GENERALREP_NAME, generalRepInterface);
@@ -98,9 +101,11 @@ public class Main {
         System.out.println("General Repository Information registered.");
 
         while(!generalRepInformation.finish)
-        {
-            try {
-                generalRepInformation.wait();
+        {   try {
+                synchronized (generalRepInformation)
+                {   generalRepInformation.wait();
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

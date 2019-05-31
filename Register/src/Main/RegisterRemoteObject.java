@@ -36,6 +36,14 @@ public class RegisterRemoteObject implements Register
     private int rmiRegPortNumb = 1099;
 
     /**
+     * Number of machines using this registry
+     *
+     *  @serialField numMachines
+     */
+    private int numMachines = 6;
+
+
+    /**
      *  Instantiation of a registering object.
      *
      *    @param rmiRegHostName name of local host
@@ -92,6 +100,13 @@ public class RegisterRemoteObject implements Register
             throw new NullPointerException ("RegisterRemoteObject: null pointer parameter(s) on unbind!");
         registry = LocateRegistry.getRegistry (rmiRegHostName, rmiRegPortNumb);
         registry.unbind (name);
+
+        numMachines--;
+        if(numMachines<=0)
+        {   this.finish = true;
+            System.out.println("FINISHING!");
+            notifyAll();
+        }
     }
 
     /**

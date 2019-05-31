@@ -14,7 +14,8 @@ public class Main {
     /**
      * Number of car parts.
      * */
-    public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
+    //TODO: public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
+    public static final int numPartTypes = 3;
 
     /**
      * Main.Main
@@ -36,12 +37,12 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
-        GriSS griSS = null;
+        System.out.println("Got Registry!");
+        GeneralRepInterface griSS = null;
 
         // General Repository Information
         try {
-            griSS = (GriSS) registry.lookup(Parameters.GENERALREP_NAME);
+            griSS = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         }
         catch (RemoteException e) {
             System.out.println("Remote Exception error @griSS");
@@ -51,23 +52,24 @@ public class Main {
             System.out.println("Bound Exception error @griSS");
             e.printStackTrace();
         }
-
+        System.out.println("Got GRI!");
 
         SupplierSite supplierSite = new SupplierSite(numPartTypes, griSS);
         SupplierSiteInterface supplierSiteInterface = null;
 
         try {
-            supplierSiteInterface = (SupplierSiteInterface) UnicastRemoteObject.exportObject(supplierSiteInterface,Parameters.SS_PORT);
+            supplierSiteInterface = (SupplierSiteInterface) UnicastRemoteObject.exportObject(supplierSite,Parameters.SS_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("GOT SS!");
 
         /**
          * Register it with the general registry service
          * */
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register");
             e.printStackTrace();
@@ -77,7 +79,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        System.out.println("GOT Register!");
         try {
             register.bind(Parameters.SS_NAME, supplierSiteInterface);
         } catch (RemoteException e) {
@@ -89,13 +91,16 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        System.out.println("BIND!");
         System.out.println("Supplier Site registered.");
 
         while(!supplierSite.finish)
         {
             try {
-                supplierSite.wait();
+                synchronized (supplierSite)
+                {
+                    supplierSite.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

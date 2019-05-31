@@ -1,6 +1,6 @@
 package Main;
 
-import Interfaces.GriPark;
+import Interfaces.GeneralRepInterface;
 import Interfaces.ParkInterface;
 import Interfaces.Register;
 
@@ -41,9 +41,9 @@ public class Main {
             System.exit(1);
         }
 
-        GriPark griPark = null;
+        GeneralRepInterface griPark = null;
         try {
-            griPark = (GriPark) registry.lookup(Parameters.GENERALREP_NAME);
+            griPark = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         } catch (RemoteException e) {
             System.out.println("ERROR: RemoteException");
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class Main {
          * Register it with the general registry service
          * */
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register");
             e.printStackTrace();
@@ -99,7 +99,10 @@ public class Main {
 
         while(!park.finish) {
             try {
-                park.wait();
+                synchronized (park)
+                {
+                    park.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -49,7 +49,7 @@ public class Main {
          * */
 
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register, @outsideWorld");
             e.printStackTrace();
@@ -76,7 +76,9 @@ public class Main {
 
         while(!outsideWorld.finish)
         {   try {
-                outsideWorld.wait();
+                synchronized (outsideWorld) {
+                    outsideWorld.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

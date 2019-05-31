@@ -23,7 +23,7 @@ public interface Register extends Remote
      *    @throws AlreadyBoundException if the name is already in use
      */
 
-    public void bind (String name, Remote ref) throws RemoteException, AlreadyBoundException;
+    void bind (String name, Remote ref) throws RemoteException, AlreadyBoundException;
 
     /**
      *  Removes the binding for the specified name in this registry.
@@ -35,7 +35,7 @@ public interface Register extends Remote
      *    @throws NotBoundException if the name is not in use
      */
 
-    public void unbind (String name) throws RemoteException, NotBoundException;
+    void unbind (String name) throws RemoteException, NotBoundException;
 
     /**
      *  Replaces the binding for the specified name in this registry with the supplied remote reference.
@@ -48,5 +48,5 @@ public interface Register extends Remote
      *                            service fails
      */
 
-    public void rebind (String name, Remote ref) throws RemoteException;
+    void rebind (String name, Remote ref) throws RemoteException;
 }

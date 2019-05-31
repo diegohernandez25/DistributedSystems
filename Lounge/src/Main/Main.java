@@ -1,8 +1,6 @@
 package Main;
 
-import Interfaces.GriLounge;
-import Interfaces.LoungeInterface;
-import Interfaces.Register;
+import Interfaces.*;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
@@ -40,7 +38,11 @@ public class Main {
     {   String rmiRegHostName = Parameters.REGISTRY_HOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
-        GriLounge griLounge = null; //TODO
+        GeneralRepInterface griLounge = null; //TODO
+        OutsideWorldInterface owLounge = null;
+        ParkInterface parkLounge = null;
+        RepairAreaInterface raLounge = null;
+        SupplierSiteInterface ssLounge = null;
 
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
@@ -56,13 +58,61 @@ public class Main {
         }
 
         try {
-            griLounge = (GriLounge) registry.lookup(Parameters.GENERALREP_NAME);
+            griLounge = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         } catch (RemoteException e) {
             System.out.println("ERROR: RemoteException");
             e.printStackTrace();
+            System.exit(1);
         } catch (NotBoundException e) {
             System.out.println("ERROR: NotBoundException");
             e.printStackTrace();
+            System.exit(1);
+        }
+
+
+        try {
+            owLounge = (OutsideWorldInterface) registry.lookup(Parameters.OW_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            parkLounge = (ParkInterface) registry.lookup(Parameters.PARK_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            raLounge = (RepairAreaInterface) registry.lookup(Parameters.REPAIRAREA_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            ssLounge = (SupplierSiteInterface) registry.lookup(Parameters.SS_NAME);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: RemoteException");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: NotBoundException");
+            e.printStackTrace();
+            System.exit(1);
         }
 
 
@@ -70,7 +120,7 @@ public class Main {
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
         }
-        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, (GriLounge) griLounge);
+        Lounge lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, griLounge, owLounge,parkLounge,raLounge,ssLounge);
         LoungeInterface loungeInterface = null;
 
         try {
@@ -84,7 +134,7 @@ public class Main {
          * Register it with the general registry service
          * */
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register, @lounge");
             e.printStackTrace();
@@ -111,7 +161,9 @@ public class Main {
 
         while(!lounge.finish)
         {   try {
+            synchronized (lounge) {
                 lounge.wait();
+            }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

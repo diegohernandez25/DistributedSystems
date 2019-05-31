@@ -2,12 +2,14 @@ package Main;
 
 import Interfaces.*;
 
+import java.rmi.RemoteException;
+
 public class SupplierSite<R>  implements SupplierSiteInterface {
 
     /**
     * Initialize General Repository Information
     */
-    private GriSS gri;
+    private GeneralRepInterface gri;
 
     /**
      *      Stock
@@ -24,7 +26,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *  @param stockType number of total types of parts that are going to be available in stock
      *  @param gri general repository object.
      * */
-    public SupplierSite(int stockType, GriSS gri)
+    public SupplierSite(int stockType, GeneralRepInterface gri)
     {
         this.gri = gri;
         this.stockType = stockType;
@@ -42,8 +44,16 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
     public synchronized int restockPart(int idType, int number)
     {   if(idType<=stockType && idType>=0)
         {
-            gri.setNumBoughtPart(idType, number);
-            gri.setFlagMissingPart(idType, "F");
+            try {
+                gri.setNumBoughtPart(idType, number);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            try {
+                gri.setFlagMissingPart(idType, "F");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             return number;
         }
         return 0;

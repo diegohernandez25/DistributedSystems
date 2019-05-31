@@ -2,12 +2,14 @@ package Main;
 
 import Interfaces.*;
 
+import java.rmi.RemoteException;
+
 public class Park implements ParkInterface{
 
     /**
      * Initialize General Repository Information
      */
-    private volatile GriPark gri;
+    private volatile GeneralRepInterface gri;
 
     /**
      *  Number of Replacement Cars
@@ -32,7 +34,7 @@ public class Park implements ParkInterface{
      * @param parkCars parks that are already parked for default.
      * @param gri general repository information object
      * */
-    public Park(int numSlots, int[] parkCars, GriPark gri)
+    public Park(int numSlots, int[] parkCars, GeneralRepInterface gri)
     {
         this.gri = gri;
 
@@ -67,18 +69,38 @@ public class Park implements ParkInterface{
         {
             if (carId <= cars.length - numReplacement)      // if the parked car was the Customers
             {
-                gri.setNumCarsParked(1);                    // Logs Customer parked his car
-                gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have their car anymore
+                try {
+                    gri.setNumCarsParked(1);                    // Logs Customer parked his car
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have their car anymore
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
             else                                            // if the parked car was a Replacement
             {
-                gri.setNumReplacementParked(1);             // Logs replacement car parking in park
-                gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have replacement car anymore
+                try {
+                    gri.setNumReplacementParked(1);             // Logs replacement car parking in park
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    gri.setCustomerVehicle(id, "-");    // Logs Customer doesn't have replacement car anymore
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
         else                                                // if it was the Mechanic who parked
         {
-            gri.setNumCarsParked(1);                        // Log Customer car parked (the Mechanic only parks
+            try {
+                gri.setNumCarsParked(1);                        // Log Customer car parked (the Mechanic only parks
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             // Customer's Cars, not Replacements)
         }
     }
@@ -102,19 +124,39 @@ public class Park implements ParkInterface{
         {
             if (carId <= cars.length - numReplacement)          // if the car was the Customers
             {
-                gri.setNumCarsParked(-1);                       // Logs Customer removed their car from park
-                gri.setCustomerVehicle(id, String.valueOf(id)); // Logs Customer has their own car again
+                try {
+                    gri.setNumCarsParked(-1);                       // Logs Customer removed their car from park
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    gri.setCustomerVehicle(id, String.valueOf(id)); // Logs Customer has their own car again
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
             else                                                // if the car was a Replacement
             {
-                gri.setNumReplacementParked(-1);                // Logs replacement car removed from park
-                gri.setCustomerVehicle(id,                      // Logs Customer changing cars to a replacement car
-                        "R"+(carId-(cars.length - numReplacement)));
+                try {
+                    gri.setNumReplacementParked(-1);                // Logs replacement car removed from park
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    gri.setCustomerVehicle(id,                      // Logs Customer changing cars to a replacement car
+                            "R"+(carId-(cars.length - numReplacement)));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
         else                                                    // if it was the Mechanic who got the car
         {
-            gri.setNumCarsParked(-1);                           // Log Customer car removed (the Mechanic only removes
+            try {
+                gri.setNumCarsParked(-1);                           // Log Customer car removed (the Mechanic only removes
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             // Customer's Cars, not Replacements)
         }
 

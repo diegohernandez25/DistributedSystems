@@ -14,7 +14,6 @@ import Interfaces.Register;
  *  located in the same or other processing nodes in the local registry service.
  *  Communication is based in Java RMI.
  */
-
 public class ServerRegisterRemoteObject
 {
     /**
@@ -28,7 +27,7 @@ public class ServerRegisterRemoteObject
         String rmiRegHostName;
         int rmiRegPortNumb;
 
-        rmiRegHostName = Parameters.REGISTRY_NAME;
+        rmiRegHostName = Parameters.REGISTRY_HOST;
         rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
         /* create and install the security manager */
@@ -41,7 +40,7 @@ public class ServerRegisterRemoteObject
 
         RegisterRemoteObject regEngine = new RegisterRemoteObject (rmiRegHostName, rmiRegPortNumb);
         Register regEngineStub = null;
-        int listeningPort = Parameters.SERVER_REGISTRY_PORT;                            /* it should be set accordingly in each case */
+        int listeningPort = Parameters.SERVER_REGISTRY_PORT; /* it should be set accordingly in each case */
 
         try
         { regEngineStub = (Register) UnicastRemoteObject.exportObject (regEngine, listeningPort);
@@ -54,7 +53,7 @@ public class ServerRegisterRemoteObject
 
         /* register it with the local registry service */
 
-        String nameEntry = "RegisterHandler";
+        String nameEntry = Parameters.REGISTRY_NAME_ENTRY;
         Registry registry = null;
 
         try
@@ -78,7 +77,9 @@ public class ServerRegisterRemoteObject
         while (!regEngine.finish)
         {
             try {
-                regEngine.wait();
+                synchronized (regEngine){
+                    regEngine.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(1);

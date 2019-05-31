@@ -34,7 +34,7 @@ public class Main {
     /**
      * Maximum number of storage for each car part
      */
-    public static final int[] maxCarParts = Parameters.MAX_CAR_PARTS;
+    public static final int[] maxCarParts = Parameters.CAR_PARTS;
 
     /**
      * Main
@@ -57,11 +57,11 @@ public class Main {
             System.exit(1);
         }
 
-        GriRA griRA = null;
+        GeneralRepInterface griRA = null;
 
         // General Repository Information
         try {
-            griRA = (GriRA) registry.lookup(Parameters.GENERALREP_NAME);
+            griRA = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         }
         catch (RemoteException e) {
             System.out.println("Remote Exception error @griRA");
@@ -71,22 +71,24 @@ public class Main {
             System.out.println("Bound Exception error @griRA");
             e.printStackTrace();
         }
+        System.out.println("Got Gri!.");
 
         RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, griRA);
         RepairAreaInterface repairAreaInterface = null;
 
         try {
-            repairAreaInterface = (RepairAreaInterface) UnicastRemoteObject.exportObject(repairAreaInterface,Parameters.REPAIRAREA_PORT);
+            repairAreaInterface = (RepairAreaInterface) UnicastRemoteObject.exportObject(repairArea,Parameters.REPAIRAREA_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("Got RepairArea Interface!.");
 
         /**
          * Register it with the general registry service
          * */
         try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME);
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register");
             e.printStackTrace();
@@ -96,6 +98,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("Got register!.");
 
         try {
             register.bind(Parameters.REPAIRAREA_NAME, repairAreaInterface);
@@ -115,7 +118,9 @@ public class Main {
         while(!repairArea.finish)
         {
             try {
-                repairArea.wait();
+                synchronized (repairArea)
+                {   repairArea.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
