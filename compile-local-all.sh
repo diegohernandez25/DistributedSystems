@@ -3,6 +3,9 @@ CUR_PATH=$(pwd)
 cd Register/src/
 sh compile-local.sh
 cd $CUR_PATH
+cd GeneralRepInformation/src/
+sh compile-local.sh
+cd $CUR_PATH
 cd Park/src/
 sh compile-local.sh
 cd $CUR_PATH

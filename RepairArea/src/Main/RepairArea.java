@@ -244,7 +244,6 @@ public class RepairArea implements RepairAreaInterface {
      *      @param quantity number of car parts to refill
      * */
     public synchronized  void  refillCarPartStock(int idPart, int quantity) throws RemoteException {   assert idPart <= rangeCarPartTypes;
-
         carParts[idPart] += quantity;
         workToDo = true;
         gri.addNumPartAvailable(idPart, quantity);
@@ -283,6 +282,7 @@ public class RepairArea implements RepairAreaInterface {
                         carNeededPart[tmpCar] = -1;
                         reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
                         carParts[tmpPart]--;
+                        gri.removeNumPartAvailable(reserveCarPart[tmp]);
                         flag = true;
                         break;
                     }
