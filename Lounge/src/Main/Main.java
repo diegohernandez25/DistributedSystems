@@ -38,7 +38,7 @@ public class Main {
     {   String rmiRegHostName = Parameters.REGISTRY_HOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
-        GeneralRepInterface griLounge = null; //TODO
+        GeneralRepInterface griLounge = null;
         OutsideWorldInterface owLounge = null;
         ParkInterface parkLounge = null;
         RepairAreaInterface raLounge = null;

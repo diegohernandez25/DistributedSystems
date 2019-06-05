@@ -208,6 +208,7 @@ public class RepairArea implements RepairAreaInterface {
                     statusOfCars[tmp] = ON_REPAIR;
                     gri.setNumCarWaitingPart(reserveCarPart[tmp], -1);
                     reserveCarPart[tmp] = -1; //part car taken
+                    gri.removeNumPartAvailable(tmp);
                     flag=true;
                     continue; //does not put back
                 }
@@ -282,7 +283,6 @@ public class RepairArea implements RepairAreaInterface {
                         carNeededPart[tmpCar] = -1;
                         reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
                         carParts[tmpPart]--;
-                        gri.removeNumPartAvailable(reserveCarPart[tmp]);
                         flag = true;
                         break;
                     }
