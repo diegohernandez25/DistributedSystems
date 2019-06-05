@@ -1,10 +1,6 @@
 package Main;
 
 import Interfaces.*;
-//import Locals.OutsideWorld;
-//import Locals.Park;
-//import Locals.RepairArea;
-//import Locals.SupplierSite;
 import Resources.MemException;
 import Resources.MemFIFO;
 
@@ -162,40 +158,15 @@ public class Lounge implements LoungeInterface {
     public volatile boolean finish;
 
     /**
-     * Outside world
-     * */
-    private volatile OutsideWorldInterface outsideWorld;
-
-    /**
-     * Park
-     * */
-    private volatile ParkInterface park;
-
-    /**
-     * Repair Area
-     * */
-    private volatile RepairAreaInterface repairArea;
-
-    /***
-     * SupplierSite
-     */
-    private volatile SupplierSiteInterface supplierSite;
-
-    /**
      * Lounge
      * @param numCustomers      number of customer
      * @param numMechanics      number of mechanics
      * @param replacementKeys   array with the replacement Keys.
      * @param numTypes          number of existing car types.
      * @param gri               General Repository Information
-     * @param outsideWorld      Outside World
-     * @param park              Park
-     * @param repairArea        Repair Area
-     * @param supplierSite      Supplier Site.
      * */
     public Lounge(int numCustomers, int numMechanics, int[] replacementKeys, int numTypes,
-                  GeneralRepInterface gri, OutsideWorldInterface outsideWorld, ParkInterface park, RepairAreaInterface repairArea,
-                  SupplierSiteInterface supplierSite) throws RemoteException {
+                  GeneralRepInterface gri) throws RemoteException {
         this.gri = gri;
         gri.setNumReplacementParked(replacementKeys.length);
 
@@ -208,10 +179,6 @@ public class Lounge implements LoungeInterface {
 
         this. activeMechanics = numMechanics;
         this.finish = false;
-        this.outsideWorld = outsideWorld;
-        this.park = park;
-        this.repairArea = repairArea;
-        this.supplierSite = supplierSite;
 
         for (int i = 0; i<stateCustomers.length; i++) {
             this.stateCustomers[i] = NORMAL_LIFE;
@@ -603,13 +570,11 @@ public class Lounge implements LoungeInterface {
      *  Mechanic declares that he/she is going home. Function is used for the locals/server termination.
      * */
     public synchronized void finish() throws RemoteException
-    {   if(--activeMechanics==0)
-        {   this.outsideWorld.finish();
-            this.park.finish();
-            this.repairArea.finish();
-            this.supplierSite.finish();
-            this.gri.finish();
-            this.finish = true;
+    {   activeMechanics--;
+        System.out.println("activeMechanics: "+activeMechanics);
+        if(activeMechanics==0)
+        {   this.finish = true;
+            notifyAll();
         }
     }
 }

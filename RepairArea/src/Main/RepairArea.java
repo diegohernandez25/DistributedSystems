@@ -137,7 +137,7 @@ public class RepairArea implements RepairAreaInterface {
      *
      *      @return the id of the part needed for repair
      * */
-    public synchronized int checkCar(int idCar, int mechanicId)
+    public synchronized int checkCar(int idCar, int mechanicId) throws RemoteException
     {   Random rand = new Random();
         int randomNum = rand.nextInt(rangeCarPartTypes);
         assert (randomNum <= rangeCarPartTypes && randomNum >= 0);
@@ -156,7 +156,8 @@ public class RepairArea implements RepairAreaInterface {
      *
      *      @return true ready for repair. False otherwise
      * */
-    public synchronized boolean repairCar(int carId, int partId, int mechanicId) throws RemoteException {   assert (partId <= rangeCarPartTypes);
+    public synchronized boolean repairCar(int carId, int partId, int mechanicId) throws RemoteException {
+        assert (partId <= rangeCarPartTypes);
         int count = 0;
         for(int i = 0; i< carNeededPart.length; i++)
         {
@@ -255,7 +256,7 @@ public class RepairArea implements RepairAreaInterface {
      * @param partId    Id of the car part.
      * @return the maximum number of storage for the part
      * */
-    public synchronized int getMaxPartStock(int partId)
+    public synchronized int getMaxPartStock(int partId) throws RemoteException
     {   assert (partId <= rangeCarPartTypes);
         return maxCarPartsNumber[partId];
     }
@@ -265,7 +266,7 @@ public class RepairArea implements RepairAreaInterface {
      *  @param mechanicId id of the mechanic doing the task
      *  @return the task that has to be done
      * */
-    public synchronized int findNextTask(int mechanicId)
+    public synchronized int findNextTask(int mechanicId) throws RemoteException
     {   int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3, GO_HOME =4;
         if(workToDo || allDone)
         {   int size = carsWaitingForParts.numElements();
@@ -334,7 +335,7 @@ public class RepairArea implements RepairAreaInterface {
     /**
      *  Sends the Mechanics home
      * */
-    public synchronized void sendHome()
+    public synchronized void sendHome() throws RemoteException
     {
         allDone = true;
         workToDo = true;
@@ -344,8 +345,9 @@ public class RepairArea implements RepairAreaInterface {
     /**
      * Terminates Repair Area Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   this.finish = true;
+        notifyAll();
     }
 
 

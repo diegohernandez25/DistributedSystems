@@ -12,7 +12,8 @@ public interface RepairAreaInterface extends Remote {
      *
      *      @return the id of the part needed for repair
      * */
-    int checkCar(int idCar, int mechanicId) throws RemoteException;
+    int checkCar(int idCar, int mechanicId);
+
 
 
     /**
@@ -55,14 +56,15 @@ public interface RepairAreaInterface extends Remote {
      * @param partId    Id of the car part.
      * @return the maximum number of storage for the part
      * */
-    int getMaxPartStock(int partId) throws RemoteException;
+    int getMaxPartStock(int partId);
 
     /**
      *  Mechanic checks what has to do next
      *  @param mechanicId id of the mechanic doing the task
      *  @return the task that has to be done
      * */
-    int findNextTask(int mechanicId) throws RemoteException;
+    int findNextTask(int mechanicId);
+
 
     /**
      * Alerts that a new car needs to be checked.
@@ -73,10 +75,12 @@ public interface RepairAreaInterface extends Remote {
     /**
      *  Sends the Mechanics home
      * */
-    void sendHome() throws RemoteException;
+    void sendHome();
+
 
     /**
      * Terminates Repair Area Server
      * */
-    void finish() throws RemoteException;
+    void finish();
+
 }

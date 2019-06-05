@@ -56,7 +56,8 @@ public class Park implements ParkInterface{
      *  @param id customer id.
      *  @param customerPark flag if it was a customer who parked the car
      * */
-    public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {   assert(carId < cars.length);
+    public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {
+        assert(carId < cars.length);
         if(cars[carId])
         {   System.out.println("Error: Car is already parked.");
             System.exit(1);
@@ -123,7 +124,8 @@ public class Park implements ParkInterface{
     /**
      * Terminates Park Information Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   this.finish = true;
+        notifyAll();
     }
 }

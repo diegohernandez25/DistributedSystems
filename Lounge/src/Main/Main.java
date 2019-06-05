@@ -57,6 +57,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println("Registry gotted!");
 
         try {
             griLounge = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
@@ -69,6 +70,70 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+
+
+        int[] replacementCarKeys = new int[numReplacementCars];
+        for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
+        {   replacementCarKeys[i - numCustomers] = i;
+        }
+        Lounge lounge = null;
+        try {
+            lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, griLounge);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        LoungeInterface loungeInterface = null;
+
+        try {
+            loungeInterface = (LoungeInterface) UnicastRemoteObject.exportObject(lounge,Parameters.LOUNGE_PORT);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("Lounge exported!");
+
+        /**
+         * Register it with the general registry service
+         * */
+        try {
+            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: Remote Exception @register, @lounge");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("ERROR: AlreadyBoundException @register, @lounge");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("registry lookedup!");
+
+        try {
+            register.bind(Parameters.LOUNGE_NAME,loungeInterface);
+        } catch (RemoteException e) {
+            System.out.println("ERROR: Remote Exception @register, @lounge");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (AlreadyBoundException e) {
+            System.out.println("ERROR: AlreadyBoundException @register, @lounge");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("Lounge binded!");
+
+        System.out.println("Lounge registered.");
+
+        while(!lounge.finish)
+        {   try {
+            synchronized (lounge) {
+                lounge.wait();
+            }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
 
         try {
@@ -116,67 +181,23 @@ public class Main {
             System.exit(1);
         }
 
-
-        int[] replacementCarKeys = new int[numReplacementCars];
-        for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
-        {   replacementCarKeys[i - numCustomers] = i;
-        }
-        Lounge lounge = null;
+        System.out.println("Ending servers.");
         try {
-            lounge = new Lounge(numCustomers, numMechanics, replacementCarKeys, numCarTypes, griLounge, owLounge,parkLounge,raLounge,ssLounge);
+            ssLounge.finish();
+            parkLounge.finish();
+            owLounge.finish();
+            raLounge.finish();
+            griLounge.finish();
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        LoungeInterface loungeInterface = null;
+        System.out.println("Servers ended.");
 
-        try {
-            loungeInterface = (LoungeInterface) UnicastRemoteObject.exportObject(lounge,Parameters.LOUNGE_PORT);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
 
-        /**
-         * Register it with the general registry service
-         * */
-        try {
-            register = (Register) registry.lookup(Parameters.REGISTRY_NAME_ENTRY);
-        } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @lounge");
-            e.printStackTrace();
-            System.exit(1);
-        } catch (NotBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @lounge");
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        try {
-            register.bind(Parameters.LOUNGE_NAME,loungeInterface);
-        } catch (RemoteException e) {
-            System.out.println("ERROR: Remote Exception @register, @lounge");
-            e.printStackTrace();
-            System.exit(1);
-        } catch (AlreadyBoundException e) {
-            System.out.println("ERROR: AlreadyBoundException @register, @lounge");
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        System.out.println("Lounge registered.");
-
-        while(!lounge.finish)
-        {   try {
-            synchronized (lounge) {
-                lounge.wait();
-            }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         System.out.println("Lounge finished.");
         try {
-            register.unbind(Parameters.PARK_NAME);
+            register.unbind(Parameters.LOUNGE_NAME);
         } catch (RemoteException e) {
             System.out.println("ERROR: Remote Exception @register, @lounge");
             e.printStackTrace();
@@ -195,5 +216,7 @@ public class Main {
             System.exit(1);
         }
         System.out.println("Park  Unexported");
+
+
     }
 }

@@ -41,20 +41,22 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *
      *      @return number of parts that were restocked of the specific type of part
      * */
-    public synchronized int restockPart(int idType, int number) throws RemoteException {   if(idType<=stockType && idType>=0)
-    {
-        gri.setNumBoughtPart(idType, number);
-        gri.setFlagMissingPart(idType, "F");
-        return number;
-    }
+    public synchronized int restockPart(int idType, int number) throws RemoteException {
+        if(idType<=stockType && idType>=0)
+        {
+            gri.setNumBoughtPart(idType, number);
+            gri.setFlagMissingPart(idType, "F");
+            return number;
+        }
         return 0;
     }
 
     /**
      * Terminates Supplier Site Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   this.finish = true;
+        notifyAll();
     }
 
 }

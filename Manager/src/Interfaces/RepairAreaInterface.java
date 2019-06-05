@@ -15,6 +15,7 @@ public interface RepairAreaInterface extends Remote {
     int checkCar(int idCar, int mechanicId) throws RemoteException;
 
 
+
     /**
      *      Checks availability of car parts and if available repairs the car
      *
@@ -64,6 +65,7 @@ public interface RepairAreaInterface extends Remote {
      * */
     int findNextTask(int mechanicId) throws RemoteException;
 
+
     /**
      * Alerts that a new car needs to be checked.
      * @param carID the ID of the car that needs to be repaired
@@ -75,8 +77,10 @@ public interface RepairAreaInterface extends Remote {
      * */
     void sendHome() throws RemoteException;
 
+
     /**
      * Terminates Repair Area Server
      * */
     void finish() throws RemoteException;
+
 }
