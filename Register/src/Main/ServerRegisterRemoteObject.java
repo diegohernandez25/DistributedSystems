@@ -27,7 +27,8 @@ public class ServerRegisterRemoteObject
         String rmiRegHostName;
         int rmiRegPortNumb;
 
-        rmiRegHostName = Parameters.REGISTRY_HOST;
+        //rmiRegHostName = Parameters.REGISTRY_HOST;
+        rmiRegHostName = Parameters.LOCALHOST;
         rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
         /* create and install the security manager */

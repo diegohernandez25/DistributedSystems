@@ -35,7 +35,8 @@ public class Main {
 
 
     public static void main(String[] args)
-    {   String rmiRegHostName = Parameters.REGISTRY_HOST;
+    {   //String rmiRegHostName = Parameters.REGISTRY_HOST;
+        String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
         GeneralRepInterface griLounge = null;
