@@ -3,6 +3,6 @@ package Interfaces;
 import java.rmi.Remote;
 
 
-public interface ParkInterface extends Remote, ParkLoungeInterface, ParkCustomerMechanicInterface {
+public interface ParkInterface extends Remote, ParkCustomerMechanicInterface {
 
 }

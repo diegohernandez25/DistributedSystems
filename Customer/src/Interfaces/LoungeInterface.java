@@ -2,6 +2,6 @@ package Interfaces;
 
 import java.rmi.Remote;
 
-public interface LoungeInterface extends Remote, LoungeCustomerInterface, LoungeManagerInterface, LoungeMechanicInterface {
+public interface LoungeInterface extends Remote, LoungeCustomerInterface{
 
 }

@@ -43,7 +43,7 @@ public class Main {
         OutsideWorldLoungeInterface owLounge = null;
         ParkLoungeInterface parkLounge = null;
         RepairAreaLoungeInterface raLounge = null;
-        SupplierSiteInterface ssLounge = null;
+        SupplierSiteLoungeInterface ssLounge = null;
 
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());

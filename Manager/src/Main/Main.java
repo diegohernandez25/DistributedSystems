@@ -17,7 +17,7 @@ public class Main {
         LoungeManagerInterface managerLounge = null;
         OutsideWorldManagerInterface managerOW         = null;
         RepairAreaManagerInterface managerRA         = null;
-        SupplierSiteInterface managerSS         = null;
+        SupplierSiteManagerInterface managerSS         = null;
 
         Registry registry = null;
 

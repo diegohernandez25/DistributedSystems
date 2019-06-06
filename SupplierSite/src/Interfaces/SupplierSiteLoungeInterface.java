@@ -3,9 +3,10 @@ package Interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface RepairAreaLoungeInterface extends Remote {
+public interface SupplierSiteLoungeInterface extends Remote
+{
     /**
-     * Terminate Outside World server.
+     * Terminates Supplier Site Server
      * */
     void finish() throws RemoteException;
 }

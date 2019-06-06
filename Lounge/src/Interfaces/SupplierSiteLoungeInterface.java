@@ -3,9 +3,10 @@ package Interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface ParkLoungeInterface extends Remote {
+public interface SupplierSiteLoungeInterface extends Remote
+{
     /**
-     * Terminates Park Information Server
+     * Terminates Supplier Site Server
      * */
     void finish() throws RemoteException;
 }
