@@ -39,10 +39,10 @@ public class Main {
         String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
 
-        GeneralRepInterface griLounge = null;
-        OutsideWorldInterface owLounge = null;
-        ParkInterface parkLounge = null;
-        RepairAreaInterface raLounge = null;
+        GriLounge griLounge = null;
+        OutsideWorldLoungeInterface owLounge = null;
+        ParkLoungeInterface parkLounge = null;
+        RepairAreaLoungeInterface raLounge = null;
         SupplierSiteInterface ssLounge = null;
 
         if (System.getSecurityManager () == null)
@@ -132,9 +132,6 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
-
-
 
         try {
             owLounge = (OutsideWorldInterface) registry.lookup(Parameters.OW_NAME);

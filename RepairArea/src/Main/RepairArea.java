@@ -25,7 +25,7 @@ public class RepairArea implements RepairAreaInterface {
     /**
      * Initialize General Repository Information
      */
-    private GeneralRepInterface gri;
+    private GriRA gri;
 
     /**
      *      Cars waiting for parts
@@ -103,7 +103,7 @@ public class RepairArea implements RepairAreaInterface {
      * @param maxCarParts max stock possible for each car part. Index represents the ID of the part
      * @param gri general repository information object.
      * */
-    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GeneralRepInterface gri)
+    public RepairArea( int totalNumCars, int rangeCarPartTypes, int[] carParts, int[] maxCarParts, GriRA gri)
     {
         this.gri = gri;
         this.allDone = false;

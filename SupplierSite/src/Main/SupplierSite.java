@@ -9,7 +9,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
     /**
      * Initialize General Repository Information
      */
-    private GeneralRepInterface gri;
+    private GriSS gri;
 
     /**
      *      Stock
@@ -26,7 +26,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *  @param stockType number of total types of parts that are going to be available in stock
      *  @param gri general repository object.
      * */
-    public SupplierSite(int stockType, GeneralRepInterface gri)
+    public SupplierSite(int stockType, GriSS gri)
     {
         this.gri = gri;
         this.stockType = stockType;

@@ -58,7 +58,7 @@ public class Main {
             System.exit(1);
         }
 
-        GeneralRepInterface griRA = null;
+        GriRA griRA = null;
 
         // General Repository Information
         try {

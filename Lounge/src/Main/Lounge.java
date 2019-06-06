@@ -42,7 +42,7 @@ public class Lounge implements LoungeInterface {
     /**
      * Initialize General Repository Information
      */
-    private GeneralRepInterface gri;
+    private GriLounge gri;
 
     /**
      *  Current state of Manager
@@ -166,7 +166,7 @@ public class Lounge implements LoungeInterface {
      * @param gri               General Repository Information
      * */
     public Lounge(int numCustomers, int numMechanics, int[] replacementKeys, int numTypes,
-                  GeneralRepInterface gri) throws RemoteException {
+                  GriLounge gri) throws RemoteException {
         this.gri = gri;
         gri.setNumReplacementParked(replacementKeys.length);
 

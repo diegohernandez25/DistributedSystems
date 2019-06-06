@@ -20,5 +20,5 @@ public interface GriSS extends Remote {
      *  @param part the part that was bought
      *  @param num the number of bought parts
      * */
-    void setNumBoughtPart(int part, int num) throws RemoteException;
+    void setNumBoughtPart(int part, int num) throws  RemoteException;
 }

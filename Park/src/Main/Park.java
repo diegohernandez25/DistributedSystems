@@ -8,7 +8,7 @@ public class Park implements ParkInterface{
     /**
      * Initialize General Repository Information
      */
-    private volatile GeneralRepInterface gri;
+    private volatile GriPark gri;
 
     /**
      *  Number of Replacement Cars
@@ -33,7 +33,7 @@ public class Park implements ParkInterface{
      * @param parkCars parks that are already parked for default.
      * @param gri general repository information object
      * */
-    public Park(int numSlots, int[] parkCars, GeneralRepInterface gri)
+    public Park(int numSlots, int[] parkCars, GriPark gri)
     {
         this.gri = gri;
 

@@ -46,17 +46,17 @@ public class Customer extends Thread{
     /**
      *  Park
      * */
-    private ParkInterface park;
+    private ParkCustomerMechanicInterface park;
 
     /**
      *  OutsideWorld
      * */
-    private OutsideWorldInterface outsideWorld;
+    private OutsideWorldCustomerInterface outsideWorld;
 
     /**
      *  Lounge
      * */
-    private LoungeInterface lounge;
+    private LoungeCustomerInterface lounge;
 
     /**
      * Customer constructor
@@ -67,8 +67,8 @@ public class Customer extends Thread{
      * @param outsideWorld outside world object.
      * @param lounge lounge object.
      * */
-    public Customer(int customerId, boolean requiresCar, int car, ParkInterface park, OutsideWorldInterface outsideWorld
-            , LoungeInterface lounge)
+    public Customer(int customerId, boolean requiresCar, int car, ParkCustomerMechanicInterface park, OutsideWorldCustomerInterface outsideWorld
+            , LoungeCustomerInterface lounge)
     {   this.customerId     = customerId;
         this.requiresCar    = requiresCar;
         this.hasCar         = true;

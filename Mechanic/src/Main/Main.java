@@ -14,9 +14,9 @@ public class Main
         String rmiRegHostName   = Parameters.LOCALHOST;
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
 
-        LoungeInterface mechanicLounge = null;
-        ParkInterface mechanicPark       = null;
-        RepairAreaInterface mechanicRA           = null;
+        LoungeMechanicInterface mechanicLounge = null;
+        ParkCustomerMechanicInterface mechanicPark       = null;
+        RepairAreaMechanicInterface mechanicRA           = null;
 
         Registry registry = null;
 
