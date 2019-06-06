@@ -282,6 +282,9 @@ public class RepairArea implements RepairAreaInterface {
                         carNeededPart[tmpCar] = -1;
                         reserveCarPart[tmpCar] = tmpPart; //Reserve part for the car;
                         carParts[tmpPart]--;
+                        try {
+                            gri.removeNumPartAvailable(tmpPart);
+                        } catch (Exception e) { System.out.println(e); }
                         flag = true;
                         break;
                     }
