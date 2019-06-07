@@ -16,9 +16,9 @@ public class Main {
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
         Registry registry = null;
 
-        LoungeInterface managerLounge = null;
-        OutsideWorldInterface customerOW = null;
-        ParkInterface customerPark = null;
+        LoungeCustomerInterface managerLounge = null;
+        OutsideWorldCustomerInterface customerOW = null;
+        ParkCustomerMechanicInterface customerPark = null;
 
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);

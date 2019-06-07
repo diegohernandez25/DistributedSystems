@@ -14,10 +14,10 @@ public class Main {
         //String rmiRegHostName   = Parameters.LOCALHOST;
         int rmiRegPortNumb      = Parameters.REGISTRY_PORT;
 
-        LoungeInterface managerLounge = null;
-        OutsideWorldInterface managerOW         = null;
-        RepairAreaInterface managerRA         = null;
-        SupplierSiteInterface managerSS         = null;
+        LoungeManagerInterface managerLounge = null;
+        OutsideWorldManagerInterface managerOW         = null;
+        RepairAreaManagerInterface managerRA         = null;
+        SupplierSiteManagerInterface managerSS         = null;
 
         Registry registry = null;
 
@@ -76,7 +76,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        System.out.println("MANAGERRA DONE!");
         /**
          * Manager SupplierSite
          * */

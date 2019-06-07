@@ -8,7 +8,7 @@ public class Park implements ParkInterface{
     /**
      * Initialize General Repository Information
      */
-    private volatile GeneralRepInterface gri;
+    private volatile GriPark gri;
 
     /**
      *  Number of Replacement Cars
@@ -33,7 +33,7 @@ public class Park implements ParkInterface{
      * @param parkCars parks that are already parked for default.
      * @param gri general repository information object
      * */
-    public Park(int numSlots, int[] parkCars, GeneralRepInterface gri)
+    public Park(int numSlots, int[] parkCars, GriPark gri)
     {
         this.gri = gri;
 
@@ -56,7 +56,8 @@ public class Park implements ParkInterface{
      *  @param id customer id.
      *  @param customerPark flag if it was a customer who parked the car
      * */
-    public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {   assert(carId < cars.length);
+    public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {
+        assert(carId < cars.length);
         if(cars[carId])
         {   System.out.println("Error: Car is already parked.");
             System.exit(1);
@@ -123,7 +124,8 @@ public class Park implements ParkInterface{
     /**
      * Terminates Park Information Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   this.finish = true;
+        notifyAll();
     }
 }

@@ -80,6 +80,7 @@ public class ServerRegisterRemoteObject
             try {
                 synchronized (regEngine){
                     regEngine.wait();
+                    System.out.println("Waked up!");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

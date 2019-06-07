@@ -9,7 +9,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
     /**
      * Initialize General Repository Information
      */
-    private GeneralRepInterface gri;
+    private GriSS gri;
 
     /**
      *      Stock
@@ -26,7 +26,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *  @param stockType number of total types of parts that are going to be available in stock
      *  @param gri general repository object.
      * */
-    public SupplierSite(int stockType, GeneralRepInterface gri)
+    public SupplierSite(int stockType, GriSS gri)
     {
         this.gri = gri;
         this.stockType = stockType;
@@ -41,20 +41,22 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *
      *      @return number of parts that were restocked of the specific type of part
      * */
-    public synchronized int restockPart(int idType, int number) throws RemoteException {   if(idType<=stockType && idType>=0)
-    {
-        gri.setNumBoughtPart(idType, number);
-        gri.setFlagMissingPart(idType, "F");
-        return number;
-    }
+    public synchronized int restockPart(int idType, int number) throws RemoteException {
+        if(idType<=stockType && idType>=0)
+        {
+            gri.setNumBoughtPart(idType, number);
+            gri.setFlagMissingPart(idType, "F");
+            return number;
+        }
         return 0;
     }
 
     /**
      * Terminates Supplier Site Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws RemoteException
     {   this.finish = true;
+        notifyAll();
     }
 
 }

@@ -1,11 +1,12 @@
 package Interfaces;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  *  Interface for Supplier Site for the use of the General Repository
  * */
-public interface GriSS {
+public interface GriSS extends Remote {
 
     /**
      *  Sets a flag signaling the Manager has been adviced that a specific part is missing

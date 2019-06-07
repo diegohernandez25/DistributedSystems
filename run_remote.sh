@@ -306,6 +306,7 @@ function writeFile {
   echo "  public final static int[] CAR_PARTS     = ${CAR_PARTS};" >> Parameters.java
   echo "  public final static int[] MAX_CAR_PARTS = ${MAX_CAR_PARTS};" >> Parameters.java
   echo "  public final static String LOG_NAME     = \"${LOG_NAME}\";" >> Parameters.java
+  echo "}" >> Parameters.java
 }
 
 function defaultValues {
@@ -405,6 +406,30 @@ function copyParameters {
     cp Parameters.java GeneralRepInformation/src/Main/
 }
 
+function writeReg {
+    cd registry
+    > registry_com.sh
+    echo "java -Djava.rmi.server.codebase=\"http://${REGISTRYHOST}/sd0406/registry\"\\" >> registry_com.sh
+    echo "     -Djava.rmi.server.useCodebaseOnly=true\\" >> registry_com.sh
+    echo "     -Djava.security.policy=java.policy\\" >> registry_com.sh
+    echo "     Main.ServerRegisterRemoteObject" >> registry_com.sh
+
+    > set_rmiregistry.sh
+    echo "rmiregistry -J-Djava.rmi.server.codebase=\"http:/${REGISTRYHOST}/sd0406/registry\"\\" >> set_rmiregistry.sh
+    echo "            -J-Djava.rmi.server.useCodebaseOnly=true \$1" >> set_rmiregistry.sh
+    cd ..
+}
+
+function writeServer {
+    cd $2
+    > serverSide_com.sh
+    echo "java -Djava.rmi.server.codebase=\"http://$1/sd0406/$2\"\\" >> serverSide_com.sh
+    echo "     -Djava.rmi.server.useCodebaseOnly=true\\" >> serverSide_com.sh
+    echo "     -Djava.security.policy=java.policy\\" >> serverSide_com.sh
+    echo "     Main.Main" >> serverSide_com.sh
+    cd ..
+}
+
 function toHostReg {
     echo "Compiling $2"
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
@@ -413,14 +438,15 @@ function toHostReg {
 EOF
     sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd $2/src/
-        bash compile-local.sh
+        bash compile-remote.sh
         exit
 EOF
     cd $3
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
-        cd $3
+        cd Public/$3
         put registry_com.sh
         put set_rmiregistry.sh
+        put java.policy
         bye
 EOF
     cd ..
@@ -434,13 +460,14 @@ function toHostServer {
 EOF
     sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd $2/src/
-        bash compile-local.sh
+        bash compile-remote.sh
         exit
 EOF
     cd $3
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
-        cd $3
+        cd Public/$3
         put serverSide_com.sh
+        put java.policy
         bye
 EOF
     cd ..
@@ -454,12 +481,12 @@ function toHostClient {
 EOF
     sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd $2/src/
-        bash compile-local.sh
+        bash compile-remote.sh
         exit
 EOF
     cd $3
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
-        cd $3
+        cd Public/$3
         put clientSide_com.sh
         bye
 EOF
@@ -468,26 +495,26 @@ EOF
 
 function initReg {
     gnome-terminal -- bash -c "sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${REGISTRYHOST} << EOF
-        cd registry/
-        sh set_rmiregistry.sh 22460
+        cd Public/registry/
+        sh set_rmiregistry.sh ${REGISTRYPORT}
 EOF"
 
     gnome-terminal -- bash -c "sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${REGISTRYHOST} << EOF
-        cd registry/
+        cd Public/registry/
         sh registry_com.sh
 EOF"
 }
 
 function initServer {
     gnome-terminal -- bash -c "sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
-        cd $2/
+        cd Public/$2/
         sh serverSide_com.sh
 EOF"
 }
 
 function initClient {
     gnome-terminal -- bash -c "sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
-        cd $2/
+        cd Public/$2/
         sh clientSide_com.sh
 EOF"
 }
@@ -495,7 +522,7 @@ EOF"
 function getLog {
     echo "Getting log file..."
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@${GRIHOST} << EOF
-        cd gri/
+        cd Public/gri/
         get -r log.txt
         bye
 EOF
@@ -504,7 +531,7 @@ EOF
 function cleanMachines {
     sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
         rm -rf $2
-        rm -rf $3
+        rm -rf Public/$3
         exit
 EOF
 }
@@ -512,105 +539,6 @@ EOF
 
 echo "Please make sure you have sshpass installed."
 echo "Starting deployment..."
-
-echo -e "\nChoose how you want to define the parameters"
-PS3="Choice: "
-options=("Parameters file" "Interactive" "Default values" "Exit")
-
-select op in "${options[@]}"
-do
-    case $op in
-        "Parameters file")
-            read -p "Please write your parameters in the Parameters.java. Press enter to continue."
-
-            if [[ ! -f Parameters.java ]]; then
-                echo "ERROR: File Parameters.java not found!"
-                break
-            else
-                getMachines
-                copyParameters
-            fi
-
-            break
-            ;;
-        "Interactive")
-                getVars
-                writeFile
-                copyParameters
-            break
-            ;;
-        "Default values")
-                echo -e "\nThe default values are:"
-                echo "  Registry:"
-                echo "   -host: l040101-ws01.ua.pt"
-                echo "   -port: 22460"
-                echo "   -server registry port: 22467"
-                echo "  General Repository Information:"
-                echo "   -host: l040101-ws02.ua.pt"
-                echo "   -port: 22466"
-                echo "  Lounge:"
-                echo "   -host: l040101-ws03.ua.pt"
-                echo "   -port: 22461"
-                echo "  Park:"
-                echo "   -host: l040101-ws04.ua.pt"
-                echo "   -port: 22463"
-                echo "  Outside World:"
-                echo "   -host: l040101-ws05.ua.pt"
-                echo "   -port: 22464"
-                echo "  Repair Area:"
-                echo "   -host: l040101-ws06.ua.pt"
-                echo "   -port: 22462"
-                echo "  Supplier Site:"
-                echo "   -host: l040101-ws07.ua.pt"
-                echo "   -port: 22465"
-                echo "  Manager:"
-                echo "   -host: l040101-ws08.ua.pt"
-                echo "  Mechanic:"
-                echo "   -host: l040101-ws09.ua.pt"
-                echo "  Customer:"
-                echo "   -host: l040101-ws10.ua.pt"
-                echo "  Number of Customers: 30"
-                echo "  Number of Mechanics: 2"
-                echo "  Number of Replacement Cars: 3"
-                echo "  Number of Car Parts Types: 3"
-                echo "  Car Parts in stock: 0 0 0"
-                echo "  Maximum number of Car Parts: 1 1 1"
-                echo "  Log file name: log.txt"
-
-                echo -e "\nDo you still want to continue?"
-                PS3="Choice: "
-                options=("Yes" "No")
-
-                select op in "${options[@]}"
-                do
-                    case $op in
-                        "Yes")
-                            defaultValues
-                            writeFile
-                            copyParameters
-                            break
-                            ;;
-
-                        "No")
-                            break
-                            ;;
-
-                        *)
-                            echo "Invalid option $REPLY"
-                            break
-                            ;;
-                    esac
-                done
-            break
-            ;;
-        "Exit")
-            break
-            ;;
-        *)
-            echo "Invalid option $REPLY"
-            ;;
-    esac
-done
 
 echo "Compile the code?"
 PS3="Choice: "
@@ -620,7 +548,116 @@ select op in "${options[@]}"
 do
   case $op in
       "Yes")
+            echo -e "\nChoose how you want to define the parameters"
+            PS3="Choice: "
+            options=("Parameters file" "Interactive" "Default values" "Exit")
+
+            select op in "${options[@]}"
+            do
+              case $op in
+                  "Parameters file")
+                      echo ""
+                      read -p "Please write your parameters in the Parameters.java. Press enter to continue."
+
+                      if [[ ! -f Parameters.java ]]; then
+                          echo "ERROR: File Parameters.java not found!"
+                          break
+                      else
+                          getMachines
+                          copyParameters
+                      fi
+
+                      break
+                      ;;
+                  "Interactive")
+                          getVars
+                          writeFile
+                          copyParameters
+                      break
+                      ;;
+                  "Default values")
+                          echo -e "\nThe default values are:"
+                          echo "  Registry:"
+                          echo "   -host: l040101-ws01.ua.pt"
+                          echo "   -port: 22460"
+                          echo "   -server registry port: 22467"
+                          echo "  General Repository Information:"
+                          echo "   -host: l040101-ws02.ua.pt"
+                          echo "   -port: 22466"
+                          echo "  Lounge:"
+                          echo "   -host: l040101-ws03.ua.pt"
+                          echo "   -port: 22461"
+                          echo "  Park:"
+                          echo "   -host: l040101-ws04.ua.pt"
+                          echo "   -port: 22463"
+                          echo "  Outside World:"
+                          echo "   -host: l040101-ws05.ua.pt"
+                          echo "   -port: 22464"
+                          echo "  Repair Area:"
+                          echo "   -host: l040101-ws06.ua.pt"
+                          echo "   -port: 22462"
+                          echo "  Supplier Site:"
+                          echo "   -host: l040101-ws07.ua.pt"
+                          echo "   -port: 22465"
+                          echo "  Manager:"
+                          echo "   -host: l040101-ws08.ua.pt"
+                          echo "  Mechanic:"
+                          echo "   -host: l040101-ws09.ua.pt"
+                          echo "  Customer:"
+                          echo "   -host: l040101-ws10.ua.pt"
+                          echo "  Number of Customers: 30"
+                          echo "  Number of Mechanics: 2"
+                          echo "  Number of Replacement Cars: 3"
+                          echo "  Number of Car Parts Types: 3"
+                          echo "  Car Parts in stock: 0 0 0"
+                          echo "  Maximum number of Car Parts: 1 1 1"
+                          echo "  Log file name: log.txt"
+
+                          echo -e "\nDo you still want to continue?"
+                          PS3="Choice: "
+                          options=("Yes" "No")
+
+                          select op in "${options[@]}"
+                          do
+                              case $op in
+                                  "Yes")
+                                      defaultValues
+                                      writeFile
+                                      copyParameters
+                                      break
+                                      ;;
+
+                                  "No")
+                                      break
+                                      ;;
+
+                                  *)
+                                      echo "Invalid option $REPLY"
+                                      break
+                                      ;;
+                              esac
+                          done
+                      break
+                      ;;
+                  "Exit")
+                      exit 0
+                      break
+                      ;;
+                  *)
+                      echo "Invalid option $REPLY"
+                      ;;
+              esac
+            done
+
             echo "Compiling the code..."
+            writeReg
+            writeServer ${GRIHOST} gri
+            writeServer ${OWHOST} ow
+            writeServer ${PARKHOST} park
+            writeServer ${RAHOST} ra
+            writeServer ${SSHOST} ss
+            writeServer ${LOUNGEHOST} lounge
+
             toHostReg ${REGISTRYHOST} Register registry
             toHostServer ${GRIHOST} GeneralRepInformation gri
             toHostServer ${OWHOST} OutsideWorld ow
@@ -727,7 +764,7 @@ do
             cleanMachines ${SSHOST} SupplierSite ss
             cleanMachines ${LOUNGEHOST} Lounge lounge
             cleanMachines ${MANAGERHOST} Manager manager
-            toHcleanMachinesost ${MECHANICHOST} Mechanic mechanic
+            cleanMachines ${MECHANICHOST} Mechanic mechanic
             cleanMachines ${CUSTOMERHOST} Customer customer
             break
             ;;

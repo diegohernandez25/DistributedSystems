@@ -1,6 +1,7 @@
 package Main;
 
 import Interfaces.GeneralRepInterface;
+import Interfaces.GriPark;
 import Interfaces.ParkInterface;
 import Interfaces.Register;
 
@@ -42,7 +43,7 @@ public class Main {
             System.exit(1);
         }
 
-        GeneralRepInterface griPark = null;
+        GriPark griPark = null;
         try {
             griPark = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         } catch (RemoteException e) {

@@ -39,7 +39,7 @@ public class Main {
             System.exit(1);
         }
         System.out.println("Got Registry!");
-        GeneralRepInterface griSS = null;
+        GriSS griSS = null;
 
         // General Repository Information
         try {

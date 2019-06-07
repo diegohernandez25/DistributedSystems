@@ -14,17 +14,17 @@ public class Mechanic extends Thread {
     /**
      *  Lounge
      * */
-    private LoungeInterface lounge;
+    private LoungeMechanicInterface lounge;
 
     /**
      *  Parking Lot
      * */
-    private ParkInterface park;
+    private ParkCustomerMechanicInterface park;
 
     /**
      *  Repair Area
      * */
-    private RepairAreaInterface repairArea;
+    private RepairAreaMechanicInterface repairArea;
 
     /**
      *  Instantiation of Mechanic Thread.
@@ -36,7 +36,7 @@ public class Mechanic extends Thread {
      * */
 
 
-    public Mechanic(int mechanicId, LoungeInterface lounge, ParkInterface park, RepairAreaInterface repairArea)
+    public Mechanic(int mechanicId, LoungeMechanicInterface lounge, ParkCustomerMechanicInterface park, RepairAreaMechanicInterface repairArea)
     {   this.mechanicId = mechanicId;
         this.lounge = lounge;
         this.park = park;

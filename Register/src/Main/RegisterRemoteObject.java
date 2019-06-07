@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
 public class RegisterRemoteObject implements Register
 {
 
-    public boolean finish = false;
+    public volatile boolean finish;
     /**
      *  Name of local host
      *
@@ -92,7 +92,7 @@ public class RegisterRemoteObject implements Register
      */
 
     @Override
-    public void unbind (String name) throws RemoteException, NotBoundException
+    public synchronized void unbind (String name) throws RemoteException, NotBoundException
     {
         Registry registry;
 
@@ -102,9 +102,10 @@ public class RegisterRemoteObject implements Register
         registry.unbind (name);
 
         numMachines--;
-        if(numMachines<=0)
+        System.out.println("Number of machines: "+numMachines);
+        if(numMachines==0)
         {   this.finish = true;
-            System.out.println("FINISHING!");
+            System.out.println("FINISHING!!");
             notifyAll();
         }
     }

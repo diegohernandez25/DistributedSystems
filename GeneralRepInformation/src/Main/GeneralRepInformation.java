@@ -3,6 +3,7 @@ package Main;
 import Interfaces.*;
 import java.io.*;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 public class GeneralRepInformation implements Remote,GeneralRepInterface {
 
@@ -163,8 +164,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param nameOfFile name of the file where the log is going to be written in
      *
      * */
-    public GeneralRepInformation(int numCustomers, int numMechanics, int numParts, int[] carParts, String nameOfFile)
-    {
+    public GeneralRepInformation(int numCustomers, int numMechanics, int numParts, int[] carParts, String nameOfFile){
         // initialize file to be written on
         this.f = new File(nameOfFile);
 
@@ -247,14 +247,19 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
             this.numBoughtPart[i] = 0;
         }
 
-        this.print();
+        try {
+            this.print();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
      *  Set the state of the Manager
      *  @param state the current state of the Manager
      * */
-    public synchronized void setStateManager(int state)
+    public synchronized void setStateManager(int state) throws RemoteException
     {
         this.stateManager = state;
         this.print();
@@ -265,7 +270,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param customer the Customer that is going to change state
      *  @param state the current state of specified Customer
      * */
-    public synchronized void setStateCustomer(int customer, int state)
+    public synchronized void setStateCustomer(int customer, int state) throws  RemoteException
     {
         this.stateCustomer[customer] = state;
         this.print();
@@ -276,7 +281,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param mechanic the Mechanic that is going to change state
      *  @param state the current state of specified Mechanic
      * */
-    public synchronized void setStateMechanic(int mechanic, int state)
+    public synchronized void setStateMechanic(int mechanic, int state) throws  RemoteException
     {
         this.stateMechanic[mechanic] = state;
         this.print();
@@ -287,7 +292,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param customer the Customer who is changing vehicles
      *  @param vehicle the vehicle that the specified Customer is changing to. Values can be: own car - customer ID; replacement car - R# (where # is the number of the replacement car); none - '-'
      * */
-    public synchronized void setCustomerVehicle(int customer, String vehicle)
+    public synchronized void setCustomerVehicle(int customer, String vehicle) throws  RemoteException
     {
         this.customerVehicle[customer] = vehicle;
         this.print();
@@ -297,7 +302,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  Set if a Customer needs a replacement car. Default value is "F", this sets it to "T"
      *  @param customer the Customer who needs a replacement car
      * */
-    public synchronized void setCustomerNeedsReplacement(int customer)
+    public synchronized void setCustomerNeedsReplacement(int customer) throws  RemoteException
     {
         this.customerNeedsReplacement[customer] = "T";
         this.print();
@@ -307,7 +312,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  Set if a Customer's car is repaired. Default value is "F", this sets it to "T"
      *  @param customer the Customer whose car has been repaired
      * */
-    public synchronized void setCustomerCarRepaired(int customer)
+    public synchronized void setCustomerCarRepaired(int customer) throws  RemoteException
     {
         this.customerCarRepaired[customer] = "T";
         this.print();
@@ -316,7 +321,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Adds a Customer to the queue
      * */
-    public synchronized void addCustomersQueue()
+    public synchronized void addCustomersQueue() throws  RemoteException
     {
         this.numCustomersQueue++;
         this.print();
@@ -325,7 +330,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Removes a Customer from the queue
      * */
-    public synchronized void removeCustomersQueue()
+    public synchronized void removeCustomersQueue() throws  RemoteException
     {
         this.numCustomersQueue--;
         this.print();
@@ -335,7 +340,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Adds a Customer to the replacement car queue
      * */
-    public synchronized void addCustomersReplacementQueue()
+    public synchronized void addCustomersReplacementQueue() throws  RemoteException
     {
         this.numCustomersReplacementQueue++;
         this.print();
@@ -344,7 +349,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Removes a Customer from the replacement car queue
      * */
-    public synchronized void removeCustomersReplacementQueue()
+    public synchronized void removeCustomersReplacementQueue() throws  RemoteException
     {
         this.numCustomersReplacementQueue--;
         this.print();
@@ -353,7 +358,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Increments the number of cars that have been repaired
      * */
-    public synchronized void setNumCarsRepaired()
+    public synchronized void setNumCarsRepaired() throws  RemoteException
     {
         this.numCarsRepaired++;
         this.print();
@@ -363,7 +368,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  Set the number of Customer cars parked
      *  @param num the number of cars parked
      * */
-    public synchronized void setNumCarsParked(int num)
+    public synchronized void setNumCarsParked(int num) throws  RemoteException
     {
         this.numCarsParked += num;
         this.print();
@@ -373,7 +378,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  Set the number of replacement cars parked
      *  @param num the number of replacement cars parked
      * */
-    public synchronized void setNumReplacementParked(int num)
+    public synchronized void setNumReplacementParked(int num) throws  RemoteException
     {
         this.numReplacementParked += num;
         this.print();
@@ -382,7 +387,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      *  Increments the number of requests the Manager has made to the Repair Area
      * */
-    public synchronized void setNumPostJobs()
+    public synchronized void setNumPostJobs() throws  RemoteException
     {
         this.numPostJobs++;
         this.print();
@@ -393,7 +398,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param part the part which needs to be set
      *  @param num the number of the specified part available
      * */
-    public synchronized void addNumPartAvailable(int part, int num)
+    public synchronized void addNumPartAvailable(int part, int num) throws  RemoteException
     {
         this.numPartAvailable[part] = num;
         this.print();
@@ -403,7 +408,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  Removes one of the parts available in stock (used part)
      *  @param part the part which was used
      * */
-    public synchronized void removeNumPartAvailable(int part)
+    public synchronized void removeNumPartAvailable(int part) throws  RemoteException
     {
         this.numPartAvailable[part]--;
         this.print();
@@ -414,7 +419,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param part the part the cars are waiting for
      *  @param num the number of cars waiting for the part. +1 if new car waiting for part, -1 if car no longer needs part
      * */
-    public synchronized void setNumCarWaitingPart(int part, int num)
+    public synchronized void setNumCarWaitingPart(int part, int num) throws  RemoteException
     {
         this.numCarWaitingPart[part] += num;
         this.print();
@@ -425,7 +430,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param part the part which needs to be set the flag
      *  @param flag the flag signaling if Manager has been adviced (T/F)
      * */
-    public synchronized void setFlagMissingPart(int part, String flag)
+    public synchronized void setFlagMissingPart(int part, String flag) throws  RemoteException
     {
         this.flagMissingPart[part] = flag;
         this.print();
@@ -436,7 +441,7 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
      *  @param part the part that was bought
      *  @param num the number of bought parts
      * */
-    public synchronized void setNumBoughtPart(int part, int num)
+    public synchronized void setNumBoughtPart(int part, int num) throws  RemoteException
     {
         this.numBoughtPart[part] += num;
         this.print();
@@ -445,13 +450,14 @@ public class GeneralRepInformation implements Remote,GeneralRepInterface {
     /**
      * Terminates General Repository Information Server
      * */
-    public synchronized void finish()
+    public synchronized void finish() throws  RemoteException
     {   this.finish = true;
+        notifyAll();
     }
     /**
      *  Prints values of Logger on console, and writes it in a file specified beforehand
      * */
-    private synchronized void print()
+    private synchronized void print()  throws RemoteException
     {
         /*
          *  Initialize temporary string

@@ -17,22 +17,22 @@ public class Manager extends Thread
     /**
      *  Lounge
      * */
-    private LoungeInterface lounge;
+    private LoungeManagerInterface lounge;
 
     /**
      *  SupplierSite
      * */
-    private SupplierSiteInterface supplierSite;
+    private SupplierSiteManagerInterface supplierSite;
 
     /**
      * Repair Area
      * */
-    private RepairAreaInterface repairArea;
+    private RepairAreaManagerInterface repairArea;
 
     /**
      * Outside World
      * */
-    private OutsideWorldInterface outsideWorld;
+    private OutsideWorldManagerInterface outsideWorld;
 
     /**
      *  Instantiation of Manager Thread.
@@ -43,8 +43,8 @@ public class Manager extends Thread
      *      @param outsideWorld used Outside World
      *      @param repairArea used Repair Area
      * */
-    public Manager(int managerId, LoungeInterface lounge, SupplierSiteInterface supplierSite,
-                   OutsideWorldInterface outsideWorld, RepairAreaInterface repairArea)
+    public Manager(int managerId, LoungeManagerInterface lounge, SupplierSiteManagerInterface supplierSite,
+                   OutsideWorldManagerInterface outsideWorld, RepairAreaManagerInterface repairArea)
     {
         this.managerId = managerId;
         this.lounge = lounge;
