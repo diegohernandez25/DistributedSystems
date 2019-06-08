@@ -17,14 +17,14 @@ MECHANICHOST=''
 CUSTOMERHOST=''
 
 #ENTITIES PORTS
-REGISTRYPORT=''
-SERVERREGISTRYPORT=''
-GRIPORT=''
-LOUNGEPORT=''
-PARKPORT=''
-OWPORT=''
-RAPORT=''
-SSPORT=''
+REGISTRYPORT='22460'
+SERVERREGISTRYPORT='22467'
+GRIPORT='22466'
+LOUNGEPORT='22461'
+PARKPORT='22463'
+OWPORT='22464'
+RAPORT='22462'
+SSPORT='22465'
 
 #VARIABLES VALUES
 NUM_CUSTOMERS=''
@@ -33,7 +33,10 @@ NUM_REPLACEMENT=''
 NUM_CAR_TYPES=''
 CAR_PARTS=''
 MAX_CAR_PARTS=''
-LOG_NAME=''
+LOG_NAME='log.txt'
+
+#TEMPORARY VALUES
+N=1
 ############# END OF CONSTANTS ############
 
 ########### FUNCTIONS DEFINITION ##########
@@ -392,6 +395,40 @@ function getVars {
   read -p "  Log file name (ended in .txt): " LOG_NAME
 }
 
+function getVarsLess {
+  echo -e "\nEnter the values for each parameter:"
+  read -p "  Number of Customers: " NUM_CUSTOMERS
+  read -p "  Number of Mechanics: " NUM_MECHANICS
+  read -p "  Number of Replacement Cars: " NUM_REPLACEMENT
+  read -p "  Number of Car Parts types: " NUM_CAR_TYPES
+
+  CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Car Part $i starting stock: " N
+      if [[ $i == 1 ]]; then
+        CAR_PARTS="$CAR_PARTS$N"
+      else
+        CAR_PARTS="$CAR_PARTS, $N"
+      fi
+  done
+  CAR_PARTS="$CAR_PARTS}"
+
+  MAX_CAR_PARTS="{"
+  for (( i=1; i<=${NUM_CAR_TYPES}; i++ ))
+  do
+      read -p "  Maximum number of stock Car Part $i can have: " N
+      if [[ $i == 1 ]]; then
+        MAX_CAR_PARTS="$MAX_CAR_PARTS$N"
+      else
+        MAX_CAR_PARTS="$MAX_CAR_PARTS, $N"
+      fi
+  done
+  MAX_CAR_PARTS="$MAX_CAR_PARTS}"
+
+  read -p "  Log file name (ended in .txt): " LOG_NAME
+}
+
 function copyParameters {
     echo "Copying Parameters.java file..."
     cp Parameters.java Register/src/Main/
@@ -499,6 +536,8 @@ function initReg {
         sh set_rmiregistry.sh ${REGISTRYPORT}
 EOF"
 
+    sleep 2
+
     gnome-terminal -- bash -c "sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@${REGISTRYHOST} << EOF
         cd Public/registry/
         sh registry_com.sh
@@ -523,7 +562,7 @@ function getLog {
     echo "Getting log file..."
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@${GRIHOST} << EOF
         cd Public/gri/
-        get -r log.txt
+        get -r ${LOG_NAME}
         bye
 EOF
 }
@@ -535,10 +574,311 @@ function cleanMachines {
         exit
 EOF
 }
+
+function getParameters {
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    # Get number customers
+    if [[ $line == *"NUM_CUSTOMERS"* ]]; then
+      IFS='= *;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          NUM_CUSTOMERS=$i
+      done
+    fi
+
+    # Get number mechanics
+    if [[ $line == *"NUM_MECHANICS"* ]]; then
+      IFS='= *;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          NUM_MECHANICS=$i
+      done
+    fi
+
+    # Get number replacement
+    if [[ $line == *"NUM_REPLACEMENT"* ]]; then
+      IFS='= *;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          NUM_REPLACEMENT=$i
+      done
+    fi
+
+    # Get number car types
+    if [[ $line == *"NUM_CAR_TYPES"* ]]; then
+      IFS='= *;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          NUM_CAR_TYPES=$i
+      done
+    fi
+
+    # Get number car parts
+    if [[ $line == *" CAR_PARTS"* ]]; then
+      IFS='=*;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          CAR_PARTS=$i
+      done
+    fi
+
+    # Get number max car parts
+    if [[ $line == *"MAX_CAR_PARTS"* ]]; then
+      IFS='=*;' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+          MAX_CAR_PARTS=$i
+      done
+    fi
+
+    # Get log name
+    if [[ $line == *"LOG_NAME"* ]]; then
+      IFS='= "*";' read -ra MACHINE <<< "$line"
+      for i in "${MACHINE[@]}"; do
+        if [[ $i == *".txt"* ]]; then
+          LOG_NAME=$i
+        fi
+      done
+    fi
+  done < Parameters.java
+}
+
+function compile {
+    echo "Compiling the code..."
+    writeReg
+    writeServer ${GRIHOST} gri
+    writeServer ${OWHOST} ow
+    writeServer ${PARKHOST} park
+    writeServer ${RAHOST} ra
+    writeServer ${SSHOST} ss
+    writeServer ${LOUNGEHOST} lounge
+
+    toHostReg ${REGISTRYHOST} Register registry
+    toHostServer ${GRIHOST} GeneralRepInformation gri
+    toHostServer ${OWHOST} OutsideWorld ow
+    toHostServer ${PARKHOST} Park park
+    toHostServer ${RAHOST} RepairArea ra
+    toHostServer ${SSHOST} SupplierSite ss
+    toHostServer ${LOUNGEHOST} Lounge lounge
+    toHostClient ${MANAGERHOST} Manager manager
+    toHostClient ${MECHANICHOST} Mechanic mechanic
+    toHostClient ${CUSTOMERHOST} Customer customer
+}
+
+function canConnect {
+    echo "Checking which machines are available..."
+    connectedMachines=()
+    availableMachines=()
+    count=0
+
+    for i in {1..10}
+    do
+        if [ ! $i = 10 ]
+        then
+            foo="l040101-ws0$i.ua.pt"
+        else
+            foo="l040101-ws$i.ua.pt"
+        fi
+        sshpass -p ${PASSWORD} ssh -q -o StrictHostKeyChecking=no sd0406@$foo exit
+
+        if [ $? = 0 ]   # can connect
+        then
+            connectedMachines[${#connectedMachines[@]}]=$i
+        else
+            echo "Can't connect to machine $foo"
+        fi
+    done
+    availableMachines=("${connectedMachines[@]}")
+}
+
+function assignMachine {
+    if [ ${#availableMachines[@]} = 0 ] # all machines are taken
+    then
+        availableMachines=("${connectedMachines[@]}")
+    fi
+
+    if [ ! ${availableMachines[0]} = 10 ]
+    then
+        foo="l040101-ws0${availableMachines[0]}.ua.pt"
+    else
+        foo="l040101-ws${availableMachines[0]}.ua.pt"
+    fi
+
+    availableMachines=("${availableMachines[@]:1}")
+}
+
+function assignMachines {
+    echo "Assigning machines..."
+    assignMachine
+    REGISTRYHOST=$foo
+    echo "Registry set to machine $REGISTRYHOST"
+    assignMachine
+    GRIHOST=$foo
+    echo "General Repository set to machine $GRIHOST"
+    assignMachine
+    LOUNGEHOST=$foo
+    echo "Lounge set to machine $LOUNGEHOST"
+    assignMachine
+    PARKHOST=$foo
+    echo "Park set to machine $PARKHOST"
+    assignMachine
+    OWHOST=$foo
+    echo "Outside World set to machine $OWHOST"
+    assignMachine
+    RAHOST=$foo
+    echo "Repair Area set to machine $RAHOST"
+    assignMachine
+    SSHOST=$foo
+    echo "SupplierSite set to machine $SSHOST"
+    assignMachine
+    MANAGERHOST=$foo
+    echo "Manager set to machine $MANAGERHOST"
+    assignMachine
+    MECHANICHOST=$foo
+    echo "Mechanic set to machine $MECHANICHOST"
+    assignMachine
+    CUSTOMERHOST=$foo
+    echo "Customer set to machine $CUSTOMERHOST"
+}
+
+function checkM {
+    if sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@$1 "[ -d Public/$2 ]"
+    then
+        echo "Found $2 in machine $1."
+        return 0
+    fi
+    return 1
+}
+
+function checkMachine {
+    found=false
+
+    if checkM $1 registry
+    then
+        found=true
+        REGISTRYHOST=$1
+        par=`sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@$1 "cat Register/src/Main/Parameters.java"`
+        while read -r line; do
+            if [[ $line == *" REGISTRY_PORT"* ]]; then
+              IFS='= *;' read -ra MACHINE <<< "$line"
+              for i in "${MACHINE[@]}"; do
+                    if [[ $i == *"224"* ]]; then
+                        REGISTRYPORT=$i
+                    fi
+              done
+            fi
+        done <<< "$par"
+    fi
+    if checkM $1 gri
+    then
+        found=true
+        GRIHOST=$1
+    fi
+    if checkM $1 lounge
+    then
+        found=true
+        LOUNGEHOST=$1
+    fi
+    if checkM $1 park
+    then
+        found=true
+        PARKHOST=$1
+    fi
+    if checkM $1 ow
+    then
+        found=true
+        OWHOST=$1
+    fi
+    if checkM $1 ra
+    then
+        found=true
+        RAHOST=$1
+    fi
+    if checkM $1 ss
+    then
+        found=true
+        SSHOST=$1
+    fi
+    if checkM $1 manager
+    then
+        found=true
+        MANAGERHOST=$1
+    fi
+    if checkM $1 mechanic
+    then
+        found=true
+        MECHANICHOST=$1
+    fi
+    if checkM $1 customer
+    then
+        found=true
+        CUSTOMERHOST=$1
+    fi
+}
+
+function checkMachines {
+    for i in ${connectedMachines[@]}
+    do
+        if [ ! $i = 10 ]
+        then
+            machine="l040101-ws0$i.ua.pt"
+        else
+            machine="l040101-ws$i.ua.pt"
+        fi
+
+        checkMachine $machine
+        if  ! $found
+        then
+            echo "ERROR: No compiled code found in at least one machine."
+            exit 1
+        fi
+    done
+}
+
+function checkDir {
+    result=`sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@$1 "ls ."`
+
+    while read -r line; do
+          IFS=' ' read -ra MACHINE <<< "$line"
+          for i in "${MACHINE[@]}"; do
+                if [ ! $i = "Public" ]; then
+                    sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
+                        rm -rf $i
+                        exit
+EOF
+                fi
+          done
+    done <<< "$result"
+
+    result=`sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no sd0406@$1 "ls Public"`
+
+    while read -r line; do
+          IFS=' ' read -ra MACHINE <<< "$line"
+          for i in "${MACHINE[@]}"; do
+                if [ ! $i = "applet" ]; then
+                    sshpass -p ${PASSWORD} ssh -tt -o StrictHostKeyChecking=no sd0406@$1 << EOF
+                        rm -rf Public/$i
+                        exit
+EOF
+                fi
+          done
+    done <<< "$result"
+}
+
+function cleanTrash {
+    echo "Cleaning previous code from the machines..."
+    for i in ${connectedMachines[@]}
+    do
+        if [ ! $i = 10 ]
+        then
+            foo="l040101-ws0$i.ua.pt"
+        else
+            foo="l040101-ws$i.ua.pt"
+        fi
+
+        checkDir $foo
+    done
+}
 ############# END OF FUNCTIONS ############
 
 echo "Please make sure you have sshpass installed."
 echo "Starting deployment..."
+
+compiled=false
 
 echo "Compile the code?"
 PS3="Choice: "
@@ -548,126 +888,227 @@ select op in "${options[@]}"
 do
   case $op in
       "Yes")
-            echo -e "\nChoose how you want to define the parameters"
+            compiled=true
+            echo -e "\nUse dynamic machines (picked automatically) or write manually?"
             PS3="Choice: "
-            options=("Parameters file" "Interactive" "Default values" "Exit")
+            options=("Dynamic" "Manual" "Exit")
 
             select op in "${options[@]}"
             do
-              case $op in
-                  "Parameters file")
-                      echo ""
-                      read -p "Please write your parameters in the Parameters.java. Press enter to continue."
+                case $op in
+                    "Dynamic" )
+                        echo -e "\nChoose how you want to define the parameters"
+                        PS3="Choice: "
+                        options=("Parameters file" "Interactive" "Default values" "Exit")
 
-                      if [[ ! -f Parameters.java ]]; then
-                          echo "ERROR: File Parameters.java not found!"
-                          break
-                      else
-                          getMachines
-                          copyParameters
-                      fi
+                        select op in "${options[@]}"
+                        do
+                          case $op in
+                              "Parameters file")
+                                  echo -e "\nPlease note the machines in the Parameters.java file will be ignored.\n"
+                                  read -p "Please write your parameters in Parameters.java. Press enter to continue."
 
-                      break
-                      ;;
-                  "Interactive")
-                          getVars
-                          writeFile
-                          copyParameters
-                      break
-                      ;;
-                  "Default values")
-                          echo -e "\nThe default values are:"
-                          echo "  Registry:"
-                          echo "   -host: l040101-ws01.ua.pt"
-                          echo "   -port: 22460"
-                          echo "   -server registry port: 22467"
-                          echo "  General Repository Information:"
-                          echo "   -host: l040101-ws02.ua.pt"
-                          echo "   -port: 22466"
-                          echo "  Lounge:"
-                          echo "   -host: l040101-ws03.ua.pt"
-                          echo "   -port: 22461"
-                          echo "  Park:"
-                          echo "   -host: l040101-ws04.ua.pt"
-                          echo "   -port: 22463"
-                          echo "  Outside World:"
-                          echo "   -host: l040101-ws05.ua.pt"
-                          echo "   -port: 22464"
-                          echo "  Repair Area:"
-                          echo "   -host: l040101-ws06.ua.pt"
-                          echo "   -port: 22462"
-                          echo "  Supplier Site:"
-                          echo "   -host: l040101-ws07.ua.pt"
-                          echo "   -port: 22465"
-                          echo "  Manager:"
-                          echo "   -host: l040101-ws08.ua.pt"
-                          echo "  Mechanic:"
-                          echo "   -host: l040101-ws09.ua.pt"
-                          echo "  Customer:"
-                          echo "   -host: l040101-ws10.ua.pt"
-                          echo "  Number of Customers: 30"
-                          echo "  Number of Mechanics: 2"
-                          echo "  Number of Replacement Cars: 3"
-                          echo "  Number of Car Parts Types: 3"
-                          echo "  Car Parts in stock: 0 0 0"
-                          echo "  Maximum number of Car Parts: 1 1 1"
-                          echo "  Log file name: log.txt"
+                                  if [[ ! -f Parameters.java ]]; then
+                                      echo "ERROR: File Parameters.java not found!"
+                                      break
+                                  else
+                                    canConnect
+                                    cleanTrash
+                                    getParameters
+                                    assignMachines
+                                    writeFile
+                                    copyParameters
+                                    compile
+                                  fi
 
-                          echo -e "\nDo you still want to continue?"
-                          PS3="Choice: "
-                          options=("Yes" "No")
+                                  break
+                                  ;;
 
-                          select op in "${options[@]}"
-                          do
-                              case $op in
-                                  "Yes")
-                                      defaultValues
+                              "Interactive")
+                                      canConnect
+                                      cleanTrash
+                                      getVarsLess
+                                      assignMachines
                                       writeFile
                                       copyParameters
-                                      break
-                                      ;;
+                                      compile
+                                  break
+                                  ;;
 
-                                  "No")
-                                      break
-                                      ;;
+                              "Default values")
+                                      echo -e "\nThe default values are:"
+                                      echo "  Number of Customers: 30"
+                                      echo "  Number of Mechanics: 2"
+                                      echo "  Number of Replacement Cars: 3"
+                                      echo "  Number of Car Parts Types: 3"
+                                      echo "  Car Parts in stock: 0 0 0"
+                                      echo "  Maximum number of Car Parts: 1 1 1"
+                                      echo "  Log file name: log.txt"
 
-                                  *)
-                                      echo "Invalid option $REPLY"
+                                      echo -e "\nDo you still want to continue?"
+                                      PS3="Choice: "
+                                      options=("Yes" "No")
+
+                                      select op in "${options[@]}"
+                                      do
+                                          case $op in
+                                              "Yes")
+                                                  canConnect
+                                                  cleanTrash
+                                                  defaultValues
+                                                  assignMachines
+                                                  writeFile
+                                                  copyParameters
+                                                  compile
+
+                                                  break
+                                                  ;;
+
+                                              "No")
+                                                  break
+                                                  ;;
+
+                                              *)
+                                                  echo "Invalid option $REPLY"
+                                                  break
+                                                  ;;
+                                          esac
+                                      done
+                                  break
+                                  ;;
+
+                              "Exit")
+                                  exit 0
+                                  break
+                                  ;;
+
+                              *)
+                                  echo "Invalid option $REPLY"
+                                  ;;
+                            esac
+                        done
+                        break
+                        ;;
+
+                    "Manual" )
+                        echo -e "\nChoose how you want to define the parameters"
+                        PS3="Choice: "
+                        options=("Parameters file" "Interactive" "Default values" "Exit")
+
+                        select op in "${options[@]}"
+                        do
+                          case $op in
+                              "Parameters file")
+                                  echo ""
+                                  read -p "Please write your parameters in the Parameters.java. Press enter to continue."
+
+                                  if [[ ! -f Parameters.java ]]; then
+                                      echo "ERROR: File Parameters.java not found!"
                                       break
-                                      ;;
-                              esac
-                          done
-                      break
-                      ;;
-                  "Exit")
-                      exit 0
-                      break
-                      ;;
-                  *)
-                      echo "Invalid option $REPLY"
-                      ;;
-              esac
+                                  else
+                                      getMachines
+                                      copyParameters
+                                      compile
+                                  fi
+
+                                  break
+                                  ;;
+                              "Interactive")
+                                      getVars
+                                      writeFile
+                                      copyParameters
+                                      compile
+                                  break
+                                  ;;
+                              "Default values")
+                                      echo -e "\nThe default values are:"
+                                      echo "  Registry:"
+                                      echo "   -host: l040101-ws01.ua.pt"
+                                      echo "   -port: 22460"
+                                      echo "   -server registry port: 22467"
+                                      echo "  General Repository Information:"
+                                      echo "   -host: l040101-ws02.ua.pt"
+                                      echo "   -port: 22466"
+                                      echo "  Lounge:"
+                                      echo "   -host: l040101-ws03.ua.pt"
+                                      echo "   -port: 22461"
+                                      echo "  Park:"
+                                      echo "   -host: l040101-ws04.ua.pt"
+                                      echo "   -port: 22463"
+                                      echo "  Outside World:"
+                                      echo "   -host: l040101-ws05.ua.pt"
+                                      echo "   -port: 22464"
+                                      echo "  Repair Area:"
+                                      echo "   -host: l040101-ws06.ua.pt"
+                                      echo "   -port: 22462"
+                                      echo "  Supplier Site:"
+                                      echo "   -host: l040101-ws07.ua.pt"
+                                      echo "   -port: 22465"
+                                      echo "  Manager:"
+                                      echo "   -host: l040101-ws08.ua.pt"
+                                      echo "  Mechanic:"
+                                      echo "   -host: l040101-ws09.ua.pt"
+                                      echo "  Customer:"
+                                      echo "   -host: l040101-ws10.ua.pt"
+                                      echo "  Number of Customers: 30"
+                                      echo "  Number of Mechanics: 2"
+                                      echo "  Number of Replacement Cars: 3"
+                                      echo "  Number of Car Parts Types: 3"
+                                      echo "  Car Parts in stock: 0 0 0"
+                                      echo "  Maximum number of Car Parts: 1 1 1"
+                                      echo "  Log file name: log.txt"
+
+                                      echo -e "\nDo you still want to continue?"
+                                      PS3="Choice: "
+                                      options=("Yes" "No")
+
+                                      select op in "${options[@]}"
+                                      do
+                                          case $op in
+                                              "Yes")
+                                                  defaultValues
+                                                  writeFile
+                                                  copyParameters
+                                                  compile
+
+                                                  break
+                                                  ;;
+
+                                              "No")
+                                                  break
+                                                  ;;
+
+                                              *)
+                                                  echo "Invalid option $REPLY"
+                                                  break
+                                                  ;;
+                                          esac
+                                      done
+                                  break
+                                  ;;
+                              "Exit")
+                                  exit 0
+                                  break
+                                  ;;
+                              *)
+                                  echo "Invalid option $REPLY"
+                                  ;;
+                          esac
+                        done
+                        break
+                        ;;
+
+                    "Exit")
+                        exit 0
+                        break
+                        ;;
+
+                    *)
+                        echo "Invalid option $REPLY"
+                        ;;
+                esac
             done
 
-            echo "Compiling the code..."
-            writeReg
-            writeServer ${GRIHOST} gri
-            writeServer ${OWHOST} ow
-            writeServer ${PARKHOST} park
-            writeServer ${RAHOST} ra
-            writeServer ${SSHOST} ss
-            writeServer ${LOUNGEHOST} lounge
-
-            toHostReg ${REGISTRYHOST} Register registry
-            toHostServer ${GRIHOST} GeneralRepInformation gri
-            toHostServer ${OWHOST} OutsideWorld ow
-            toHostServer ${PARKHOST} Park park
-            toHostServer ${RAHOST} RepairArea ra
-            toHostServer ${SSHOST} SupplierSite ss
-            toHostServer ${LOUNGEHOST} Lounge lounge
-            toHostClient ${MANAGERHOST} Manager manager
-            toHostClient ${MECHANICHOST} Mechanic mechanic
-            toHostClient ${CUSTOMERHOST} Customer customer
             break
             ;;
       "No")
@@ -679,50 +1120,58 @@ do
   esac
 done
 
+if ! $compiled
+then
+    canConnect
+fi
+
+echo "Checking if executable code exists in machines..."
+checkMachines
+
 echo "Initiating Registry"
 initReg
 
-sleep 1
+sleep 2
 
 echo "Initiating General Repository Information"
 initServer ${GRIHOST} gri
 
-sleep 1
+sleep 2
 
 echo "Initiating Outside World"
 initServer ${OWHOST} ow
 
-sleep 1
+sleep 2
 
 echo "Initiating Park"
 initServer ${PARKHOST} park
 
-sleep 1
+sleep 2
 
 echo "Initiating Repair Area"
 initServer ${RAHOST} ra
 
-sleep 1
+sleep 2
 
 echo "Initiating Supplier Site"
 initServer ${SSHOST} ss
 
-sleep 1
+sleep 2
 
 echo "Initiating Lounge"
 initServer ${LOUNGEHOST} lounge
 
-sleep 1
+sleep 2
 
 echo "Initiating Manager"
 initClient ${MANAGERHOST} manager
 
-sleep 1
+sleep 2
 
 echo "Initiating Mechanic"
 initClient ${MECHANICHOST} mechanic
 
-sleep 1
+sleep 2
 
 echo "Initiating Customer"
 initClient ${CUSTOMERHOST} customer
