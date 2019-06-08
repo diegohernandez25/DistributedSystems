@@ -75,12 +75,12 @@ public class Main
             System.exit(1);
         }
 
-        Mechanic[] mechanic = new Mechanic[2];
-        for(int i = 0; i< 2; i++)
+        Mechanic[] mechanic = new Mechanic[Parameters.NUM_MECHANICS];
+        for(int i = 0; i< Parameters.NUM_MECHANICS; i++)
         {   mechanic[i] = new Mechanic(i,mechanicLounge,mechanicPark,mechanicRA);
             mechanic[i].start();
         }
-        for(int i = 0; i< 2; i++){
+        for(int i = 0; i< Parameters.NUM_MECHANICS; i++){
             try {
                 mechanic[i].join();
             } catch (InterruptedException e) {

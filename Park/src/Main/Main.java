@@ -30,19 +30,26 @@ public class Main {
     {   String rmiRegHostName = Parameters.REGISTRY_HOST;
         //String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
-
+        /**
+         * Gets and sets security manager.
+         * */
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
         System.out.println("Security manager was installed!");
         Registry registry = null;
         Register register = null;
+        /**
+         * Get registry
+         * */
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-
+        /**
+         * Gets General Repository for Park from the registry.
+         * */
         GriPark griPark = null;
         try {
             griPark = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
@@ -54,7 +61,9 @@ public class Main {
             e.printStackTrace();
         }
 
-
+        /**
+         * Creates Park object
+         * */
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
@@ -62,7 +71,9 @@ public class Main {
         Park park = new Park((numCustomers + numReplacementCars),replacementCarKeys,griPark);
         ParkInterface parkInterface = null;
 
-
+        /**
+         * Exports Park.
+         * */
         try {
             parkInterface = (ParkInterface) UnicastRemoteObject.exportObject(park,Parameters.PARK_PORT);
         } catch (RemoteException e) {
@@ -84,7 +95,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        /**
+         * Binds park to register.
+         * */
         try {
             register.bind(Parameters.PARK_NAME,parkInterface);
         } catch (RemoteException e) {
@@ -97,8 +110,9 @@ public class Main {
             System.exit(1);
         }
 
-        System.out.println("Park registered.");
-
+        /**
+         * Waits until park is set to finish.
+         * */
         while(!park.finish) {
             try {
                 synchronized (park)
@@ -109,7 +123,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        System.out.println("Park finished.");
+        /**
+         * Unbinds Park from Register.
+         * */
         try {
             register.unbind(Parameters.PARK_NAME);
         } catch (RemoteException e) {
@@ -121,8 +137,10 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Park unregistered.");
 
+        /**
+         * Unexport Park.
+         * */
         try {
             UnicastRemoteObject.unexportObject(park,false);
         } catch (NoSuchObjectException e) {

@@ -44,21 +44,25 @@ public class Main {
         ParkLoungeInterface parkLounge = null;
         RepairAreaLoungeInterface raLounge = null;
         SupplierSiteLoungeInterface ssLounge = null;
-
+        /**
+         * Get security manager.
+         * */
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
-        System.out.println("Security manager was installed!");
         Registry registry = null;
         Register register = null;
-
+        /**
+         * Get registry.
+         * */
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Registry gotted!");
-
+        /**
+         * Get general repository for Lounge.
+         * */
         try {
             griLounge = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         } catch (RemoteException e) {
@@ -71,7 +75,9 @@ public class Main {
             System.exit(1);
         }
 
-
+        /**
+         * Create Lounge object
+         * */
         int[] replacementCarKeys = new int[numReplacementCars];
         for(int i = numCustomers; i< numCustomers + numReplacementCars; i++)
         {   replacementCarKeys[i - numCustomers] = i;
@@ -83,14 +89,15 @@ public class Main {
             e.printStackTrace();
         }
         LoungeInterface loungeInterface = null;
-
+        /**
+         * Export Lounge.
+         * */
         try {
             loungeInterface = (LoungeInterface) UnicastRemoteObject.exportObject(lounge,Parameters.LOUNGE_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Lounge exported!");
 
         /**
          * Register it with the general registry service
@@ -106,8 +113,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("registry lookedup!");
-
+        /**
+         * Bind Lounge to the register.
+         * */
         try {
             register.bind(Parameters.LOUNGE_NAME,loungeInterface);
         } catch (RemoteException e) {
@@ -119,10 +127,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Lounge binded!");
-
-        System.out.println("Lounge registered.");
-
+        /**
+         * Wait until Lounge is called to terminate.
+         * */
         while(!lounge.finish)
         {   try {
             synchronized (lounge) {
@@ -132,7 +139,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
+        /**
+         * Get outside world for Lounge service.
+         * */
         try {
             owLounge = (OutsideWorldInterface) registry.lookup(Parameters.OW_NAME);
         } catch (RemoteException e) {
@@ -144,6 +153,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        /**
+         * Get Park for Lounge service.
+         * */
         try {
             parkLounge = (ParkInterface) registry.lookup(Parameters.PARK_NAME);
         } catch (RemoteException e) {
@@ -155,6 +167,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        /**
+         * Get repair area for lounge service.
+         * */
         try {
             raLounge = (RepairAreaInterface) registry.lookup(Parameters.REPAIRAREA_NAME);
         } catch (RemoteException e) {
@@ -166,6 +181,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        /**
+         * Get supplier site for lounge service.
+         * */
         try {
             ssLounge = (SupplierSiteInterface) registry.lookup(Parameters.SS_NAME);
         } catch (RemoteException e) {
@@ -177,8 +195,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
-        System.out.println("Ending servers.");
+        /**
+         * Terminates the following services: Supplier Site, Park, Outside World, Repair Area and General Repository
+         * */
         try {
             ssLounge.finish();
             parkLounge.finish();
@@ -189,10 +208,9 @@ public class Main {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        System.out.println("Servers ended.");
-
-
-        System.out.println("Lounge finished.");
+        /**
+         * Unbind Lounge to the Register
+         * */
         try {
             register.unbind(Parameters.LOUNGE_NAME);
         } catch (RemoteException e) {
@@ -204,15 +222,15 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Lounge unregistered.");
-
+        /**
+         * Unexport Lounge.
+         * */
         try {
             UnicastRemoteObject.unexportObject(lounge,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Park  Unexported");
 
 
     }

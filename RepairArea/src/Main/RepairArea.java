@@ -136,6 +136,7 @@ public class RepairArea implements RepairAreaInterface {
      *      @param mechanicId id of the mechanic doing the task
      *
      *      @return the id of the part needed for repair
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int checkCar(int idCar, int mechanicId) throws RemoteException
     {   Random rand = new Random();
@@ -155,6 +156,7 @@ public class RepairArea implements RepairAreaInterface {
      *      @param mechanicId Id of the mechanic doing the task
      *
      *      @return true ready for repair. False otherwise
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized boolean repairCar(int carId, int partId, int mechanicId) throws RemoteException {
         assert (partId <= rangeCarPartTypes);
@@ -194,6 +196,7 @@ public class RepairArea implements RepairAreaInterface {
      *      @param mechanicId id of the mechanic doing the task
      *
      *      @return id of the car ready for repair.
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int repairWaitingCarWithPartsAvailable(int mechanicId) throws RemoteException {   int length = carsWaitingForParts.numElements();
         int tmp = -1;
@@ -228,6 +231,7 @@ public class RepairArea implements RepairAreaInterface {
      *
      *      @param idCar    Id of the car.
      *      @param mechanicId id of the mechanic doing the task
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void concludeCarRepair(int idCar, int mechanicId) throws RemoteException {
         if (statusOfCars[idCar] == REPAIRED)
@@ -243,6 +247,7 @@ public class RepairArea implements RepairAreaInterface {
      *      Refill car Part stock
      *      @param idPart   ID of car part.
      *      @param quantity number of car parts to refill
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized  void  refillCarPartStock(int idPart, int quantity) throws RemoteException {   assert idPart <= rangeCarPartTypes;
         carParts[idPart] += quantity;
@@ -255,6 +260,7 @@ public class RepairArea implements RepairAreaInterface {
      * Get maximum number of a specific part that can be stored on the repairArea
      * @param partId    Id of the car part.
      * @return the maximum number of storage for the part
+     * @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int getMaxPartStock(int partId) throws RemoteException
     {   assert (partId <= rangeCarPartTypes);
@@ -265,6 +271,7 @@ public class RepairArea implements RepairAreaInterface {
      *  Mechanic checks what has to do next
      *  @param mechanicId id of the mechanic doing the task
      *  @return the task that has to be done
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int findNextTask(int mechanicId) throws RemoteException
     {   int  CONTINUE_REPAIR_CAR = 1, REPAIR_NEW_CAR = 2, WAKEN =3, GO_HOME =4;
@@ -326,6 +333,7 @@ public class RepairArea implements RepairAreaInterface {
     /**
      * Alerts that a new car needs to be checked.
      * @param carID the ID of the car that needs to be repaired
+     * @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void postJob(int carID) throws RemoteException {   gri.setNumPostJobs();
         carsNeedsCheck[carID] = true;
@@ -335,6 +343,7 @@ public class RepairArea implements RepairAreaInterface {
 
     /**
      *  Sends the Mechanics home
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void sendHome() throws RemoteException
     {
@@ -345,6 +354,7 @@ public class RepairArea implements RepairAreaInterface {
 
     /**
      * Terminates Repair Area Server
+     * @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void finish() throws RemoteException
     {   this.finish = true;

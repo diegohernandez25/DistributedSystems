@@ -55,6 +55,7 @@ public class Park implements ParkInterface{
      *  @param carId ID of the car.
      *  @param id customer id.
      *  @param customerPark flag if it was a customer who parked the car
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void parkCar(Integer carId, int id, boolean customerPark) throws RemoteException {
         assert(carId < cars.length);
@@ -90,6 +91,7 @@ public class Park implements ParkInterface{
      *  @param id customer id.
      *  @param customerGet flag if it was a customer who got the car
      *  @return id of the car
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized Integer getCar(Integer carId, int id, boolean customerGet) throws RemoteException {   assert(carId < cars.length);
         if(!cars[carId])
@@ -123,6 +125,7 @@ public class Park implements ParkInterface{
 
     /**
      * Terminates Park Information Server
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void finish() throws RemoteException
     {   this.finish = true;

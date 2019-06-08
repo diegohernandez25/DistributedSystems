@@ -40,6 +40,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
      *      @param number requested number
      *
      *      @return number of parts that were restocked of the specific type of part
+     *      @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int restockPart(int idType, int number) throws RemoteException {
         if(idType<=stockType && idType>=0)
@@ -53,6 +54,7 @@ public class SupplierSite<R>  implements SupplierSiteInterface {
 
     /**
      * Terminates Supplier Site Server
+     * @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void finish() throws RemoteException
     {   this.finish = true;

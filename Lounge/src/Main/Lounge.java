@@ -5,7 +5,10 @@ import Resources.MemException;
 import Resources.MemFIFO;
 
 import java.rmi.RemoteException;
-
+/**
+ * Lounge Class.
+ * Note: Extends interface Lounge Interface
+ * */
 public class Lounge implements LoungeInterface {
 
     /**
@@ -164,6 +167,7 @@ public class Lounge implements LoungeInterface {
      * @param replacementKeys   array with the replacement Keys.
      * @param numTypes          number of existing car types.
      * @param gri               General Repository Information
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public Lounge(int numCustomers, int numMechanics, int[] replacementKeys, int numTypes,
                   GriLounge gri) throws RemoteException {
@@ -225,6 +229,7 @@ public class Lounge implements LoungeInterface {
      *  Customer enters queue to be attended by the Manager.
      *  @param customerId Id of the customer to be attended
      *  @param payment type of attendance. (true/false) Pay for repair/Request repair.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void enterCustomerQueue(int customerId, boolean payment) throws RemoteException {
         gri.addCustomersQueue();
@@ -251,6 +256,7 @@ public class Lounge implements LoungeInterface {
      *  Operation to attend customer. Can be for receive payment or to initiate the repair of a car.
      *  Manager invokes this method.
      *  @return success of the operation so the Mechanic can move on or not to the next operation.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int attendCustomer() throws RemoteException {
         gri.setStateManager(CALL_CUSTOMER);
@@ -316,6 +322,7 @@ public class Lounge implements LoungeInterface {
      * Get replacement car key.
      * @param customerId ID of the client who needs the replacement car.
      * @return the key of the replacement car.
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized int getReplacementCarKey(int customerId) throws RemoteException {
         gri.setCustomerNeedsReplacement(customerId);
@@ -369,6 +376,7 @@ public class Lounge implements LoungeInterface {
      *  Customer with the need of a replacement car invokes this method.
      *  @param key Key of the replacement car key.
      *  @param customerId ID of the current Customer returning the replacement car key.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void returnReplacementCarKey(int key, int customerId) throws RemoteException
     {   if(replacementCarKeys.containsValue(key)) { System.exit(1); }
@@ -386,6 +394,7 @@ public class Lounge implements LoungeInterface {
     /**
      * Exit Lounge
      * @param customerId Id of the customer who will exit the lounge
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void exitLounge(int customerId) throws RemoteException {
         stateCustomers[customerId] = ATTENDED_WO_SUBCAR;
@@ -395,15 +404,17 @@ public class Lounge implements LoungeInterface {
     /**
      *  Checks if Customer car keys are empty
      *  @return boolean (true/false) Available customers cars/No customers cars.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    private boolean isCustomerCarKeysEmpty() { return customerCarKeys.length == 0; }
+    private boolean isCustomerCarKeysEmpty() throws RemoteException{ return customerCarKeys.length == 0; }
 
     /**
      * Customer gives Manager his/hers car key.
      * @param key Customer's car key.
      * @param customerId current Customer giving their car key
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      */
-    public synchronized void giveManagerCarKey(int customerId, int key)
+    public synchronized void giveManagerCarKey(int customerId, int key) throws RemoteException
     {   customerCarKeys[customerId] = key;
         memKeysCustomers[key] = customerId;
         notifyAll();
@@ -413,8 +424,9 @@ public class Lounge implements LoungeInterface {
      *  Customer pays for the service and retrieves the keys of his/her car.
      *  @param customerId ID of the customer.
      *  @return the Customer's car key.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized int payForTheService(int customerId)
+    public synchronized int payForTheService(int customerId) throws RemoteException
     {   int key = customerCarKeys[customerId];
         customerCarKeys[customerId] = -1;
         notifyAll();
@@ -425,8 +437,9 @@ public class Lounge implements LoungeInterface {
      *  Mechanic gets keys of car to be repaired
      *  @param mechanicId ID of the Mechanic
      *  @return key of the car to repair
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      *  */
-    public synchronized int getCarToRepairKey(int mechanicId)
+    public synchronized int getCarToRepairKey(int mechanicId) throws RemoteException
     {   if(isCustomerCarKeysEmpty()) { return -1; }
         try
         {   stateMechanics[mechanicId] = FIXING_THE_CAR;
@@ -444,6 +457,7 @@ public class Lounge implements LoungeInterface {
      *      @param idType       the id of the part to refill stock
      *      @param number       the number of stock needed
      *      @param mechanicId   the id of the mechanic
+     *      @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void requestPart(int idType, int number, int mechanicId) throws RemoteException {
         gri.setFlagMissingPart(idType, "T");
@@ -460,6 +474,7 @@ public class Lounge implements LoungeInterface {
      *  register refill of stock
      *  @param idType the type of Car Part
      *  @param numberParts number of Car Parts being refilled
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void registerStockRefill(int idType, int numberParts) throws RemoteException {
         gri.setStateManager(FILL_STOCK);
@@ -481,8 +496,9 @@ public class Lounge implements LoungeInterface {
     /**
      * Manager checks if parts needs to be refilled
      * @return id of the part to refill. Returns -1 if no part is needed to refill
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized int checksPartsRequest()
+    public synchronized int checksPartsRequest() throws RemoteException
     {   for(int i = 0; i<carPartsToRefill.length; i++)
         {   if(carPartsToRefill[i] != 0) {
                 System.out.println("Will refill this part: "+i);
@@ -496,6 +512,7 @@ public class Lounge implements LoungeInterface {
      * Mechanic return key of the repaired car
      * @param idKey         the id of the key (= idCar)
      * @param mechanicId    the id of the mechanic.
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void alertManagerRepairDone(int idKey, int mechanicId) throws RemoteException {
         gri.setStateMechanic(mechanicId, ALERTING_MANAGER);
@@ -511,14 +528,16 @@ public class Lounge implements LoungeInterface {
     /**
      * Checks if there are cars repaired
      * @return true - customer fixed car keys empty
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized boolean isCustomerFixedCarKeysEmpty() { return customerFixedCarKeys.isEmpty(); }
+    public synchronized boolean isCustomerFixedCarKeysEmpty() throws RemoteException { return customerFixedCarKeys.isEmpty(); }
 
     /**
      * Gets key of a fixed car.
      * @return id of the key
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized int getFixedCarKey()
+    public synchronized int getFixedCarKey() throws RemoteException
     {   if(!isCustomerCarKeysEmpty())
         {   try
             {   return customerFixedCarKeys.read();
@@ -533,8 +552,9 @@ public class Lounge implements LoungeInterface {
      * Gets customer given the id of the key whom the customer belongs-
      * @param idKey id of the key.
      * @return the id of the customer
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized int getCustomerFromKey(int idKey)
+    public synchronized int getCustomerFromKey(int idKey) throws RemoteException
     {   if(memKeysCustomers[idKey] == -1) {
         System.exit(1);
         }
@@ -546,21 +566,24 @@ public class Lounge implements LoungeInterface {
      * Make key ready to give back to customer.
      * @param idCustomer id of the customer.
      * @param idKey id of the key.
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized void readyToDeliverKey(int idCustomer, int idKey) {   customerCarKeys[idCustomer] = idKey; }
+    public synchronized void readyToDeliverKey(int idCustomer, int idKey) throws RemoteException {   customerCarKeys[idCustomer] = idKey; }
 
     /**
      *  Get the requested number of a part
      *  @param partId ID of the part Car.
      *  @return number of parts requested.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized int requestedNumberPart(int partId) { return carPartsToRefill[partId]; }
+    public synchronized int requestedNumberPart(int partId) throws RemoteException{ return carPartsToRefill[partId]; }
 
     /**
      * Checks if all customer have been attended.
      * @return true - all services done to all customers for the dat. False - otherwise
+     * @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
-    public synchronized boolean allDone()
+    public synchronized boolean allDone() throws RemoteException
     {
         for(int i = 0; i<customerFinished.length;i++) {if(!customerFinished[i]) return false; }
         return true;
@@ -568,6 +591,7 @@ public class Lounge implements LoungeInterface {
 
     /**
      *  Mechanic declares that he/she is going home. Function is used for the locals/server termination.
+     *  @throws RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void finish() throws RemoteException
     {   activeMechanics--;

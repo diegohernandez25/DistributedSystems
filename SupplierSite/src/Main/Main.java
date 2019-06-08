@@ -14,7 +14,6 @@ public class Main {
     /**
      * Number of car parts.
      * */
-    //TODO: public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
     public static final int numPartTypes = Parameters.NUM_CAR_TYPES;
 
     /**
@@ -26,22 +25,27 @@ public class Main {
         String rmiRegHostName = Parameters.REGISTRY_HOST;
         //String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
-
+        /**
+         * Gets and Sets Security Manager.
+         * */
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
-        System.out.println("Security manager was installed!");
         Registry registry = null;
         Register register = null;
+        /**
+         Gets registry.
+         * */
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Got Registry!");
         GriSS griSS = null;
 
-        // General Repository Information
+        /**
+         * Gets General Repository Info for Supplier Site.
+         * */
         try {
             griSS = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         }
@@ -53,18 +57,21 @@ public class Main {
             System.out.println("Bound Exception error @griSS");
             e.printStackTrace();
         }
-        System.out.println("Got GRI!");
 
+        /**
+         * Greates Supplier Site object
+         * */
         SupplierSite supplierSite = new SupplierSite(numPartTypes, griSS);
         SupplierSiteInterface supplierSiteInterface = null;
-
+        /***
+         * Exports Supplier Site.
+         */
         try {
             supplierSiteInterface = (SupplierSiteInterface) UnicastRemoteObject.exportObject(supplierSite,Parameters.SS_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("GOT SS!");
 
         /**
          * Register it with the general registry service
@@ -80,7 +87,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("GOT Register!");
+        /**
+         * Binds supplier site to register.
+         * */
         try {
             register.bind(Parameters.SS_NAME, supplierSiteInterface);
         } catch (RemoteException e) {
@@ -92,9 +101,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("BIND!");
-        System.out.println("Supplier Site registered.");
-
+        /**
+         * Waits until Supplier Site is set to finish.
+         * */
         while(!supplierSite.finish)
         {
             try {
@@ -106,8 +115,10 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        System.out.println("Supplier Site finished.");
 
+        /**
+         * Unbinds supplier site from register.
+         * */
         try {
             register.unbind(Parameters.SS_NAME);
         } catch (RemoteException e) {
@@ -119,14 +130,15 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unregistered.");
 
+        /**
+         * Unexport supplier site.
+         * */
         try {
             UnicastRemoteObject.unexportObject(supplierSite,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Supplier Site unexported.");
     }
 }

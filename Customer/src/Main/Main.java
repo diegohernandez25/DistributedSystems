@@ -78,12 +78,12 @@ public class Main {
         }
         System.out.println("Park created.");
 
-        Customer[] customers = new Customer[30];
+        Customer[] customers = new Customer[Parameters.NUM_CUSTOMERS];
         for(int i = 0; i< customers.length; i++)
         {   customers[i] = new Customer(i,Math.random() < 0.5,i,customerPark,customerOW,managerLounge);
             customers[i].start();
         }
-        for (int i=0; i<30; i++)
+        for (int i=0; i<Parameters.NUM_CUSTOMERS; i++)
         {
             try {
                 customers[i].join();

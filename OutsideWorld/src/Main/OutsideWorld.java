@@ -43,6 +43,7 @@ public class OutsideWorld implements OutsideWorldInterface {
     /**
      *  Customer waits until the manager alerts him/her about the end of the service.
      *  @param customerId ID of the waiting customer.
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void waitForRepair(Integer customerId) throws RemoteException
     {   waitingForRepair[customerId] = true;
@@ -56,6 +57,7 @@ public class OutsideWorld implements OutsideWorldInterface {
     /**
      *  Managers alerts customer that car is fixed and it can be retrieved;
      *  @param customerId ID of the customer to alert .
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void alertCustomer(Integer customerId) throws RemoteException
     {   if(!waitingForRepair[customerId]) //if customer not yet on the outside world
@@ -72,6 +74,7 @@ public class OutsideWorld implements OutsideWorldInterface {
     }
     /**
      *  Alert remaining customer whom hasn't been alerted (because they haven't arrived sooner at the outside world)
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void alertRemainingCustomers() throws RemoteException
     {   for(int i = 0;i<customersNotYetAtOutsideWorld.numElements();i++)
@@ -92,6 +95,7 @@ public class OutsideWorld implements OutsideWorldInterface {
     /**
      *  Checks if there are user's expected to arrive at the outside world.
      *  @return true/false if customer is already in the Outside World or not
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized boolean customersNotYetAtOutsideWorldisEmpty() throws RemoteException
     {   return customersNotYetAtOutsideWorld.isEmpty();
@@ -99,6 +103,7 @@ public class OutsideWorld implements OutsideWorldInterface {
 
     /**
      * Terminates Outside World Information Server
+     *  @throws  RemoteException communication-related exceptions that may occur during the execution of a remote method call.
      * */
     public synchronized void finish() throws RemoteException
     {   this.finish = true;

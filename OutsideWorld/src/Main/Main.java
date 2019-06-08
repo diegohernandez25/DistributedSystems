@@ -18,20 +18,26 @@ public class Main {
     {   String rmiRegHostName = Parameters.REGISTRY_HOST;
         //String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
-
+        /**
+         * Gets and Sets Security Manager
+         * */
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
         System.out.println("Security manager was installed!");
         Registry registry = null;
         Register register = null;
-
+        /**
+         * Gets registry.
+         * */
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-
+        /**
+         * Creates Outside World Object.
+         * */
         OutsideWorld outsideWorld = new OutsideWorld(Parameters.NUM_CUSTOMERS);
         OutsideWorldInterface outsideWorldInterface = null;
 
@@ -57,7 +63,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        /**
+         * Binds Outside World to the Register.
+         * */
         try {
             register.bind(Parameters.OW_NAME, outsideWorldInterface);
         } catch (RemoteException e) {
@@ -70,8 +78,9 @@ public class Main {
             System.exit(1);
         }
 
-        System.out.println("Outside World registered.");
-
+        /**
+         * Waits until Outside World is set to finish.
+         * */
         while(!outsideWorld.finish)
         {   try {
                 synchronized (outsideWorld) {
@@ -81,8 +90,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        System.out.println("Outside World finished.");
-
+        /**
+         * Unbinds Outside World to the Register.
+         * */
         try {
             register.unbind(Parameters.OW_NAME);
         } catch (RemoteException e) {
@@ -94,14 +104,14 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Lounge unregistered.");
-
+        /**
+         * Unexport Outside World
+         * */
         try {
             UnicastRemoteObject.unexportObject(outsideWorld,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Park  Unexported");
     }
 }

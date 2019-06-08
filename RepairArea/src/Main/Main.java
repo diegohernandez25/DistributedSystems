@@ -45,12 +45,17 @@ public class Main {
         String rmiRegHostName = Parameters.REGISTRY_HOST;
         //String rmiRegHostName = Parameters.LOCALHOST;
         int rmiRegPortNumb = Parameters.REGISTRY_PORT;
-
+        /**
+         * Get and set security manager.
+         * */
         if (System.getSecurityManager () == null)
             System.setSecurityManager (new SecurityManager ());
-        System.out.println("Security manager was installed!");
         Registry registry = null;
         Register register = null;
+
+        /**
+         * Gets registry.
+         * */
         try {
             registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
         } catch (RemoteException e) {
@@ -58,9 +63,12 @@ public class Main {
             System.exit(1);
         }
 
+
         GriRA griRA = null;
 
-        // General Repository Information
+        /**
+         * Gets General Repository Information for Repair Area service.
+         * */
         try {
             griRA = (GeneralRepInterface) registry.lookup(Parameters.GENERALREP_NAME);
         }
@@ -72,18 +80,22 @@ public class Main {
             System.out.println("Bound Exception error @griRA");
             e.printStackTrace();
         }
-        System.out.println("Got Gri!.");
 
+        /**
+         * Creates Repair Area Object
+         *
+         * */
         RepairArea repairArea = new RepairArea(numCustomers, numPartTypes, carParts, maxCarParts, griRA);
         RepairAreaInterface repairAreaInterface = null;
-
+        /**
+         * Exports Repair Area
+         * */
         try {
             repairAreaInterface = (RepairAreaInterface) UnicastRemoteObject.exportObject(repairArea,Parameters.REPAIRAREA_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Got RepairArea Interface!.");
 
         /**
          * Register it with the general registry service
@@ -99,8 +111,9 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Got register!.");
-
+        /**
+         * Binds Repair Area to the Register.
+         * */
         try {
             register.bind(Parameters.REPAIRAREA_NAME, repairAreaInterface);
         } catch (RemoteException e) {
@@ -113,9 +126,9 @@ public class Main {
             System.exit(1);
         }
 
-        System.out.println("Repair Area registered.");
-
-
+        /**
+         * Waits until Repair Area is set to finish.
+         * */
         while(!repairArea.finish)
         {
             try {
@@ -126,8 +139,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        System.out.println("Repair Area finished.");
-
+        /**
+         * Unbinds Repair Area to the register.
+         * */
         try {
             register.unbind(Parameters.REPAIRAREA_NAME);
         } catch (RemoteException e) {
@@ -139,14 +153,14 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Repair Area unregistered.");
-
+        /**
+         * Unexport repair area.
+         * */
         try {
             UnicastRemoteObject.unexportObject(repairArea,false);
         } catch (NoSuchObjectException e) {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Repair Area unexported.");
     }
 }
