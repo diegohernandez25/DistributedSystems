@@ -444,7 +444,7 @@ function copyParameters {
 }
 
 function writeReg {
-    cd registry
+    cd Register
     > registry_com.sh
     echo "java -Djava.rmi.server.codebase=\"http://${REGISTRYHOST}/sd0406/registry\"\\" >> registry_com.sh
     echo "     -Djava.rmi.server.useCodebaseOnly=true\\" >> registry_com.sh
@@ -458,12 +458,19 @@ function writeReg {
 }
 
 function writeServer {
-    cd $2
+    cd $3
     > serverSide_com.sh
     echo "java -Djava.rmi.server.codebase=\"http://$1/sd0406/$2\"\\" >> serverSide_com.sh
     echo "     -Djava.rmi.server.useCodebaseOnly=true\\" >> serverSide_com.sh
     echo "     -Djava.security.policy=java.policy\\" >> serverSide_com.sh
     echo "     Main.Main" >> serverSide_com.sh
+    cd ..
+}
+
+function writeClient {
+    cd $1
+    > clientSide_com.sh
+    echo "java Main.Main" >> clientSide_com.sh
     cd ..
 }
 
@@ -478,7 +485,7 @@ EOF
         bash compile-remote.sh
         exit
 EOF
-    cd $3
+    cd $2
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd Public/$3
         put registry_com.sh
@@ -500,7 +507,7 @@ EOF
         bash compile-remote.sh
         exit
 EOF
-    cd $3
+    cd $2
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd Public/$3
         put serverSide_com.sh
@@ -521,7 +528,7 @@ EOF
         bash compile-remote.sh
         exit
 EOF
-    cd $3
+    cd $2
     sshpass -p ${PASSWORD} sftp -o StrictHostKeyChecking=no sd0406@$1 << EOF
         cd Public/$3
         put clientSide_com.sh
@@ -640,12 +647,15 @@ function getParameters {
 function compile {
     echo "Compiling the code..."
     writeReg
-    writeServer ${GRIHOST} gri
-    writeServer ${OWHOST} ow
-    writeServer ${PARKHOST} park
-    writeServer ${RAHOST} ra
-    writeServer ${SSHOST} ss
-    writeServer ${LOUNGEHOST} lounge
+    writeServer ${GRIHOST} gri GeneralRepInformation
+    writeServer ${OWHOST} ow OutsideWorld
+    writeServer ${PARKHOST} park Park
+    writeServer ${RAHOST} ra RepairArea
+    writeServer ${SSHOST} ss SupplierSite
+    writeServer ${LOUNGEHOST} lounge Lounge
+    writeClient Customer
+    writeClient Mechanic
+    writeClient Manager
 
     toHostReg ${REGISTRYHOST} Register registry
     toHostServer ${GRIHOST} GeneralRepInformation gri
